@@ -112,7 +112,8 @@
 
 <nav>
   <div class="logo">Agentforce <span>ADLC</span></div>
-  <a href="#structure" class="active" onclick="showSection('structure',this);return false;">Repo Structure</a>
+  <a href="#setup" class="active" onclick="showSection('setup',this);return false;">Setup</a>
+  <a href="#structure" onclick="showSection('structure',this);return false;">Repo Structure</a>
   <a href="#simulation" onclick="showSection('simulation',this);return false;">How Drive Works</a>
   <a href="#connections" onclick="showSection('connections',this);return false;">Connections</a>
   <div class="spacer"></div>
@@ -122,7 +123,105 @@
 <main>
 
 <!-- ==================== SECTION 1: REPO STRUCTURE ==================== -->
-<section id="structure" class="active">
+<section id="setup" class="active">
+<h1>Setup</h1>
+<p class="subtitle">Everything you need to get started.</p>
+
+<h2>Repository</h2>
+<div style="background:white;border:1px solid var(--gray-200);border-radius:0.75rem;padding:1.25rem;margin:0.75rem 0;">
+  <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem;">
+    <svg width="20" height="20" viewBox="0 0 16 16" fill="var(--gray-700)"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+    <a href="https://github.com/oliverbodden/agentforce-adlc-orchestrators" style="font-size:1.1rem;font-weight:600;color:var(--accent);text-decoration:none;">oliverbodden/agentforce-adlc-orchestrators</a>
+  </div>
+  <p style="font-size:0.85rem;color:var(--gray-600);margin-bottom:0.5rem;">Custom orchestration layer built on top of <a href="https://github.com/almandsky/agentforce-adlc" style="color:var(--repo);">almandsky/agentforce-adlc</a></p>
+</div>
+
+<h2>What This Adds</h2>
+<div style="background:white;border:1px solid var(--gray-200);border-radius:0.75rem;padding:1.25rem;margin:0.75rem 0;">
+  <table style="width:100%;font-size:0.85rem;">
+    <tr><th style="text-align:left;padding:0.4rem 0.75rem;background:var(--gray-100);border-bottom:2px solid var(--gray-200);">Component</th><th style="text-align:left;padding:0.4rem 0.75rem;background:var(--gray-100);border-bottom:2px solid var(--gray-200);">What it does</th></tr>
+    <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><strong>adlc-drive</strong></td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Goal-driven orchestrator — takes a JIRA ticket or goal, plans changes, executes iteratively, evaluates, presents results</td></tr>
+    <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><strong>adlc-ticket</strong></td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Create or evaluate tickets for drive — standalone or called by drive to assess readiness</td></tr>
+    <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><strong>Eval framework</strong></td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Versioned scoring, baselines, ticket-scoped attempts, topic-agnostic regression comparison</td></tr>
+    <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><strong>Playbook</strong></td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Prompt engineering principles with rule levels (HARD/STRONG/SOFT) and tie-breaker guidance</td></tr>
+    <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><strong>Patches</strong></td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Additions to 3 base skills: SOQL resolution (discover), Tooling API (optimize), CSV export (test)</td></tr>
+    <tr><td style="padding:0.4rem 0.75rem;"><strong>JIRA integration</strong></td><td style="padding:0.4rem 0.75rem;">Read-only access via official Atlassian MCP server (OAuth SSO)</td></tr>
+  </table>
+</div>
+
+<h2>Prerequisites</h2>
+<div style="background:white;border:1px solid var(--gray-200);border-radius:0.75rem;padding:1.25rem;margin:0.75rem 0;">
+  <table style="width:100%;font-size:0.85rem;">
+    <tr><th style="text-align:left;padding:0.4rem 0.75rem;background:var(--gray-100);border-bottom:2px solid var(--gray-200);">Requirement</th><th style="text-align:left;padding:0.4rem 0.75rem;background:var(--gray-100);border-bottom:2px solid var(--gray-200);">Check</th><th style="text-align:left;padding:0.4rem 0.75rem;background:var(--gray-100);border-bottom:2px solid var(--gray-200);">Install</th></tr>
+    <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><strong>Cursor IDE</strong></td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><code>~/.cursor/</code> exists</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><a href="https://cursor.sh">cursor.sh</a></td></tr>
+    <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><strong>Salesforce CLI</strong> (sf v2.x)</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><code>sf --version</code></td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><code>npm install -g @salesforce/cli</code></td></tr>
+    <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><strong>Python 3.9+</strong></td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><code>python3 --version</code></td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><code>brew install python</code></td></tr>
+    <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><strong>Node.js</strong></td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><code>node --version</code></td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><code>brew install node</code></td></tr>
+    <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><strong>Salesforce Org</strong> with Agentforce</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><code>sf org list</code></td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Contact your Salesforce admin</td></tr>
+    <tr><td style="padding:0.4rem 0.75rem;"><strong>Atlassian Account</strong> (for JIRA)</td><td style="padding:0.4rem 0.75rem;">Can access your JIRA instance</td><td style="padding:0.4rem 0.75rem;">SSO login — no API token needed</td></tr>
+  </table>
+</div>
+
+<h2>Installation</h2>
+<div style="background:white;border:1px solid var(--gray-200);border-radius:0.75rem;padding:1.25rem;margin:0.75rem 0;">
+
+  <div style="margin-bottom:1.25rem;">
+    <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--gray-500);margin-bottom:0.5rem;">Step 1 — Clone the repo</div>
+    <div style="background:var(--gray-900);color:#e5e7eb;padding:0.75rem 1rem;border-radius:0.4rem;font-family:'SF Mono','Fira Code',monospace;font-size:0.82rem;overflow-x:auto;">
+      git clone https://github.com/oliverbodden/agentforce-adlc-orchestrators.git<br>
+      cd agentforce-adlc-orchestrators
+    </div>
+  </div>
+
+  <div style="margin-bottom:1.25rem;">
+    <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--gray-500);margin-bottom:0.5rem;">Step 2 — Run the installer</div>
+    <div style="background:var(--gray-900);color:#e5e7eb;padding:0.75rem 1rem;border-radius:0.4rem;font-family:'SF Mono','Fira Code',monospace;font-size:0.82rem;">
+      ./install.sh
+    </div>
+    <p style="font-size:0.8rem;color:var(--gray-500);margin-top:0.4rem;">This installs the base skills (from <a href="https://github.com/almandsky/agentforce-adlc" style="color:var(--repo);">agentforce-adlc</a>), custom skills, patches, and eval framework.</p>
+  </div>
+
+  <div style="margin-bottom:1.25rem;">
+    <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--gray-500);margin-bottom:0.5rem;">Step 3 — Configure Atlassian MCP (JIRA access)</div>
+    <p style="font-size:0.85rem;margin-bottom:0.4rem;">Add to <code>~/.cursor/mcp.json</code>:</p>
+    <div style="background:var(--gray-900);color:#e5e7eb;padding:0.75rem 1rem;border-radius:0.4rem;font-family:'SF Mono','Fira Code',monospace;font-size:0.82rem;">
+      {<br>
+      &nbsp;&nbsp;"mcpServers": {<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;"atlassian": {<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"url": "https://mcp.atlassian.com/v1/mcp"<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+      &nbsp;&nbsp;}<br>
+      }
+    </div>
+    <p style="font-size:0.8rem;color:var(--gray-500);margin-top:0.4rem;">Uses OAuth SSO — no API tokens needed. You'll authenticate via browser on first use.</p>
+  </div>
+
+  <div>
+    <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--gray-500);margin-bottom:0.5rem;">Step 4 — Restart Cursor</div>
+    <p style="font-size:0.85rem;">Restart Cursor to load the new skills and MCP server. Then try:</p>
+    <div style="background:var(--gray-900);color:#e5e7eb;padding:0.75rem 1rem;border-radius:0.4rem;font-family:'SF Mono','Fira Code',monospace;font-size:0.82rem;margin-top:0.4rem;">
+      adlc-ticket ESCHAT-1234 &nbsp;&nbsp;&nbsp;<span style="color:var(--gray-500);"># evaluate a ticket</span><br>
+      adlc-drive ESCHAT-1234 &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--gray-500);"># execute a ticket</span>
+    </div>
+  </div>
+
+</div>
+
+<h2>What the installer does</h2>
+<div style="background:white;border:1px solid var(--gray-200);border-radius:0.75rem;padding:1.25rem;margin:0.75rem 0;font-size:0.85rem;">
+  <table style="width:100%;">
+    <tr><th style="text-align:left;padding:0.4rem 0.75rem;background:var(--gray-100);border-bottom:2px solid var(--gray-200);">Step</th><th style="text-align:left;padding:0.4rem 0.75rem;background:var(--gray-100);border-bottom:2px solid var(--gray-200);">What</th><th style="text-align:left;padding:0.4rem 0.75rem;background:var(--gray-100);border-bottom:2px solid var(--gray-200);">Where</th></tr>
+    <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">1</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Install base skills from <code>agentforce-adlc</code></td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><code>~/.cursor/skills/adlc-*</code></td></tr>
+    <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">2</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Install custom skills (drive, ticket)</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><code>~/.cursor/skills/adlc-drive/</code>, <code>adlc-ticket/</code></td></tr>
+    <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">3</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Apply patches to 3 base skills (additive only)</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">discover: SOQL resolution, optimize: Tooling API, test: CSV export</td></tr>
+    <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">4</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Set up eval framework</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><code>evals/</code> in your project</td></tr>
+    <tr><td style="padding:0.4rem 0.75rem;">5</td><td style="padding:0.4rem 0.75rem;">Copy project documentation</td><td style="padding:0.4rem 0.75rem;"><code>PROJECT-MAP.html</code>, <code>PROJECT-MAP.md</code></td></tr>
+  </table>
+  <p style="margin-top:0.75rem;color:var(--gray-500);font-size:0.8rem;">Safe to re-run — patches check for existing content before applying. Existing files are preserved.</p>
+</div>
+</section>
+
+<section id="structure">
 <h1>Repo Structure</h1>
 <p class="subtitle">Click folders to expand. Click legend to filter by origin.</p>
 
