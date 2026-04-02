@@ -1,0 +1,6 @@
+{
+  "version": "s1",
+  "date": "2026-03-28",
+  "scripts": ["run_regression.py", "analyze_response.py"],
+  "notes": "Initial scoring scripts from v21 eval cycle. Strategy classification via regex. Known issue: EXPLAIN detection requires 'here's what I found' — may undercount when agent uses different opener."
+}

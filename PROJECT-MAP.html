@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agentforce ADLC — Project Guide</title>
+<style>
+  :root {
+    --repo: #3b82f6; --repo-bg: #eff6ff; --repo-border: #bfdbfe;
+    --custom: #22c55e; --custom-bg: #f0fdf4; --custom-border: #bbf7d0;
+    --modified: #eab308; --modified-bg: #fefce8; --modified-border: #fde68a;
+    --scaffold: #9ca3af; --scaffold-bg: #f9fafb; --scaffold-border: #e5e7eb;
+    --accent: #6366f1; --accent-bg: #eef2ff; --accent-border: #c7d2fe;
+    --gray-50: #f9fafb; --gray-100: #f3f4f6; --gray-200: #e5e7eb; --gray-300: #d1d5db;
+    --gray-500: #6b7280; --gray-600: #4b5563; --gray-700: #374151; --gray-800: #1f2937; --gray-900: #111827;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--gray-50); color: var(--gray-800); line-height: 1.6; }
+
+  /* NAV */
+  nav { position: sticky; top: 0; z-index: 100; background: var(--gray-900); color: white; padding: 0 2rem; display: flex; align-items: center; height: 56px; gap: 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+  nav .logo { font-weight: 700; font-size: 1rem; letter-spacing: -0.02em; white-space: nowrap; }
+  nav .logo span { color: var(--accent); }
+  nav a { color: var(--gray-300); text-decoration: none; font-size: 0.85rem; font-weight: 500; padding: 0.5rem 0; border-bottom: 2px solid transparent; transition: all 0.2s; }
+  nav a:hover, nav a.active { color: white; border-bottom-color: var(--accent); }
+  nav .spacer { flex: 1; }
+  nav .tag { font-size: 0.7rem; background: var(--accent); color: white; padding: 2px 8px; border-radius: 999px; font-weight: 600; }
+
+  /* MAIN */
+  main { max-width: 1100px; margin: 0 auto; padding: 2rem; }
+  section { padding-top: 2rem; margin-bottom: 3rem; display: none; }
+  section.active { display: block; }
+  h1 { font-size: 1.75rem; font-weight: 800; margin-bottom: 0.25rem; letter-spacing: -0.03em; }
+  h2 { font-size: 1.3rem; font-weight: 700; margin: 2rem 0 0.75rem; color: var(--gray-900); }
+  h3 { font-size: 1rem; font-weight: 600; margin: 1.5rem 0 0.5rem; color: var(--gray-700); }
+  .subtitle { color: var(--gray-500); font-size: 0.9rem; margin-bottom: 1.5rem; }
+  hr { border: none; border-top: 1px solid var(--gray-200); margin: 2rem 0; }
+
+  /* LEGEND */
+  .legend { display: flex; gap: 1rem; flex-wrap: wrap; margin: 1rem 0 1.5rem; padding: 0.75rem 1rem; background: white; border: 1px solid var(--gray-200); border-radius: 0.5rem; }
+  .legend-item { display: flex; align-items: center; gap: 0.4rem; font-size: 0.8rem; cursor: pointer; padding: 0.2rem 0.5rem; border-radius: 0.25rem; transition: opacity 0.2s; user-select: none; }
+  .legend-item:hover { opacity: 0.7; }
+  .legend-item.dimmed { opacity: 0.25; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .dot-repo { background: var(--repo); } .dot-custom { background: var(--custom); }
+  .dot-modified { background: var(--modified); } .dot-scaffold { background: var(--scaffold); }
+
+  /* TREE */
+  .tree { background: white; border: 1px solid var(--gray-200); border-radius: 0.75rem; padding: 1rem 1.25rem; margin: 0.75rem 0; font-size: 0.8rem; font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; overflow-x: auto; }
+  .tree ul { list-style: none; padding-left: 1.4rem; }
+  .tree > ul { padding-left: 0; }
+  .tree li { position: relative; padding: 1.5px 0; }
+  .tree li::before { content: ''; position: absolute; left: -0.9rem; top: 0; height: 100%; border-left: 1px solid var(--gray-200); }
+  .tree li::after { content: ''; position: absolute; left: -0.9rem; top: 0.8rem; width: 0.65rem; border-bottom: 1px solid var(--gray-200); }
+  .tree > ul > li::before, .tree > ul > li::after { display: none; }
+  .tree li:last-child::before { height: 0.8rem; }
+  .node { display: inline-flex; align-items: center; gap: 0.35rem; padding: 1px 5px; border-radius: 3px; transition: opacity 0.2s; }
+  .node.dimmed { opacity: 0.12; }
+  .node-repo { background: var(--repo-bg); border: 1px solid var(--repo-border); }
+  .node-custom { background: var(--custom-bg); border: 1px solid var(--custom-border); }
+  .node-modified { background: var(--modified-bg); border: 1px solid var(--modified-border); }
+  .node-scaffold { background: var(--scaffold-bg); border: 1px solid var(--scaffold-border); }
+  .node-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .fname { font-weight: 600; } .fdesc { color: var(--gray-500); font-weight: 400; font-style: italic; }
+  .folder > .node { cursor: pointer; }
+  .folder > .node::before { content: '▶ '; font-size: 0.65rem; display: inline-block; width: 0.9rem; transition: transform 0.15s; }
+  .folder.open > .node::before { content: '▼ '; }
+  .folder > ul { display: none; } .folder.open > ul { display: block; }
+
+  /* SIMULATION */
+  .sim-timeline { position: relative; padding-left: 2rem; margin: 1rem 0; }
+  .sim-timeline::before { content: ''; position: absolute; left: 0.6rem; top: 0; bottom: 0; width: 2px; background: var(--gray-200); }
+  .sim-step { position: relative; margin-bottom: 1.5rem; }
+  .sim-step .dot { position: absolute; left: -1.7rem; top: 0.35rem; width: 14px; height: 14px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 0 2px var(--gray-300); }
+  .sim-step.active .dot { box-shadow: 0 0 0 2px var(--accent); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100% { box-shadow: 0 0 0 2px var(--accent); } 50% { box-shadow: 0 0 0 4px var(--accent-border); } }
+  .phase-group { margin-bottom: 0.75rem; background: white; border: 1px solid var(--gray-200); border-radius: 0.75rem; overflow: hidden; }
+  .phase-header { font-size: 1rem; font-weight: 700; color: var(--gray-800); padding: 0.75rem 1rem; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; user-select: none; transition: background 0.15s; border-bottom: 1px solid transparent; }
+  .phase-group.open .phase-header { border-bottom-color: var(--gray-200); background: var(--gray-50); }
+  .phase-header:hover { background: var(--gray-100); }
+  .phase-header .phase-num { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; font-size: 0.8rem; font-weight: 700; color: white; flex-shrink: 0; }
+  .phase-header::after { content: '▸'; font-size: 0.8rem; color: var(--gray-400); margin-left: auto; }
+  .phase-group.open .phase-header::after { content: '▾'; }
+  .phase-steps { display: none; padding: 0.75rem 1rem 0.75rem 2.75rem; }
+  .phase-group.open .phase-steps { display: block; }
+  .sim-step .phase-label { display: none; }
+  .sim-step .step-title { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.25rem; }
+  .sim-step .step-body { font-size: 0.82rem; color: var(--gray-600); display: none; margin-top: 0.25rem; }
+  .sim-step.expanded .step-body { display: block; }
+  .sim-step .step-body .tag-skill { display: inline-block; font-size: 0.72rem; font-weight: 600; padding: 1px 6px; border-radius: 3px; margin: 1px 2px; }
+  .tag-drive { background: var(--custom-bg); border: 1px solid var(--custom-border); color: #166534; }
+  .tag-discover { background: var(--modified-bg); border: 1px solid var(--modified-border); color: #854d0e; }
+  .tag-optimize { background: var(--modified-bg); border: 1px solid var(--modified-border); color: #854d0e; }
+  .tag-test { background: var(--modified-bg); border: 1px solid var(--modified-border); color: #854d0e; }
+  .tag-jira { background: var(--accent-bg); border: 1px solid var(--accent-border); color: #4338ca; }
+  .tag-script { background: var(--scaffold-bg); border: 1px solid var(--scaffold-border); color: var(--gray-700); }
+  .tag-playbook { background: #fdf2f8; border: 1px solid #fbcfe8; color: #9d174d; }
+  .tag-user { background: #fff7ed; border: 1px solid #fed7aa; color: #9a3412; }
+  .sim-step .files { margin-top: 0.35rem; font-size: 0.75rem; font-family: 'SF Mono', monospace; color: var(--gray-500); }
+  .sim-step .files span { display: block; padding: 1px 0; }
+
+  /* STEP TOGGLE */
+  .sim-step .details { display: none; margin-top: 0.5rem; padding: 0.5rem 0.75rem; background: var(--gray-50); border-radius: 0.35rem; border: 1px solid var(--gray-200); }
+  .sim-step.expanded .details { display: block; }
+  .sim-step .step-title { cursor: pointer; padding: 0.15rem 0; }
+  .sim-step .step-title::after { content: ' ▸'; font-size: 0.7rem; color: var(--gray-400); transition: transform 0.15s; }
+  .sim-step.expanded .step-title::after { content: ' ▾'; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Agentforce <span>ADLC</span></div>
+  <a href="#structure" class="active" onclick="showSection('structure',this);return false;">Repo Structure</a>
+  <a href="#simulation" onclick="showSection('simulation',this);return false;">How Drive Works</a>
+  <a href="#connections" onclick="showSection('connections',this);return false;">Connections</a>
+  <div class="spacer"></div>
+  <div class="tag">v1.0</div>
+</nav>
+
+<main>
+
+<!-- ==================== SECTION 1: REPO STRUCTURE ==================== -->
+<section id="structure" class="active">
+<h1>Repo Structure</h1>
+<p class="subtitle">Click folders to expand. Click legend to filter by origin.</p>
+
+<div class="legend" id="legend">
+  <div class="legend-item" data-type="repo" onclick="toggleFilter('repo')"><div class="legend-dot dot-repo"></div><span><b>From repo</b> — agentforce-adlc</span></div>
+  <div class="legend-item" data-type="custom" onclick="toggleFilter('custom')"><div class="legend-dot dot-custom"></div><span><b>Custom</b> — created by us</span></div>
+  <div class="legend-item" data-type="modified" onclick="toggleFilter('modified')"><div class="legend-dot dot-modified"></div><span><b>Repo + additions</b> — original untouched</span></div>
+  <div class="legend-item" data-type="scaffold" onclick="toggleFilter('scaffold')"><div class="legend-dot dot-scaffold"></div><span><b>Scaffolding</b> — auto-generated</span></div>
+</div>
+
+<h3>Skills — From Repo (unchanged)</h3>
+<p style="font-size:0.8rem;color:var(--gray-500);margin-bottom:0.5rem;">Installed from <a href="https://github.com/almandsky/agentforce-adlc" style="color:var(--repo);">agentforce-adlc</a>. Do not modify.</p>
+<div class="tree"><ul>
+  <li><span class="node node-repo" data-type="repo"><span class="node-dot dot-repo"></span><span class="fname">adlc-author/</span> <span class="fdesc">Generate .agent files from requirements</span></span></li>
+  <li><span class="node node-repo" data-type="repo"><span class="node-dot dot-repo"></span><span class="fname">adlc-deploy/</span> <span class="fdesc">Deploy, publish, activate</span></span></li>
+  <li><span class="node node-repo" data-type="repo"><span class="node-dot dot-repo"></span><span class="fname">adlc-feedback/</span> <span class="fdesc">Collect feedback</span></span></li>
+  <li><span class="node node-repo" data-type="repo"><span class="node-dot dot-repo"></span><span class="fname">adlc-run/</span> <span class="fdesc">Execute actions via REST</span></span></li>
+  <li><span class="node node-repo" data-type="repo"><span class="node-dot dot-repo"></span><span class="fname">adlc-scaffold/</span> <span class="fdesc">Generate Flow/Apex stubs</span></span></li>
+  <li><span class="node node-repo" data-type="repo"><span class="node-dot dot-repo"></span><span class="fname">agentforce-testing-analysis/</span> <span class="fdesc">CSV test analysis</span></span></li>
+</ul></div>
+
+<h3>Skills — From Repo + Our Additions</h3>
+<p style="font-size:0.8rem;color:var(--gray-500);margin-bottom:0.5rem;">Original content untouched. We added new sections.</p>
+<div class="tree"><ul>
+  <li><span class="node node-modified" data-type="modified"><span class="node-dot dot-modified"></span><span class="fname">adlc-discover/</span> <span class="fdesc">+ Section 0: SOQL-based agent/topic resolution</span></span></li>
+  <li><span class="node node-modified" data-type="modified"><span class="node-dot dot-modified"></span><span class="fname">adlc-optimize/</span> <span class="fdesc">+ Section 3.UI: Tooling API for UI-built agents</span></span></li>
+  <li><span class="node node-modified" data-type="modified"><span class="node-dot dot-modified"></span><span class="fname">adlc-test/</span> <span class="fdesc">+ CSV export, HTML unescape, contextVariables format</span></span></li>
+</ul></div>
+
+<h3>Skills — Custom (created by us)</h3>
+<div class="tree"><ul>
+  <li><span class="node node-custom" data-type="custom"><span class="node-dot dot-custom"></span><span class="fname">adlc-drive/</span> <span class="fdesc">Goal-driven orchestrator — reads playbook, delegates to sub-skills</span></span></li>
+  <li><span class="node node-custom" data-type="custom"><span class="node-dot dot-custom"></span><span class="fname">adlc-ticket/</span> <span class="fdesc">Create/evaluate tickets for drive — standalone or called by drive</span></span></li>
+</ul></div>
+
+<h3>Project — Eval Framework (all custom)</h3>
+<div class="tree"><ul>
+  <li class="folder open"><span class="node node-custom" data-type="custom"><span class="node-dot dot-custom"></span><span class="fname">evals/</span></span><ul>
+    <li><span class="node node-custom" data-type="custom"><span class="node-dot dot-custom"></span><span class="fname">prompt-engineering-playbook.md</span> <span class="fdesc">Principles + rule levels</span></span></li>
+    <li><span class="node node-custom" data-type="custom"><span class="node-dot dot-custom"></span><span class="fname">drive-architecture.md</span> <span class="fdesc">Delegation map</span></span></li>
+    <li class="folder"><span class="node node-custom" data-type="custom"><span class="node-dot dot-custom"></span><span class="fname">ticket-guides/</span> <span class="fdesc">Everything related to adlc-ticket</span></span><ul>
+      <li><span class="node node-custom" data-type="custom"><span class="node-dot dot-custom"></span><span class="fname">ticket-authoring-prompt.md</span> <span class="fdesc">How to write drive-ready tickets</span></span></li>
+      <li><span class="node node-custom" data-type="custom"><span class="node-dot dot-custom"></span><span class="fname">ticket-evaluation-samples.md</span> <span class="fdesc">15 real tickets evaluated (training material)</span></span></li>
+      <li><span class="node node-custom" data-type="custom"><span class="node-dot dot-custom"></span><span class="fname">ticket-rewrites-internal.md</span> <span class="fdesc">11 weak tickets rewritten (internal only)</span></span></li>
+      <li><span class="node node-custom" data-type="custom"><span class="node-dot dot-custom"></span><span class="fname">ticket-template.md</span> <span class="fdesc">Generic JIRA template</span></span></li>
+      <li><span class="node node-custom" data-type="custom"><span class="node-dot dot-custom"></span><span class="fname">ticket-template-generalfaq.md</span> <span class="fdesc">Pre-filled for GeneralFAQ</span></span></li>
+    </ul></li>
+    <li class="folder"><span class="node node-custom" data-type="custom"><span class="node-dot dot-custom"></span><span class="fname">eval-config/</span> <span class="fdesc">Versioned methodology</span></span><ul>
+      <li class="folder"><span class="node node-custom" data-type="custom"><span class="node-dot dot-custom"></span><span class="fname">scoring/current/</span></span><ul>
+        <li><span class="node node-custom" data-type="custom"><span class="node-dot dot-custom"></span><span class="fname">run_regression.py</span></span></li>
+        <li><span class="node node-custom" data-type="custom"><span class="node-dot dot-custom"></span><span class="fname">analyze_response.py</span></span></li>
+      </ul></li>
+      <li class="folder"><span class="node node-custom" data-type="custom"><span class="node-dot dot-custom"></span><span class="fname">utterances/current/</span></span><ul>
+        <li><span class="node node-custom" data-type="custom"><span class="node-dot dot-custom"></span><span class="fname">all-topics-102.yaml</span></span></li>
+      </ul></li>
+    </ul></li>
+    <li class="folder"><span class="node node-custom" data-type="custom"><span class="node-dot dot-custom"></span><span class="fname">scripts/</span></span><ul>
+      <li><span class="node node-custom" data-type="custom"><span class="node-dot dot-custom"></span><span class="fname">generate_report.py</span> <span class="fdesc">Topic-agnostic regression</span></span></li>
+    </ul></li>
+    <li class="folder"><span class="node node-custom" data-type="custom"><span class="node-dot dot-custom"></span><span class="fname">indeed-service-agent/</span></span><ul>
+      <li class="folder"><span class="node node-custom" data-type="custom"><span class="node-dot dot-custom"></span><span class="fname">baselines/v21/</span> <span class="fdesc">Production baseline</span></span><ul>
+        <li><span class="node node-custom" data-type="custom"><span class="node-dot dot-custom"></span><span class="fname">instruction-invoice.txt</span> <span class="fdesc">7,422 words</span></span></li>
+        <li><span class="node node-custom" data-type="custom"><span class="node-dot dot-custom"></span><span class="fname">raw-outputs.csv</span> <span class="fdesc">850 rows</span></span></li>
+      </ul></li>
+      <li class="folder"><span class="node node-custom" data-type="custom"><span class="node-dot dot-custom"></span><span class="fname">tickets/PROJ-345-compact-invoice/</span></span><ul>
+        <li><span class="node node-custom" data-type="custom"><span class="node-dot dot-custom"></span><span class="fname">goal.md / config.json / STATUS.md</span></span></li>
+        <li class="folder"><span class="node node-custom" data-type="custom"><span class="node-dot dot-custom"></span><span class="fname">attempts/</span> <span class="fdesc">7 attempts, #04 deployed</span></span><ul>
+          <li><span class="node node-custom" data-type="custom"><span class="node-dot dot-custom"></span><span class="fname">04-v22c-fixed-explain/</span> <span class="fdesc">✅ Winner</span></span></li>
+        </ul></li>
+      </ul></li>
+    </ul></li>
+  </ul></li>
+</ul></div>
+
+<h3>Project — Salesforce DX (auto-generated)</h3>
+<div class="tree"><ul>
+  <li class="folder"><span class="node node-scaffold" data-type="scaffold"><span class="node-dot dot-scaffold"></span><span class="fname">force-app/</span> <span class="fdesc">Salesforce DX</span></span><ul>
+    <li><span class="node node-scaffold" data-type="scaffold"><span class="node-dot dot-scaffold"></span><span class="fname">aiEvaluationDefinitions/</span> <span class="fdesc">Testing Center specs (deployed to org)</span></span></li>
+    <li><span class="node node-scaffold" data-type="scaffold"><span class="node-dot dot-scaffold"></span><span class="fname">bots/</span> <span class="fdesc">Agent metadata (retrieved from org)</span></span></li>
+  </ul></li>
+</ul></div>
+</section>
+
+<!-- ==================== SECTION 2: SIMULATION ==================== -->
+<section id="simulation">
+<h1>How adlc-drive Works</h1>
+<p class="subtitle">Click each step to expand details. Shows what's called, what files are touched, and who owns each step.</p>
+
+<div class="sim-timeline">
+
+  <div class="phase-group">
+    <div class="phase-header" onclick="this.parentElement.classList.toggle('open')"><span class="phase-num" style="background:var(--accent)">1</span> Goal — Capture what to achieve</div>
+    <div class="phase-steps">
+      <div class="sim-step"><div class="dot" style="background:var(--accent)"></div>
+        <div class="step-title" onclick="this.parentElement.classList.toggle('expanded')">1a. Parse input</div>
+        <div class="step-body">User provides JIRA ticket key or describes the goal in free text. <span class="tag-skill tag-drive">drive</span></div>
+        <div class="details">Drive extracts the ticket key or parses the description. If no ticket, prompts user for specifics: what should change, which agent/topic, examples, baseline data.</div>
+      </div>
+      <div class="sim-step"><div class="dot" style="background:var(--accent)"></div>
+        <div class="step-title" onclick="this.parentElement.classList.toggle('expanded')">1b. Pull JIRA ticket</div>
+        <div class="step-body"><span class="tag-skill tag-jira">user-atlassian MCP</span> → <code>getJiraIssue(cloudId, issueIdOrKey)</code></div>
+        <div class="details">Calls <code>getAccessibleAtlassianResources</code> to discover cloud ID (first use only). Then fetches ticket: summary, description, AC, labels, priority. If auth fails, calls <code>mcp_auth</code> to trigger browser SSO.<br><br><span class="files"><span>→ JIRA fields mapped to goal structure</span></span></div>
+      </div>
+      <div class="sim-step"><div class="dot" style="background:var(--custom)"></div>
+        <div class="step-title" onclick="this.parentElement.classList.toggle('expanded')">1b2. Evaluate ticket readiness</div>
+        <div class="step-body"><span class="tag-skill" style="background:#fdf2f8;border:1px solid #fbcfe8;color:#9d174d">adlc-ticket</span> — score against 5 criteria, scope check, eval impact</div>
+        <div class="details">Reads <code>adlc-ticket/SKILL.md</code>. Evaluates: (1) What should change? (2) Which agent/topic? (3) Acceptance criteria? (4) Baseline? (5) Examples?<br><br>
+          <b>Verdicts:</b> Ready (4-5/5) → proceed. Needs improvement (3/5) → ask user to fill gaps. Not ready (≤2/5) → suggest SPIKE or rewrite. Out of scope → stop.<br><br>
+          Also checks: does this ticket change what "good" means? Flags eval criteria that would flip.<br><br>
+          <b>Can also be used standalone:</b> <code>adlc-ticket ESCHAT-1234</code> or <code>adlc-ticket "I need to update tone for FAQ"</code>
+        </div>
+      </div>
+      <div class="sim-step"><div class="dot" style="background:var(--modified)"></div>
+        <div class="step-title" onclick="this.parentElement.classList.toggle('expanded')">1c. Resolve agent/topic in org</div>
+        <div class="step-body"><span class="tag-skill tag-discover">adlc-discover</span> — SOQL queries for BotDefinition, GenAiPluginDefinition, GenAiPluginInstructionDef</div>
+        <div class="details">Reads <code>adlc-discover/SKILL.md</code>. Finds the section about resolving agent/topic IDs via SOQL. Runs queries against the org.<br><br><b>Stores:</b> agent_api_name, plugin_definition_id, instruction_def_ids, has_authoring_bundle<br><span class="files"><span>→ Uses: sf data query -o &lt;org&gt;</span></span></div>
+      </div>
+      <div class="sim-step"><div class="dot" style="background:var(--accent)"></div>
+        <div class="step-title" onclick="this.parentElement.classList.toggle('expanded')">1d. Classify goal + key questions</div>
+        <div class="step-body"><span class="tag-skill tag-drive">drive</span> — answers 5 key questions, documents in goal.md</div>
+        <div class="details">1. Does instruction get smaller/bigger/restructured?<br>2. Are there bad experience examples?<br>3. New data or APIs?<br>4. Need new test utterances?<br>5. Problem clear enough?<br><br><span class="files"><span>→ Writes: evals/{agent}/tickets/{key}/goal.md</span></span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="phase-group">
+    <div class="phase-header" onclick="this.parentElement.classList.toggle('open')"><span class="phase-num" style="background:var(--accent)">2</span> Refine — Align with user before work starts</div>
+    <div class="phase-steps">
+      <div class="sim-step"><div class="dot" style="background:var(--accent)"></div>
+        <div class="step-title" onclick="this.parentElement.classList.toggle('expanded')">2a-c. Scope, SPIKE gate, confirm alignment</div>
+        <div class="step-body"><span class="tag-skill tag-drive">drive</span> <span class="tag-skill tag-user">user</span> — collaborative discussion</div>
+        <div class="details">Discusses scope with user: topics, actions, surfaces, dependencies. Checks if problem/solution are clear enough (SPIKE gate). Presents alignment summary, gets explicit confirmation.<br><br>If SPIKE → exit with investigation plan. Otherwise proceed.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="phase-group">
+    <div class="phase-header" onclick="this.parentElement.classList.toggle('open')"><span class="phase-num" style="background:var(--accent)">3</span> Discover — Establish baseline</div>
+    <div class="phase-steps">
+      <div class="sim-step"><div class="dot" style="background:var(--modified)"></div>
+        <div class="step-title" onclick="this.parentElement.classList.toggle('expanded')">3a. Pull current instruction from org</div>
+        <div class="step-body"><span class="tag-skill tag-optimize">adlc-optimize</span> — reads GenAiPluginInstructionDef via SOQL or Tooling API</div>
+        <div class="details">Reads <code>adlc-optimize/SKILL.md</code>. Finds section about reading instructions for UI-built agents. Queries instruction text.<br><br><b>Stores:</b> instruction text, word count<br><span class="files"><span>→ Saves: evals/{agent}/tickets/{key}/attempts/00-baseline/instruction.txt</span></span></div>
+      </div>
+      <div class="sim-step"><div class="dot" style="background:var(--modified)"></div>
+        <div class="step-title" onclick="this.parentElement.classList.toggle('expanded')">3c-d. Baseline eval + build test utterances</div>
+        <div class="step-body"><span class="tag-skill tag-test">adlc-test</span> Mode B — combine ALL sources, coverage check, multi-turn awareness</div>
+        <div class="details">Combine all utterance sources (AND not OR):<br>
+          1. Baseline CSV (regression) + 2. Ticket attachments (examples) + 3. Derived from instruction (gaps)<br><br>
+          <b>Coverage check:</b> Every requirement must have at least one test utterance.<br>
+          <b>Multi-turn:</b> If goal changes behavior across turns, build conversation history specs. Min 5 multi-turn tests. Max ~50 utterances per ticket (HITL if more needed).<br><br>
+          <span class="files"><span>→ Saves: specs/ (regression + capability specs separately)</span></span></div>
+      </div>
+      <div class="sim-step"><div class="dot" style="background:var(--accent)"></div>
+        <div class="step-title" onclick="this.parentElement.classList.toggle('expanded')">3e. Analyze baseline + set acceptance criteria</div>
+        <div class="step-body"><span class="tag-skill tag-drive">drive</span> <span class="tag-skill tag-script">generate_report.py</span> <span class="tag-skill tag-user">user</span></div>
+        <div class="details">Runs <code>generate_report.py</code> to discover feature profile. Proposes acceptance criteria based on goal. User confirms or adjusts.<br><br><span class="files"><span>→ Writes: config.json (acceptance criteria)</span></span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="phase-group">
+    <div class="phase-header" onclick="this.parentElement.classList.toggle('open')"><span class="phase-num" style="background:var(--accent)">4</span> Plan — Triage and get approval</div>
+    <div class="phase-steps">
+      <div class="sim-step"><div class="dot" style="background:var(--accent)"></div>
+        <div class="step-title" onclick="this.parentElement.classList.toggle('expanded')">4a-c. Triage, test matrix, present plan</div>
+        <div class="step-body"><span class="tag-skill tag-drive">drive</span> <span class="tag-skill tag-user">user</span> — blast radius scoring, plan approval</div>
+        <div class="details">Scores blast radius (0-5). Classifies: SHIP IT / JUDGMENT CALL / PROCTOR / DESIGN REVIEW. Sets test matrix. Presents plan, gets approval.<br><br><span class="files"><span>→ Writes: CHANGELOG.md</span></span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="phase-group">
+    <div class="phase-header" onclick="this.parentElement.classList.toggle('open')"><span class="phase-num" style="background:var(--accent)">5</span> Execute — Iterative edit → test → evaluate loop</div>
+    <div class="phase-steps">
+      <div class="sim-step active"><div class="dot" style="background:var(--custom)"></div>
+        <div class="step-title" onclick="this.parentElement.classList.toggle('expanded')">5.1. Edit instruction</div>
+        <div class="step-body"><span class="tag-skill tag-drive">drive</span> <span class="tag-skill tag-playbook">playbook</span> — the creative work</div>
+        <div class="details">Consults <code>prompt-engineering-playbook.md</code> for editing principles. Makes targeted edit based on goal. One change per iteration.<br><br><span class="files"><span>→ Writes: attempts/NN-name/instruction.txt</span></span></div>
+      </div>
+      <div class="sim-step active"><div class="dot" style="background:var(--modified)"></div>
+        <div class="step-title" onclick="this.parentElement.classList.toggle('expanded')">5.2. Deploy instruction to org</div>
+        <div class="step-body"><span class="tag-skill tag-optimize">adlc-optimize</span> — Tooling API PATCH + auto-backup</div>
+        <div class="details">Reads <code>adlc-optimize/SKILL.md</code>. Backs up current instruction, then deploys the new one.<br><br><span class="files"><span>→ API: PATCH /tooling/sobjects/GenAiPluginInstructionDef/{id}</span></span></div>
+      </div>
+      <div class="sim-step active"><div class="dot" style="background:var(--modified)"></div>
+        <div class="step-title" onclick="this.parentElement.classList.toggle('expanded')">5.3. Run smoke test (4x)</div>
+        <div class="step-body"><span class="tag-skill tag-test">adlc-test</span> Mode B — 5 utterances, 4 runs each, 3/4 pass = OK</div>
+        <div class="details">Creates small YAML spec, runs Testing Center 4 times, exports CSV. Checks pass rate (3/4 = 75% OK for dev).<br><br><span class="files"><span>→ Saves: attempts/NN/smoke-results.csv</span></span></div>
+      </div>
+      <div class="sim-step active"><div class="dot" style="background:var(--accent)"></div>
+        <div class="step-title" onclick="this.parentElement.classList.toggle('expanded')">5.4-5. Evaluate → Bulk eval</div>
+        <div class="step-body"><span class="tag-skill tag-drive">drive</span> <span class="tag-skill tag-test">adlc-test</span> <span class="tag-skill tag-script">generate_report.py</span></div>
+        <div class="details">If smoke passes → run full eval (all utterances, 4x). Compare with <code>generate_report.py</code>. If acceptance met → Phase 6. If not → iterate back to 5.1.<br><br><span class="files"><span>→ Saves: raw-outputs.csv, eval-report.html</span></span></div>
+      </div>
+      <div class="sim-step"><div class="dot" style="background:var(--accent)"></div>
+        <div class="step-title" onclick="this.parentElement.classList.toggle('expanded')">5.6-8. Acceptance check → iterate or stop</div>
+        <div class="step-body"><span class="tag-skill tag-drive">drive</span> <span class="tag-skill tag-user">user</span> — pull user in if ambiguous</div>
+        <div class="details">If all criteria met → exit loop. If regression → diagnose, iterate. If ambiguous → present data to user. If max iterations → stop, present partial results.<br><br><span class="files"><span>→ Updates: .adlc-drive-state.json</span></span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="phase-group">
+    <div class="phase-header" onclick="this.parentElement.classList.toggle('open')"><span class="phase-num" style="background:var(--accent)">6</span> Present — Report results</div>
+    <div class="phase-steps">
+      <div class="sim-step"><div class="dot" style="background:var(--custom)"></div>
+        <div class="step-title" onclick="this.parentElement.classList.toggle('expanded')">6. Report + playbook update + summary</div>
+        <div class="step-body"><span class="tag-skill tag-drive">drive</span> <span class="tag-skill tag-playbook">playbook</span> <span class="tag-skill tag-user">user</span></div>
+        <div class="details">Proposes playbook updates if new patterns discovered. Generates HTML eval report. Updates CHANGELOG.md, STATUS.md. Presents recommendation.<br><br><span class="files"><span>→ Writes: eval-report.html, CHANGELOG.md, STATUS.md</span></span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="phase-group">
+    <div class="phase-header" onclick="this.parentElement.classList.toggle('open')"><span class="phase-num" style="background:var(--accent)">7</span> Hand Off — Promote or rollback</div>
+    <div class="phase-steps">
+      <div class="sim-step"><div class="dot" style="background:var(--custom)"></div>
+        <div class="step-title" onclick="this.parentElement.classList.toggle('expanded')">7a. Promote to baseline (if deploying to prod)</div>
+        <div class="step-body"><span class="tag-skill tag-drive">drive</span> <span class="tag-skill tag-test">adlc-test</span> <span class="tag-skill tag-user">user</span></div>
+        <div class="details">
+          The winning attempt becomes the new baseline. <b>Only way baselines are created.</b><br><br>
+          1. Confirm with user: "Attempt NN passed. Promote to baseline v[N+1]?"<br>
+          2. If QA-level eval (8x runs) doesn't exist yet, run one before promoting<br>
+          3. Copy winning attempt artifacts to baseline:<br><br>
+          <span class="files">
+            <span>→ evals/{agent}/baselines/v{N+1}/</span>
+            <span>&nbsp;&nbsp;instruction-{topic}.txt ← from attempts/NN/</span>
+            <span>&nbsp;&nbsp;raw-outputs.csv ← QA 8x run (NOT dev 4x)</span>
+            <span>&nbsp;&nbsp;metadata.json ← version, date, ticket, scoring version</span>
+            <span>&nbsp;&nbsp;eval-report.html</span>
+          </span><br>
+          <b>Mini iterations (attempts/) stay in the ticket as audit trail. Only the winner promotes.</b>
+        </div>
+      </div>
+      <div class="sim-step"><div class="dot" style="background:var(--gray-500)"></div>
+        <div class="step-title" onclick="this.parentElement.classList.toggle('expanded')">7b. Rollback (if not deploying yet)</div>
+        <div class="step-body"><span class="tag-skill tag-optimize">adlc-optimize</span> — restore baseline instruction to org</div>
+        <div class="details">Roll back org to previous baseline instruction. Leave winning attempt in ticket folder — ready for promotion later. Update STATUS.md with candidate attempt number.</div>
+      </div>
+      <div class="sim-step"><div class="dot" style="background:var(--accent)"></div>
+        <div class="step-title" onclick="this.parentElement.classList.toggle('expanded')">7c. Clean exit</div>
+        <div class="step-body"><span class="tag-skill tag-drive">drive</span> — remind deploy, note proctor/design review</div>
+        <div class="details">Remind user to invoke <code>adlc-deploy</code> separately. Note proctor flag strategy if recommended. Note design review items if tagged. Clean up state file.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</section>
+
+<!-- ==================== SECTION 3: CONNECTIONS ==================== -->
+<section id="connections">
+<h1>Connections</h1>
+<p class="subtitle">What calls what, and where artifacts land.</p>
+
+<div style="background:white;border:1px solid var(--gray-200);border-radius:0.75rem;padding:1.5rem;font-size:0.85rem;">
+  <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;margin-bottom:1rem;">
+    <span class="tag-skill tag-jira" style="font-size:0.8rem;">JIRA</span>
+    <span style="color:var(--gray-400);">→</span>
+    <span class="tag-skill tag-drive" style="font-size:0.8rem;">adlc-drive</span>
+    <span style="color:var(--gray-400);font-size:0.8rem;">(orchestrator)</span>
+  </div>
+  <div style="margin-left:1.5rem;">
+    <div style="display:flex;align-items:center;gap:0.5rem;margin:0.4rem 0;"><span style="color:var(--gray-400);">├→</span> <span class="tag-skill" style="font-size:0.75rem;background:#fdf2f8;border:1px solid #fbcfe8;color:#9d174d">adlc-ticket</span> <span style="font-size:0.8rem;color:var(--gray-500);">evaluate ticket readiness (also standalone)</span></div>
+    <div style="display:flex;align-items:center;gap:0.5rem;margin:0.4rem 0;"><span style="color:var(--gray-400);">├→</span> <span class="tag-skill tag-playbook" style="font-size:0.75rem;">playbook</span> <span style="font-size:0.8rem;color:var(--gray-500);">principles + rule levels</span></div>
+    <div style="display:flex;align-items:center;gap:0.5rem;margin:0.4rem 0;"><span style="color:var(--gray-400);">├→</span> <span class="tag-skill tag-discover" style="font-size:0.75rem;">adlc-discover</span> <span style="font-size:0.8rem;color:var(--gray-500);">resolve agent/topic IDs</span></div>
+    <div style="display:flex;align-items:center;gap:0.5rem;margin:0.4rem 0;"><span style="color:var(--gray-400);">├→</span> <span class="tag-skill tag-optimize" style="font-size:0.75rem;">adlc-optimize</span> <span style="font-size:0.8rem;color:var(--gray-500);">read/write instructions</span></div>
+    <div style="display:flex;align-items:center;gap:0.5rem;margin:0.4rem 0;"><span style="color:var(--gray-400);">├→</span> <span class="tag-skill tag-test" style="font-size:0.75rem;">adlc-test</span> <span style="font-size:0.8rem;color:var(--gray-500);">run evals, export CSV</span></div>
+    <div style="display:flex;align-items:center;gap:0.5rem;margin:0.4rem 0;"><span style="color:var(--gray-400);">├→</span> <span class="tag-skill tag-script" style="font-size:0.75rem;">generate_report.py</span> <span style="font-size:0.8rem;color:var(--gray-500);">regression + HTML report</span></div>
+    <div style="display:flex;align-items:center;gap:0.5rem;margin:0.4rem 0;"><span style="color:var(--gray-400);">└→</span> <span style="font-size:0.8rem;font-family:monospace;color:var(--gray-600);">evals/{agent}/tickets/{key}/</span> <span style="font-size:0.8rem;color:var(--gray-500);">all artifacts</span></div>
+  </div>
+</div>
+</section>
+
+</main>
+
+<script>
+// Folder toggle
+document.querySelectorAll('.folder > .node').forEach(n => n.addEventListener('click', () => n.parentElement.classList.toggle('open')));
+
+// Legend filter
+const af = new Set();
+function toggleFilter(t) {
+  const el = document.querySelector(`.legend-item[data-type="${t}"]`);
+  af.has(t) ? (af.delete(t), el.classList.remove('dimmed')) : (af.add(t), el.classList.add('dimmed'));
+  document.querySelectorAll('.node[data-type]').forEach(n => n.classList.toggle('dimmed', af.has(n.dataset.type)));
+}
+
+// Section switching
+function showSection(id, link) {
+  document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+  link.classList.add('active');
+  window.scrollTo(0, 0);
+}
+</script>
+
+</body>
+</html>

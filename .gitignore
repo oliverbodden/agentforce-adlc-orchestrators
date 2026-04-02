@@ -1,0 +1,35 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.cursor/projects/
+.vscode/
+
+# Credentials (never commit)
+mcp.json
+*.token
+.env
+
+# Salesforce
+.sfdx/
+.sf/
+force-app/
+
+# Node
+node_modules/
+
+# Python
+__pycache__/
+*.pyc
+
+# Temp files
+/tmp/
+*.tmp
+
+# Agent state (runtime, not committed)
+.adlc-drive-state.json
+
+# Raw eval data (large CSVs — keep in baselines, not at root)
+*.csv
+!evals/eval-config/utterances/**/*.yaml
