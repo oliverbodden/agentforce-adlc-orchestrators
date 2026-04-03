@@ -4,6 +4,93 @@ Living document. Updated as we learn from each ticket. The agent consults this d
 
 ---
 
+## Architecture: How Agentforce Works
+
+Understand this first. The rules below only make sense with this mental model.
+
+### The Runtime Flow
+
+```
+User utterance
+  → TOPIC SELECTION: OpenAI call with all topic classifications
+    → "Which topic should handle this?" → Returns topic name
+      → INSTRUCTION READING: OpenAI call with topic instructions + tool definitions
+        → "Which actions should I call?" → Returns action list
+          → ACTION EXECUTION: Call Flows/Apex/Prompt Templates/Retrievers
+            → Raw data returned into context window
+              → RESPONSE GENERATION: OpenAI call with instructions + tool data
+                → Answer generated
+                  → TRUSTED LAYER: Grounding/safety check (may loop 1-2x)
+                    → Response sent to user
+```
+
+### Key Concepts
+
+**Topics are sub-agents.** Each has its own classification (WHEN to call it), instructions (WHAT to do), and actions (HOW to get data). More topics = more maintenance + more classification risk. If classification fails, everything downstream fails — this is the #1 priority to get right.
+
+**Instructions are the presentation layer for action output.** Actions (Flows, Apex, Prompt Templates) return raw data — invoice details, job status, knowledge articles. Instructions tell the LLM how to format, frame, and present that data to the user. When editing instructions, you're changing the presentation of data that flows through actions. The actions don't change, but their output is referenced in templates within the instruction.
+
+**The runtime prompt includes (in order):** System rules (can't modify) → Scope → Your topic instructions → Tool/action definitions (auto-initialized with descriptions) → Action input/output field descriptions → Additional system rules. All of this goes to OpenAI as one prompt.
+
+**Action instructions exist at multiple levels:**
+- Action-level description: tells the LLM what the action does and when to use it
+- Input field descriptions: tells the LLM what data each field expects
+- Output field descriptions: tells the LLM what data comes back
+- Topic instruction references: your instructions that tell the LLM how to USE the action output
+
+All of these are injected into the same prompt. Contradictions between any of these levels cause inconsistent behavior.
+
+**Prompt templates are nested sub-prompts.** They're stateless — no conversation history, no context unless you pass it in. They can call RAG retrievers and other resources. Their output goes back into the main agent's context window. Latency risk: each sub-prompt adds a round trip.
+
+**Global instructions** are injected at runtime into every topic. Unclear exactly when they appear relative to topic instructions. Duplication between global and topic instructions is common as a workaround, but creates maintenance burden.
+
+**System instructions** are built-in and can't be modified. They sometimes conflict with your custom instructions. When debugging inconsistent behavior, check if a system rule is overriding your instruction.
+
+**The trusted layer** runs after the response is generated. It can loop 1-2 times, re-evaluating and modifying the output. You may see the response change in real time — that's the trusted layer iterating.
+
+### What This Means for Instruction Editing
+
+| When you change... | Also check... |
+|---|---|
+| Topic instructions | Action descriptions that reference the same behavior |
+| Response templates | Field references to action output (invoiceNumber, jobStatus, etc.) |
+| Terminology or tone | All levels — global, topic, action descriptions, closing lines |
+| Classification/description | Impact on ALL other topics' routing — utterances may shift |
+| Closing lines or openers | Content rules and validation checkpoints that enforce them |
+| Adding new content | Potential conflicts with system rules you can't see or modify |
+
+### Where Things Break
+
+| Failure point | What happens | How to detect |
+|---|---|---|
+| Topic classification | Wrong topic selected → wrong instructions run | Check trace: first step shows which topic was picked |
+| Action selection | Wrong action called or right action not called | Check trace: action step shows which tools were offered |
+| Contradicting instructions | Inconsistent responses (works 9/10, fails 1/10) | One instruction wins over another randomly — check ALL instruction levels |
+| Missing input data | Action called before required data is available | Action errors with null fields — check if instructions tell LLM to collect data first |
+| Trusted layer loop | Response changes after generation, adds latency | Trace shows multiple grounding steps |
+| Prompt template statelessness | Sub-prompt has no conversation context | Template gives generic answer — check if context was passed via input fields |
+
+### Instruction Analysis Checklist
+
+When you pull an instruction in Phase 3, extract and document:
+
+- [ ] **Structure:** What sections/phases does it have? (e.g., UNDERSTAND → GATHER → BUILD)
+- [ ] **Actions referenced:** Which actions does it call? What data do they return?
+- [ ] **Templates:** What response templates are prescribed? (exact openers, closings, formats)
+- [ ] **Content rules:** What MUST/NEVER directives exist? (e.g., "MUST include 'Here's what I found'")
+- [ ] **Terminology:** What terms are enforced? (e.g., "always say representative")
+- [ ] **Formatting:** Bold rules, list rules, link formatting, currency formatting
+- [ ] **Field references:** Which action output fields are referenced in templates? (e.g., `invoiceNumber`, `jobStatus`)
+- [ ] **Escalation logic:** When/how does it escalate? What triggers it?
+- [ ] **Guardrails:** What is the instruction told NOT to do?
+- [ ] **Reasoning scaffolding:** Store: blocks, checkpoints, consistency checks — mark these as load-bearing
+- [ ] **Conflicts with ticket:** Which of the above conflicts with what the ticket asks to change?
+- [ ] **Insertion points:** Where can new content be added without breaking existing logic?
+
+Present this analysis at the Phase 3 checkpoint. Do not proceed to Phase 4 without it.
+
+---
+
 ## How to Use This Playbook
 
 - **During drive Phase 5:** Before editing an instruction, review the relevant principles below.
@@ -107,6 +194,14 @@ Never compare new behavior against old criteria. Separate evals into: regression
 
 **[STRONG] Verify regressions are real before fixing them.**
 Deploy the original instruction and run the same test with the same context. If the baseline shows the same "regression," it's a data artifact, not an instruction problem. This check saved 3 wasted iterations in PROJ-345.
+
+**[STRONG] Routable ID handling.**
+Some topics need a MessagingSession routable ID for testing (topics that call account-specific actions like Invoice retrieval or Account lookup). RAG/knowledge-only topics (e.g., General FAQ) do NOT need one. When building test specs:
+- Ask the user for a fresh routable ID if the topic needs one — they expire hourly
+- `sf agent preview` does NOT support context variables — use Testing Center only
+- contextVariables in YAML must be array format: `[{name: "RoutableId", value: "0Mw..."}]` — NOT object format
+- If tests fail with session errors, the ID likely expired — ask for a new one
+- Different routable IDs give different account data — comparisons are only valid with the same ID
 
 **[STRONG] Multi-turn testing is required, not optional.**
 Current average conversation length is ~2.83 turns (expected to increase as agent improves). Every ticket needs at least 5 multi-turn test cases. Classify each requirement: first-response-only → single-turn, follow-up behavior → multi-turn, unclear → both.

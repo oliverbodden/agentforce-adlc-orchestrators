@@ -27,6 +27,15 @@ Drive is the **brain**, not the hands. It:
 - Pulls the user in when decisions are ambiguous
 - Stops when done (or when stuck)
 
+**⛔ TRANSPARENCY RULE: Commit to decisions in writing BEFORE acting on them.** For every significant decision (which phase to enter, which skill to call, what to change, what to test, whether to proceed or stop), write out:
+1. What you decided
+2. Why (your reasoning — not restating instructions, but explaining your logic)
+3. What you're about to do next
+
+This is visible to the user as you work. It serves two purposes: the user catches wrong assumptions in real time, and you can't contradict your own reasoning (if you wrote "ServiceStrategy = EXPLAIN" you can't then generate an ESCALATE response).
+
+**⛔ CHECKPOINT RULE: Phases that need user approval MUST pause and wait.** Phases that are just showing work can continue. The per-phase instructions below specify which checkpoints pause and which are output-only.
+
 **Delegation map:**
 
 | Capability | Delegated to |
@@ -51,43 +60,7 @@ Capture what the user wants to achieve.
 - JIRA ticket key/URL → auto-pull goal, requirements, attachments (see Section 4)
 - Open text → user describes the goal directly
 
-If no ticket is provided, ask the user to be specific:
-```
-To get started, I need either:
-1. A JIRA ticket key (e.g., ESCHAT-1234)
-2. A detailed description covering:
-   - What should change in the agent's behavior?
-   - Which agent and topic?
-   - Do you have examples of current behavior (good or bad)?
-   - Do you have a baseline eval CSV or test utterances?
-   - What does "done" look like?
-
-The more detail you provide upfront, the fewer back-and-forth questions we'll need.
-```
-
-Extract and confirm:
-
-| Field | Required | How to get it |
-|---|---|---|
-| **Goal** | Yes | What should be different after this work? |
-| **Goal type** | Yes | Classify from ticket/description (see below) |
-| **Agent name** | Yes | From ticket or ask |
-| **Agent version** | Yes | If ticket specifies, confirm. If ambiguous, ask. |
-| **Edit strategy** | Yes | Edit in-place or clone first? If ticket specifies, confirm. If ambiguous, ask. |
-| **Org alias** | Yes | From project config or ask |
-| **Attachments** | No | Baseline CSV, example conversations, data samples — from ticket or user |
-
-**Goal type:** Classify from the ticket description. Common types include compaction, fix, new experience, new data integration, investigation — but any goal is valid. If the ticket describes something new, create an appropriate type label and adapt the phases accordingly.
-
-**Key questions to determine how Phases 3-5 behave:**
-
-1. **Does the instruction get smaller, bigger, or restructured?** → Determines the edit approach.
-2. **Are there examples of bad experiences to fix?** → Look for attached conversations, screenshots, or failure descriptions in the ticket.
-3. **Does this introduce new data or APIs?** → Understand the schema and where it fits.
-4. **Do we need NEW test utterances, or can we reuse existing ones?** → If the goal changes behavior, we need utterances that exercise the new behavior. If it preserves behavior, existing utterances suffice for regression.
-5. **Is the problem clear enough to act on?** → If not, SPIKE first.
-
-Document the answers in the ticket folder's `goal.md`.
+If no ticket, ask the user to describe the goal in detail. Read the ticket or description and formulate your own understanding — different tickets need different questions.
 
 **1b2. Evaluate ticket readiness:**
 
@@ -97,79 +70,56 @@ Document the answers in the ticket folder's `goal.md`.
   If "Needs improvement", present gaps and ask user to fill them before proceeding.
   If "Ready" or "Ready with gap", continue.
 
-**1c. Resolve agent/topic metadata:**
+Create the ticket folder at `evals/{agent-name}/tickets/{ticket-key}-{short-description}/` and document your understanding in `goal.md` inside it. Look for existing agent folders under `evals/` to match the naming convention. ALL ticket artifacts go in this folder — never create ticket folders at the project root or anywhere else.
 
-→ Read `~/.cursor/skills/adlc-discover/SKILL.md`
-  You need: how to resolve agent and topic IDs for a Salesforce org (may or may not have an authoring bundle)
-  Execute those steps. Store: agent_api_name, plugin_definition_id, instruction_def_ids, has_authoring_bundle
-  These IDs are used throughout Phases 3-5.
+**⛔ CHECKPOINT (output only — no questions yet, no org queries):**
+- Your understanding of the goal (in your own words)
+- Ticket readiness assessment
+- What you know vs what you still need to find out
+- Any assumptions you're making and WHY
 
-Do NOT ask for acceptance criteria yet — that comes in Phase 3 after discovery.
+Then immediately proceed to Phase 2 — that's where questions happen.
 
 ### Phase 2: Refine
 
 Collaborative back-and-forth to ensure alignment before any work starts.
 
-**2a. Scope the change:**
+**Before asking questions, read the architecture section of `evals/prompt-engineering-playbook.md`.** Understand how the system works — topics, actions, instructions, templates, data flow — so your questions account for the full picture, not just the surface-level change.
 
-Discuss with the user until these are clear:
-- Which **topic(s)** are involved? (or is it a new topic?)
-- Which **actions** are affected? (existing, new, or broken?)
-- Which **prompt templates** or instructions need attention?
-- Which **channels/surfaces** does this affect? (chat, phone, messaging, FAQ)
-- Are there **dependencies** (new Flows, Apex, knowledge articles)?
+**Then refine through conversation.** Based on your Phase 1 understanding, the ticket content, and the architecture, formulate questions that cover what you need to know to proceed. Don't use a fixed list — reason from context.
 
-**2b. Early uncertainty check (SPIKE gate):**
+**SPIKE gate:** At any point during refinement, if the problem or solution is unclear, propose a SPIKE — a time-boxed investigation that produces findings, not changes. If SPIKE, present the investigation plan and stop. Do not proceed to Phase 3.
 
-Before investing in discovery, ask:
-
-> "Do we understand the problem AND the solution well enough to proceed?"
-
-| Answer | Action |
-|---|---|
-| Problem unclear | **SPIKE** — exit early with investigation plan (see SPIKE template below) |
-| Problem clear, solution unclear | **SPIKE** — focused on solution design |
-| Both clear enough | Proceed to Phase 3 |
-
-**SPIKE output (if triggered):**
-
-```markdown
-## SPIKE: <title>
-Goal: <what we need to learn>
-Time-box: <N days>
-Output: Findings that re-enter this flow at Phase 1
-Questions to answer:
-1. <specific question>
-2. <specific question>
-Suggested investigation:
-- <step — e.g., "run adlc-optimize Phase 1 to pull STDM sessions">
-- <step — e.g., "review Data Cloud for escalation patterns">
-```
-
-If SPIKE, present it and stop. Do not proceed to Phase 3.
-
-**2c. Confirm alignment:**
-
-Summarize what you understood back to the user. Get explicit confirmation before Phase 3.
-
-```
-Here's what I understand:
-  Goal: <goal>
-  Agent: <name> on <org>
-  Scope: <topics/actions affected>
-  Surfaces: <channels>
-  Dependencies: <any>
-
-Does this look right? Anything I'm missing?
-```
+**⛔ CHECKPOINT:** Present to user and wait for approval:
+- Your understanding of the full scope (in your own words)
+- What's in scope vs what you're explicitly NOT touching (and why)
+- SPIKE gate decision (proceed or investigate)
+- Any open questions or concerns
+- Any assumptions and WHY
 
 ### Phase 3: Discover
 
-Gather evidence about the current state. This phase establishes the **baseline** that Phase 5 will measure against.
+Gather evidence about the current state. This is where the machine starts investigating — Phases 1-2 were human conversation only.
 
-**3a. Pull current instructions + audit for conflicts:**
+**3a. Resolve agent/topic metadata:**
 
-Use the agent/topic IDs resolved in Phase 1 step 1c.
+→ Read `~/.cursor/skills/adlc-discover/SKILL.md`
+  You need: how to resolve agent and topic IDs for a Salesforce org (may or may not have an authoring bundle)
+  Use the agent name and topics confirmed by the user in Phase 2.
+  Store: agent_api_name, plugin_definition_id, instruction_def_ids, has_authoring_bundle
+
+If discovery reveals surprises (more instruction records than expected, unexpected topic structure, agent version mismatch), HITL — present findings and re-confirm scope with user before continuing.
+
+**3b. Pull current instructions + audit for conflicts:**
+
+Use the agent/topic IDs resolved in step 3a.
+
+**Save the original instruction text immediately** — before any analysis or editing. Store each instruction record as-is in the ticket folder:
+```
+evals/{agent}/tickets/{key}/originals/
+  {topic-name}-{record-id}.txt
+```
+These are the rollback point. Never modify the originals folder.
 
 → Read `~/.cursor/skills/adlc-optimize/SKILL.md`
   You need: how to read the current topic instruction from the org (for UI-built agents without authoring bundles, look for the Tooling API path)
@@ -178,17 +128,19 @@ Use the agent/topic IDs resolved in Phase 1 step 1c.
 Then audit: do any existing instructions contradict the new guidelines? Flag conflicts (e.g., existing instruction says "use Here's what I found" but ticket says remove it). Document conflicts in goal.md.
   Then continue to 3c.
 
-**3c. Check existing evals:**
+**3c. Establish baseline + build test utterances:**
 
-→ Read `~/.cursor/skills/adlc-test/SKILL.md`
-  You need: how to check if a Testing Center test suite already exists for this agent
-  Execute those steps. Note any recent results.
-  Then continue to 3d.
+Do NOT adopt pre-existing Testing Center test suites — build fresh from baseline utterances.
 
-**3d. Establish baseline + build test utterances:**
+**Baseline utterances live in ONE place only:** `evals/{agent}/baselines/{topic}/utterances.txt`
+Do NOT search Downloads, project root, old ticket folders, or anywhere else for baseline data. If the utterance file doesn't exist for a topic, ask the user to provide one or derive utterances from the instruction.
 
-**Combine ALL available sources (AND, not OR):**
-1. **Baseline CSV** (from user or run via `adlc-test`) → regression utterances
+**Baseline = utterances, not outputs.** Always run utterances against the live instruction to generate fresh outputs. Never reuse old output CSVs as baselines — org state changes make them invalid.
+
+**Context variables check (HARD GATE):** Does this topic need session context (e.g., linked variables, account data, user identity) for testing? Ask the user — they know which topics need context vs which are self-contained. If context is needed, **STOP and ask the user what variables are required and their current values.** Do NOT proceed with testing if a topic needs context and you don't have it — results will be invalid. See playbook testing section for details.
+
+**Combine ALL available sources for the test spec (AND, not OR):**
+1. **Baseline utterances** (from `baselines/{topic}/utterances.txt`) → regression tests
 2. **Ticket attachments** → examples of bad/new behavior
 3. **Derived from instruction + requirements** → edge cases, gaps
 
@@ -197,7 +149,7 @@ Then audit: do any existing instructions contradict the new guidelines? Flag con
 **Multi-turn awareness:** Consider if the goal changes behavior across turns. For each requirement, classify:
 - "First response changes" → single-turn test
 - "Follow-up behavior changes" → multi-turn test (use `conversationHistory` in YAML spec)
-- Topics that naturally require multiple turns (e.g., invoice selection → explanation) need multi-turn even for single-turn changes
+- Topics that naturally require multiple turns (e.g., selecting an item then explaining it) need multi-turn even for single-turn changes
 
 **Guardrails:**
 - Minimum 5 multi-turn test cases per ticket (catches conversation continuity issues)
@@ -209,9 +161,8 @@ Then audit: do any existing instructions contradict the new guidelines? Flag con
 3. **New ticket criteria** — entirely new metrics from requirements
 
 Store regression spec and capability spec separately in `specs/`.
-  Then continue to 3e.
 
-**3e. Analyze baseline and establish acceptance criteria:**
+**3d. Analyze baseline and establish acceptance criteria:**
 
 Before proposing criteria, analyze the baseline CSV to understand current metrics:
 - Run `python3 evals/scripts/generate_report.py --prev <baseline.csv> --new <baseline.csv> --output /tmp/baseline-analysis.html` (comparing baseline to itself gives you the feature profile)
@@ -234,7 +185,21 @@ Document the criteria in the ticket folder's `config.json`.
 
 **⚠️ HITL required** when existing eval criteria are being modified or flipped. The user must confirm that changing what "good" means was intentional — product or dev may not have reviewed the implications of flipping a metric.
 
-Get explicit user confirmation before proceeding.
+**⛔ CHECKPOINT — do NOT present until ALL of the following are complete:**
+- 3a: Metadata resolved ✓
+- 3b: Instructions pulled, originals saved, analysis checklist done ✓
+- 3c: Test specs built (utterances + coverage check + multi-turn) ✓
+- 3d: Baseline run, metrics analyzed, acceptance criteria proposed ✓
+
+**Then present to user and wait for approval:**
+- Instruction analysis per topic (from checklist)
+- Conflicts found
+- Test specs built (utterance counts, multi-turn count, coverage gaps)
+- Baseline metrics (from fresh run, not stale data)
+- Eval criteria split: unchanged / modified / new
+- Proposed acceptance thresholds
+- Exit ramps (anything out of scope)
+- Assumptions and WHY
 
 ### Phase 4: Plan
 
@@ -271,35 +236,17 @@ Scale testing to the change scope. These are starting guidelines — adjust base
 
 **4c. Generate plan options:**
 
-For changes that could be implemented multiple ways (e.g., global vs per-topic, merge vs separate), generate 2-3 plan options:
+For changes with multiple implementation approaches, generate 2-3 plan options with pros/cons/risks. Recommend one. If the change affects architecture, flag for HITL. If eval fails on one approach, try the next.
 
-```markdown
-## Plan Options
-
-### Option A: <approach name>
-- Strategy: <e.g., add guidelines to global instructions>
-- Pros: <e.g., single source of truth, no duplication>
-- Cons: <e.g., may not be granular enough per topic>
-- Risk: <impact on architecture>
-
-### Option B: <approach name>
-- Strategy: <e.g., per-topic instructions>
-- Pros/Cons/Risk...
-
-### Option C: <hybrid>
-...
-
-### Recommended: <which option and why>
-
-Classification: [SHIP IT | PROCTOR | DESIGN REVIEW]
-Risk score: N/5
-Test Matrix: <N tests, threshold, max iterations>
-Rollback: <how to undo>
-```
-
-The AI evaluates the impact of each option. If the change affects architecture (e.g., moving logic between global and topic-level), flag for HITL. Otherwise, AI can pick the best option, execute it, and let eval results determine if the approach works. If eval fails, try next option.
-
-Get user approval on the recommended plan before executing.
+**⛔ CHECKPOINT:** Present to user and wait for approval:
+- Plan options (2-3 if multiple approaches exist) with pros/cons
+- Recommended option and WHY
+- Triage classification (ship it / proctor / design review)
+- Execution order (which topics/changes first)
+- Test matrix (utterance counts, multi-turn ratio, run count, pass threshold)
+- Rollback strategy
+- Estimated instruction size change (% increase/decrease)
+- Any risks or concerns
 
 ### Phase 5: Execute
 
@@ -312,7 +259,7 @@ FOR each iteration (max N per Phase 4b):
 
   1. CHANGE — Edit instruction based on the goal
      - Consult evals/prompt-engineering-playbook.md for editing principles and rule levels
-     - Refer to the key questions answered in Phase 1 and documented in goal.md
+     - Refer to the goal and scope documented in goal.md
      - Make the targeted edit (reduce, modify, add, or restructure — whatever the goal requires)
      - If ADDING content: check % increase vs current instruction size. If exceeding playbook guidelines, pause and get user approval before proceeding.
      - Save new version to attempts/NN-name/instruction.txt
@@ -348,22 +295,7 @@ FOR each iteration (max N per Phase 4b):
      - Ask user: continue with more iterations, adjust criteria, or abandon?
 ```
 
-**How delegation works in this skill:**
-
-When a step says "Read ~/.cursor/skills/adlc-X/SKILL.md", do this:
-1. Read the skill file
-2. Find the section that matches the stated need (use reasoning — don't scan the whole file if you can identify the right section quickly)
-3. Follow those instructions to complete the step
-4. Return to the drive flow and continue with the next step
-
-Sub-skills are the source of truth for HOW to do things. Drive decides WHAT and WHEN.
-
-If you already read a sub-skill earlier in this session, reuse what you learned — don't re-read the full file. Only re-read if you need a different section than before.
-
-**Shared script** (regression comparison — not a sub-skill):
-- `evals/scripts/generate_report.py` — run regression comparison, generate HTML report
-
-**Principles and learnings are in `evals/prompt-engineering-playbook.md`.** Consult it before editing instructions. The playbook has rule levels (HARD/STRONG/SOFT) and tie-breaker guidance for when ticket requirements conflict with principles.
+Sub-skills are the source of truth for HOW. Drive decides WHAT and WHEN. When a step says "Read adlc-X/SKILL.md", read it, find the relevant section, execute, return here. Consult `evals/prompt-engineering-playbook.md` before editing instructions.
 
 **Checkpointing:**
 
@@ -371,13 +303,7 @@ After each iteration, save state so progress isn't lost if the session breaks:
 
 Save state to `.adlc-drive-state.json` in the project root. Include at minimum: goal, agent, org, current phase, iteration count, changes made so far, acceptance criteria, and status. Add whatever metrics are relevant for this specific goal — don't use a fixed schema.
 
-**When to pull the user in:**
-
-- Pass rate is between 80-90% (close but not meeting threshold)
-- A previously passing test now fails (regression trade-off)
-- The fix for issue A breaks issue B
-- Three consecutive iterations without improvement
-- Bulk eval results are mixed (some dimensions improved, others regressed)
+Pull the user in when results are ambiguous, regressions appear, or you're stuck after 3 iterations.
 
 ### Phase 6: Present
 
@@ -416,6 +342,15 @@ After acceptance criteria are met (or max iterations reached):
 - Ticket folder: <path>
 ```
 
+**⛔ CHECKPOINT:** Present to user and wait for approval:
+- All changes made (what was edited, in which instruction records)
+- Test results: baseline vs final for each metric
+- Metrics that improved, held, or regressed
+- Whether acceptance criteria were met (per criterion)
+- Remaining risks or known gaps
+- Recommendation (deploy / proctor / hold / needs more work) and WHY
+- Proposed playbook updates (if new patterns discovered)
+
 ### Phase 7: Hand Off
 
 Clean exit. Two paths depending on whether this goes to prod.
@@ -442,7 +377,16 @@ The winning attempt becomes the new baseline. This is the ONLY way baselines are
 - Leave the winning attempt in the ticket folder — it's ready for promotion later
 - Note in STATUS.md which attempt is the candidate
 
-**7c. Always:**
+**7c. Update baseline utterances:**
+
+Review if the ticket introduced behavior not covered by existing baseline utterances:
+- Did this ticket add new capabilities that need new test utterances?
+- Were new utterances created during Phase 3d (capability spec) that should become permanent?
+- Did requirements change what "good" looks like, making some existing utterances obsolete?
+
+If yes, propose additions/removals to the baseline utterance list (`evals/{agent}/baselines/{topic}/utterances.txt`). Get user approval before modifying.
+
+**7d. Always:**
 
 - Confirm the user has reviewed the Phase 6 summary
 - If proctor was recommended, note the flag strategy
@@ -496,49 +440,6 @@ Uses the official Atlassian MCP server (`user-atlassian`) via OAuth SSO. No cred
 
 **⛔ NEVER call these tools:** `createJiraIssue`, `editJiraIssue`, `addCommentToJiraIssue`, `transitionJiraIssue`, `addWorklogToJiraIssue`, `createIssueLink`. This skill is read-only.
 
-### Usage in Phase 1 (Goal)
+### Usage
 
-When user provides a JIRA ticket (URL or key):
-
-```
-adlc-drive ESCHAT-1234
-adlc-drive https://indeed.atlassian.net/browse/ESCHAT-1234
-```
-
-1. Extract the ticket key (e.g., `ESCHAT-1234`)
-2. Call `getJiraIssue` with `cloudId` and `issueIdOrKey`
-3. Extract and map fields:
-
-| JIRA field | Maps to |
-|---|---|
-| `fields.summary` | Goal title |
-| `fields.description` | Goal details, requirements |
-| `fields.issuetype.name` | Goal type hint (Story/Bug/Task) |
-| `fields.status.name` | Current status |
-| `fields.assignee.displayName` | Owner (informational) |
-| `fields.priority` (if present) | Urgency |
-| `fields.labels` (if present) | Affected surfaces, topic hints |
-
-4. Parse description for acceptance criteria (look for "Requirements", "AC", "Acceptance Criteria" headings)
-5. Present the normalized goal to user for confirmation (Phase 1 output)
-6. Use the ticket key as the eval ticket folder name: `tickets/ESCHAT-1234-<short-description>/`
-
-### Authentication
-
-If `getJiraIssue` fails with auth error, call `mcp_auth` on the `user-atlassian` server to trigger browser OAuth flow. The user authenticates via SSO — no tokens stored.
-
-```
-CallMcpTool(server="user-atlassian", toolName="mcp_auth", arguments={})
-```
-
-### Example
-
-```
-User: "adlc-drive PROJ-123"
-
-→ getAccessibleAtlassianResources() → get cloudId
-→ getJiraIssue(cloudId=<discovered>, issueIdOrKey="PROJ-123")
-→ Extract: goal, requirements, attachments
-→ Present to user for confirmation
-→ Proceed to Phase 2 (Refine)
-```
+When user provides a JIRA key or URL, call `getJiraIssue` with the discovered `cloudId` and extract goal, requirements, and attachments from the ticket fields. If auth fails, call `mcp_auth` to trigger browser SSO. Use the ticket key for the eval folder name.

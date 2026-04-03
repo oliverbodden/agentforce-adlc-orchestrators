@@ -313,72 +313,78 @@
 <div class="sim-timeline">
 
   <div class="phase-group">
-    <div class="phase-header" onclick="this.parentElement.classList.toggle('open')"><span class="phase-num" style="background:var(--accent)">1</span> Goal — Capture what to achieve</div>
+    <div class="phase-header" onclick="this.parentElement.classList.toggle('open')"><span class="phase-num" style="background:var(--accent)">1</span> Goal — Understand the ticket (no user interaction)</div>
     <div class="phase-steps">
       <div class="sim-step"><div class="dot" style="background:var(--accent)"></div>
         <div class="step-title" onclick="this.parentElement.classList.toggle('expanded')">1a. Parse input</div>
-        <div class="step-body">User provides JIRA ticket key or describes the goal in free text. <span class="tag-skill tag-drive">drive</span></div>
-        <div class="details">Drive extracts the ticket key or parses the description. If no ticket, prompts user for specifics: what should change, which agent/topic, examples, baseline data.</div>
+        <div class="step-body"><span class="tag-skill tag-drive">drive</span> — extract ticket key or read free text</div>
+        <div class="details">Drive extracts the ticket key or reads the description. No user interaction yet — just intake.</div>
       </div>
       <div class="sim-step"><div class="dot" style="background:var(--accent)"></div>
         <div class="step-title" onclick="this.parentElement.classList.toggle('expanded')">1b. Pull JIRA ticket</div>
-        <div class="step-body"><span class="tag-skill tag-jira">user-atlassian MCP</span> → <code>getJiraIssue(cloudId, issueIdOrKey)</code></div>
-        <div class="details">Calls <code>getAccessibleAtlassianResources</code> to discover cloud ID (first use only). Then fetches ticket: summary, description, AC, labels, priority. If auth fails, calls <code>mcp_auth</code> to trigger browser SSO.<br><br><span class="files"><span>→ JIRA fields mapped to goal structure</span></span></div>
+        <div class="step-body"><span class="tag-skill tag-jira">user-atlassian MCP</span> → <code>getJiraIssue</code></div>
+        <div class="details">Fetch ticket content: summary, description, AC, labels, priority. If auth fails, call <code>mcp_auth</code> for browser SSO.</div>
       </div>
       <div class="sim-step"><div class="dot" style="background:var(--custom)"></div>
         <div class="step-title" onclick="this.parentElement.classList.toggle('expanded')">1b2. Evaluate ticket readiness</div>
-        <div class="step-body"><span class="tag-skill" style="background:#fdf2f8;border:1px solid #fbcfe8;color:#9d174d">adlc-ticket</span> — score against 5 criteria, scope check, eval impact</div>
-        <div class="details">Reads <code>adlc-ticket/SKILL.md</code>. Evaluates: (1) What should change? (2) Which agent/topic? (3) Acceptance criteria? (4) Baseline? (5) Examples?<br><br>
-          <b>Verdicts:</b> Ready (4-5/5) → proceed. Needs improvement (3/5) → ask user to fill gaps. Not ready (≤2/5) → suggest SPIKE or rewrite. Out of scope → stop.<br><br>
-          Also checks: does this ticket change what "good" means? Flags eval criteria that would flip.<br><br>
-          <b>Can also be used standalone:</b> <code>adlc-ticket ESCHAT-1234</code> or <code>adlc-ticket "I need to update tone for FAQ"</code>
-        </div>
-      </div>
-      <div class="sim-step"><div class="dot" style="background:var(--modified)"></div>
-        <div class="step-title" onclick="this.parentElement.classList.toggle('expanded')">1c. Resolve agent/topic in org</div>
-        <div class="step-body"><span class="tag-skill tag-discover">adlc-discover</span> — SOQL queries for BotDefinition, GenAiPluginDefinition, GenAiPluginInstructionDef</div>
-        <div class="details">Reads <code>adlc-discover/SKILL.md</code>. Finds the section about resolving agent/topic IDs via SOQL. Runs queries against the org.<br><br><b>Stores:</b> agent_api_name, plugin_definition_id, instruction_def_ids, has_authoring_bundle<br><span class="files"><span>→ Uses: sf data query -o &lt;org&gt;</span></span></div>
+        <div class="step-body"><span class="tag-skill" style="background:#fdf2f8;border:1px solid #fbcfe8;color:#9d174d">adlc-ticket</span> — assess if ticket has enough context</div>
+        <div class="details">Reads <code>adlc-ticket/SKILL.md</code>. Scores readiness. Flags gaps, scope issues, eval criteria impact. Also usable standalone.</div>
       </div>
       <div class="sim-step"><div class="dot" style="background:var(--accent)"></div>
-        <div class="step-title" onclick="this.parentElement.classList.toggle('expanded')">1d. Classify goal + key questions</div>
-        <div class="step-body"><span class="tag-skill tag-drive">drive</span> — answers 5 key questions, documents in goal.md</div>
-        <div class="details">1. Does instruction get smaller/bigger/restructured?<br>2. Are there bad experience examples?<br>3. New data or APIs?<br>4. Need new test utterances?<br>5. Problem clear enough?<br><br><span class="files"><span>→ Writes: evals/{agent}/tickets/{key}/goal.md</span></span></div>
+        <div class="step-title" onclick="this.parentElement.classList.toggle('expanded')">⛔ Checkpoint: present understanding (output only)</div>
+        <div class="step-body"><span class="tag-skill tag-drive">drive</span> — NO questions, NO org queries. Just show what you understood.</div>
+        <div class="details">Present: goal in own words, ticket readiness, what you know vs what you need to find out, assumptions. <b>No user interaction</b> — this is the agent showing its homework. Questions come in Phase 2.<br><br>
+          <b>Do NOT:</b> query the org, infer agent/version from project files, use fixed checklists.<br><br>
+          <span class="files"><span>→ Writes: evals/{agent}/tickets/{key}/goal.md</span></span></div>
       </div>
     </div>
   </div>
 
   <div class="phase-group">
-    <div class="phase-header" onclick="this.parentElement.classList.toggle('open')"><span class="phase-num" style="background:var(--accent)">2</span> Refine — Align with user before work starts</div>
+    <div class="phase-header" onclick="this.parentElement.classList.toggle('open')"><span class="phase-num" style="background:var(--accent)">2</span> Refine — Ask questions, align with user</div>
     <div class="phase-steps">
       <div class="sim-step"><div class="dot" style="background:var(--accent)"></div>
-        <div class="step-title" onclick="this.parentElement.classList.toggle('expanded')">2a-c. Scope, SPIKE gate, confirm alignment</div>
-        <div class="step-body"><span class="tag-skill tag-drive">drive</span> <span class="tag-skill tag-user">user</span> — collaborative discussion</div>
-        <div class="details">Discusses scope with user: topics, actions, surfaces, dependencies. Checks if problem/solution are clear enough (SPIKE gate). Presents alignment summary, gets explicit confirmation.<br><br>If SPIKE → exit with investigation plan. Otherwise proceed.</div>
+        <div class="step-title" onclick="this.parentElement.classList.toggle('expanded')">2a. Read architecture + formulate questions</div>
+        <div class="step-body"><span class="tag-skill tag-playbook">playbook</span> <span class="tag-skill tag-drive">drive</span> — informed by system architecture</div>
+        <div class="details">Reads the architecture section of <code>prompt-engineering-playbook.md</code> to understand how topics, actions, templates, and data flow work. Then formulates questions based on the ticket + architecture knowledge. No fixed question list — reasons from context.<br><br>
+          At minimum asks: which agent, which version, which org, edit strategy. But adds architecture-informed questions like "do actions feed data into the templates we're changing?"</div>
+      </div>
+      <div class="sim-step"><div class="dot" style="background:var(--accent)"></div>
+        <div class="step-title" onclick="this.parentElement.classList.toggle('expanded')">2b. Discuss scope + SPIKE gate</div>
+        <div class="step-body"><span class="tag-skill tag-drive">drive</span> <span class="tag-skill tag-user">user</span> — back-and-forth conversation</div>
+        <div class="details">Refine scope through conversation. If problem or solution is unclear at any point → propose a SPIKE (time-boxed investigation). If SPIKE, present plan and stop.</div>
+      </div>
+      <div class="sim-step"><div class="dot" style="background:var(--accent)"></div>
+        <div class="step-title" onclick="this.parentElement.classList.toggle('expanded')">⛔ Checkpoint: scope confirmed</div>
+        <div class="step-body"><span class="tag-skill tag-drive">drive</span> — full scope, in/out, SPIKE decision, assumptions</div>
+        <div class="details">Present: scope in own words, what's in vs out and why, SPIKE gate decision, open questions, assumptions. Wait for user approval before Phase 3.</div>
       </div>
     </div>
   </div>
 
   <div class="phase-group">
-    <div class="phase-header" onclick="this.parentElement.classList.toggle('open')"><span class="phase-num" style="background:var(--accent)">3</span> Discover — Establish baseline</div>
+    <div class="phase-header" onclick="this.parentElement.classList.toggle('open')"><span class="phase-num" style="background:var(--accent)">3</span> Discover — Investigate the org</div>
     <div class="phase-steps">
       <div class="sim-step"><div class="dot" style="background:var(--modified)"></div>
-        <div class="step-title" onclick="this.parentElement.classList.toggle('expanded')">3a. Pull current instruction from org</div>
-        <div class="step-body"><span class="tag-skill tag-optimize">adlc-optimize</span> — reads GenAiPluginInstructionDef via SOQL or Tooling API</div>
-        <div class="details">Reads <code>adlc-optimize/SKILL.md</code>. Finds section about reading instructions for UI-built agents. Queries instruction text.<br><br><b>Stores:</b> instruction text, word count<br><span class="files"><span>→ Saves: evals/{agent}/tickets/{key}/attempts/00-baseline/instruction.txt</span></span></div>
+        <div class="step-title" onclick="this.parentElement.classList.toggle('expanded')">3a. Resolve agent/topic metadata</div>
+        <div class="step-body"><span class="tag-skill tag-discover">adlc-discover</span> — SOQL queries using agent name confirmed in Phase 2</div>
+        <div class="details">First org query. Uses agent name and topics confirmed by user. If surprises found (unexpected records, version mismatch), HITL before continuing.<br><br>
+          <span class="files"><span>→ Stores: agent_api_name, plugin_definition_id, instruction_def_ids</span></span></div>
       </div>
       <div class="sim-step"><div class="dot" style="background:var(--modified)"></div>
-        <div class="step-title" onclick="this.parentElement.classList.toggle('expanded')">3c-d. Baseline eval + build test utterances</div>
-        <div class="step-body"><span class="tag-skill tag-test">adlc-test</span> Mode B — combine ALL sources, coverage check, multi-turn awareness</div>
-        <div class="details">Combine all utterance sources (AND not OR):<br>
-          1. Baseline CSV (regression) + 2. Ticket attachments (examples) + 3. Derived from instruction (gaps)<br><br>
-          <b>Coverage check:</b> Every requirement must have at least one test utterance.<br>
-          <b>Multi-turn:</b> If goal changes behavior across turns, build conversation history specs. Min 5 multi-turn tests. Max ~50 utterances per ticket (HITL if more needed).<br><br>
-          <span class="files"><span>→ Saves: specs/ (regression + capability specs separately)</span></span></div>
+        <div class="step-title" onclick="this.parentElement.classList.toggle('expanded')">3b. Pull + analyze instructions</div>
+        <div class="step-body"><span class="tag-skill tag-optimize">adlc-optimize</span> + <span class="tag-skill tag-playbook">playbook checklist</span></div>
+        <div class="details">Pull instruction text via Tooling API. Then analyze using the playbook's Instruction Analysis Checklist: structure, actions referenced, templates, content rules, terminology, formatting, field references, escalation logic, guardrails, reasoning scaffolding, conflicts with ticket, insertion points.</div>
+      </div>
+      <div class="sim-step"><div class="dot" style="background:var(--modified)"></div>
+        <div class="step-title" onclick="this.parentElement.classList.toggle('expanded')">3c-d. Baseline utterances + test spec</div>
+        <div class="step-body"><span class="tag-skill tag-test">adlc-test</span> — from baselines/ only, always run fresh, multi-turn aware</div>
+        <div class="details">Utterances from <code>baselines/{topic}/utterances.txt</code> ONLY. Never reuse old output CSVs. Combine with ticket attachments and derived utterances. Coverage check. Min 5 multi-turn. Max ~50 per ticket.</div>
       </div>
       <div class="sim-step"><div class="dot" style="background:var(--accent)"></div>
-        <div class="step-title" onclick="this.parentElement.classList.toggle('expanded')">3e. Analyze baseline + set acceptance criteria</div>
-        <div class="step-body"><span class="tag-skill tag-drive">drive</span> <span class="tag-skill tag-script">generate_report.py</span> <span class="tag-skill tag-user">user</span></div>
-        <div class="details">Runs <code>generate_report.py</code> to discover feature profile. Proposes acceptance criteria based on goal. User confirms or adjusts.<br><br><span class="files"><span>→ Writes: config.json (acceptance criteria)</span></span></div>
+        <div class="step-title" onclick="this.parentElement.classList.toggle('expanded')">⛔ Checkpoint: discovery findings</div>
+        <div class="step-body"><span class="tag-skill tag-drive">drive</span> <span class="tag-skill tag-user">user</span> — instruction analysis, conflicts, criteria</div>
+        <div class="details">Present: instruction summary per topic, conflicts found, insertion points, baseline utterance counts, eval criteria (unchanged/modified/new), acceptance thresholds, exit ramps if any. Wait for approval.</div>
       </div>
     </div>
   </div>
