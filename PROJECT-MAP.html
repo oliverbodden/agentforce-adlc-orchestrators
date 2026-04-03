@@ -101,6 +101,20 @@
   .sim-step .files { margin-top: 0.35rem; font-size: 0.75rem; font-family: 'SF Mono', monospace; color: var(--gray-500); }
   .sim-step .files span { display: block; padding: 1px 0; }
 
+  /* LIFECYCLE CARD COLLAPSE */
+  .lc-card { background: white; border: 1px solid var(--gray-200); border-radius: 0.75rem; overflow: hidden; }
+  .lc-card.hitl { background: var(--gray-100); margin-left: 2rem; }
+  .lc-card.entry { border-left: 4px solid #16a34a; }
+  .lc-card.exit { border-left: 4px solid #dc2626; }
+  .lc-card .lc-header { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1.25rem; cursor: pointer; user-select: none; transition: background 0.15s; }
+  .lc-card .lc-header:hover { background: var(--gray-50); }
+  .lc-card.hitl .lc-header { gap: 0.5rem; padding: 0.65rem 1.25rem; }
+  .lc-card .lc-header::after { content: '▸'; font-size: 0.8rem; color: var(--gray-400); margin-left: auto; }
+  .lc-card.open .lc-header::after { content: '▾'; }
+  .lc-card.open .lc-header { border-bottom: 1px solid var(--gray-200); }
+  .lc-card .lc-body { display: none; padding: 0.75rem 1.25rem; }
+  .lc-card.open .lc-body { display: block; }
+
   /* STEP TOGGLE */
   .sim-step .details { display: none; margin-top: 0.5rem; padding: 0.5rem 0.75rem; background: var(--gray-50); border-radius: 0.35rem; border: 1px solid var(--gray-200); }
   .sim-step.expanded .details { display: block; }
@@ -152,13 +166,15 @@
 <!-- Entry point -->
 <h2 style="margin-top:1.5rem;margin-bottom:0.25rem;font-size:0.85rem;color:var(--gray-500);text-transform:uppercase;letter-spacing:0.08em;">Entry Point</h2>
 <div style="display:flex;flex-direction:column;gap:0.75rem;margin:0.5rem 0 1.5rem 0;">
-  <div style="background:white;border:1px solid var(--gray-200);border-left:4px solid #16a34a;border-radius:0.75rem;padding:1rem 1.25rem;">
-    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;">
+  <div class="lc-card entry" onclick="this.classList.toggle('open')">
+    <div class="lc-header">
       <span style="font-size:1.05rem;font-weight:700;">Creation Phase</span>
       <span style="font-size:0.7rem;padding:2px 8px;border-radius:999px;background:#fef2f2;color:#991b1b;font-weight:600;">Not started</span>
     </div>
-    <p style="font-size:0.85rem;color:var(--gray-600);margin-bottom:0.5rem;">Triggered by a business decision, human chat volume analysis, or an Analysis finding that requires a net-new agent. Handles requirements, topic architecture, action/data flow setup, and scaffolding (Flows/Apex) — then hands off to Drive for iterative instruction writing and testing.</p>
-    <div style="font-size:0.8rem;"><strong>Skill:</strong> <code>adlc-create</code> <span style="color:var(--gray-500);">— setup + architecture, then delegates to adlc-drive</span></div>
+    <div class="lc-body">
+      <p style="font-size:0.85rem;color:var(--gray-600);margin-bottom:0.5rem;">Triggered by a business decision, human chat volume analysis, or an Analysis finding that requires a net-new agent. Handles requirements, topic architecture, action/data flow setup, and scaffolding (Flows/Apex) — then hands off to Drive for iterative instruction writing and testing.</p>
+      <div style="font-size:0.8rem;"><strong>Skill:</strong> <code>adlc-create</code> <span style="color:var(--gray-500);">— setup + architecture, then delegates to adlc-drive</span></div>
+    </div>
   </div>
 </div>
 
@@ -167,66 +183,78 @@
 <div style="display:flex;flex-direction:column;gap:0.75rem;margin:0.5rem 0 1.5rem 0;">
 
   <!-- Analysis -->
-  <div style="background:white;border:1px solid var(--gray-200);border-radius:0.75rem;padding:1rem 1.25rem;">
-    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;">
+  <div class="lc-card" onclick="this.classList.toggle('open')">
+    <div class="lc-header">
       <span style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:var(--accent);color:white;font-size:0.8rem;font-weight:700;flex-shrink:0;">1</span>
       <span style="font-size:1.05rem;font-weight:700;">Analysis Phase</span>
       <span style="font-size:0.7rem;padding:2px 8px;border-radius:999px;background:#fef2f2;color:#991b1b;font-weight:600;">Not started</span>
     </div>
-    <p style="font-size:0.85rem;color:var(--gray-600);margin-bottom:0.5rem;">Reviews production session traces, CSAT data, business goals, and user feedback to identify what's working and what needs improvement. Produces prioritized findings that feed into ticket creation — or flags the need for a new agent (exits to Creation).</p>
-    <div style="font-size:0.8rem;"><strong>Skill:</strong> <code>adlc-analysis</code> <span style="color:var(--gray-500);">— coordinates adlc-optimize (observation), testing-analysis, and external data review</span></div>
+    <div class="lc-body">
+      <p style="font-size:0.85rem;color:var(--gray-600);margin-bottom:0.5rem;">Reviews production session traces, CSAT data, business goals, and user feedback to identify what's working and what needs improvement. Produces prioritized findings that feed into ticket creation — or flags the need for a new agent (exits to Creation).</p>
+      <div style="font-size:0.8rem;"><strong>Skill:</strong> <code>adlc-analysis</code> <span style="color:var(--gray-500);">— coordinates adlc-optimize (observation), testing-analysis, and external data review</span></div>
+    </div>
   </div>
 
   <!-- HITL: Product Prioritization -->
-  <div style="background:var(--gray-100);border:1px solid var(--gray-200);border-radius:0.75rem;padding:0.75rem 1.25rem;margin-left:2rem;">
-    <div style="display:flex;align-items:center;gap:0.5rem;">
+  <div class="lc-card hitl" onclick="this.classList.toggle('open')">
+    <div class="lc-header">
       <span style="font-size:0.85rem;font-weight:600;">⛔ HITL — Product Prioritization</span>
       <span style="font-size:0.7rem;padding:2px 8px;border-radius:999px;background:#f0fdf4;color:#166534;font-weight:600;">Ready</span>
     </div>
-    <p style="font-size:0.8rem;color:var(--gray-600);margin-top:0.25rem;">Product reviews analysis findings, decides priority, and creates drive-ready tickets. Scores ticket completeness (requirements, acceptance criteria, examples, baseline) and flags scope or eval impact before Drive begins.</p>
-    <div style="font-size:0.8rem;"><strong>Skill:</strong> <code>adlc-ticket</code> <span style="color:var(--gray-500);">— ticket readiness scoring and authoring assistant</span></div>
+    <div class="lc-body">
+      <p style="font-size:0.85rem;color:var(--gray-600);margin-bottom:0.5rem;">Product reviews analysis findings, decides priority, and creates drive-ready tickets. Scores ticket completeness (requirements, acceptance criteria, examples, baseline) and flags scope or eval impact before Drive begins.</p>
+      <div style="font-size:0.8rem;"><strong>Skill:</strong> <code>adlc-ticket</code> <span style="color:var(--gray-500);">— ticket readiness scoring and authoring assistant</span></div>
+    </div>
   </div>
 
   <!-- Drive -->
-  <div style="background:white;border:1px solid var(--gray-200);border-radius:0.75rem;padding:1rem 1.25rem;">
-    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;">
+  <div class="lc-card" onclick="this.classList.toggle('open')">
+    <div class="lc-header">
       <span style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:var(--accent);color:white;font-size:0.8rem;font-weight:700;flex-shrink:0;">2</span>
       <span style="font-size:1.05rem;font-weight:700;">Drive Phase</span>
       <span style="font-size:0.7rem;padding:2px 8px;border-radius:999px;background:#f0fdf4;color:#166534;font-weight:600;">Ready</span>
     </div>
-    <p style="font-size:0.85rem;color:var(--gray-600);margin-bottom:0.5rem;">Takes a ticket or goal, discovers the current agent state, plans the approach, executes instruction changes iteratively with testing at each step, and presents verified results. The core optimization engine — used by both existing agents and new agents coming out of Creation.</p>
-    <div style="font-size:0.8rem;"><strong>Skill:</strong> <code>adlc-drive</code> <span style="color:var(--gray-500);">— orchestrator that delegates to adlc-discover, adlc-optimize, adlc-test, and the playbook</span></div>
+    <div class="lc-body">
+      <p style="font-size:0.85rem;color:var(--gray-600);margin-bottom:0.5rem;">Takes a ticket or goal, discovers the current agent state, plans the approach, executes instruction changes iteratively with testing at each step, and presents verified results. The core optimization engine — used by both existing agents and new agents coming out of Creation.</p>
+      <div style="font-size:0.8rem;"><strong>Skill:</strong> <code>adlc-drive</code> <span style="color:var(--gray-500);">— orchestrator that delegates to adlc-discover, adlc-optimize, adlc-test, and the playbook</span></div>
+    </div>
   </div>
 
   <!-- HITL: Product Review -->
-  <div style="background:var(--gray-100);border:1px solid var(--gray-200);border-radius:0.75rem;padding:0.75rem 1.25rem;margin-left:2rem;">
-    <div style="display:flex;align-items:center;gap:0.5rem;">
+  <div class="lc-card hitl" onclick="this.classList.toggle('open')">
+    <div class="lc-header">
       <span style="font-size:0.85rem;font-weight:600;">⛔ HITL — Product Review</span>
       <span style="font-size:0.7rem;padding:2px 8px;border-radius:999px;background:#fef2f2;color:#991b1b;font-weight:600;">Not started</span>
     </div>
-    <p style="font-size:0.8rem;color:var(--gray-600);margin-top:0.25rem;">Product validates eval results against acceptance criteria, performs UAT, and approves the prompt for release. Intentionally separate from Drive — the skill that builds shouldn't judge its own work.</p>
-    <div style="font-size:0.8rem;"><strong>Skill:</strong> <code>adlc-uat</code> <span style="color:var(--gray-500);">— independent evaluator, run by product owner</span></div>
+    <div class="lc-body">
+      <p style="font-size:0.85rem;color:var(--gray-600);margin-bottom:0.5rem;">Product validates eval results against acceptance criteria, performs UAT, and approves the prompt for release. Intentionally separate from Drive — the skill that builds shouldn't judge its own work.</p>
+      <div style="font-size:0.8rem;"><strong>Skill:</strong> <code>adlc-uat</code> <span style="color:var(--gray-500);">— independent evaluator, run by product owner</span></div>
+    </div>
   </div>
 
   <!-- Release -->
-  <div style="background:white;border:1px solid var(--gray-200);border-radius:0.75rem;padding:1rem 1.25rem;">
-    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;">
+  <div class="lc-card" onclick="this.classList.toggle('open')">
+    <div class="lc-header">
       <span style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:var(--accent);color:white;font-size:0.8rem;font-weight:700;flex-shrink:0;">3</span>
       <span style="font-size:1.05rem;font-weight:700;">Release Phase</span>
       <span style="font-size:0.7rem;padding:2px 8px;border-radius:999px;background:#fef2f2;color:#991b1b;font-weight:600;">Not started</span>
     </div>
-    <p style="font-size:0.85rem;color:var(--gray-600);margin-bottom:0.5rem;">Executes the deployment with risk controls — QA regression eval (8x runs), baseline promotion, proctor/feature flag ramp strategy, rollback plan, and post-deploy monitoring.</p>
-    <div style="font-size:0.8rem;"><strong>Skill:</strong> <code>adlc-release</code> <span style="color:var(--gray-500);">— coordinates adlc-deploy, adlc-test (QA regression), and baseline promotion</span></div>
+    <div class="lc-body">
+      <p style="font-size:0.85rem;color:var(--gray-600);margin-bottom:0.5rem;">Executes the deployment with risk controls — QA regression eval (8x runs), baseline promotion, proctor/feature flag ramp strategy, rollback plan, and post-deploy monitoring.</p>
+      <div style="font-size:0.8rem;"><strong>Skill:</strong> <code>adlc-release</code> <span style="color:var(--gray-500);">— coordinates adlc-deploy, adlc-test (QA regression), and baseline promotion</span></div>
+    </div>
   </div>
 
   <!-- HITL: DevOps Review -->
-  <div style="background:var(--gray-100);border:1px solid var(--gray-200);border-radius:0.75rem;padding:0.75rem 1.25rem;margin-left:2rem;">
-    <div style="display:flex;align-items:center;gap:0.5rem;">
+  <div class="lc-card hitl" onclick="this.classList.toggle('open')">
+    <div class="lc-header">
       <span style="font-size:0.85rem;font-weight:600;">⛔ HITL — DevOps Review</span>
       <span style="font-size:0.7rem;padding:2px 8px;border-radius:999px;background:#fef2f2;color:#991b1b;font-weight:600;">Not started</span>
     </div>
-    <p style="font-size:0.8rem;color:var(--gray-600);margin-top:0.25rem;">DevOps validates deployment health, confirms rollout metrics are within thresholds, and signs off before the next analysis cycle begins. Closes the loop.</p>
-    <div style="font-size:0.8rem;"><strong>Skill:</strong> <code>adlc-devops</code> <span style="color:var(--gray-500);">— post-deploy validation and sign-off</span></div>
+    <div class="lc-body">
+      <p style="font-size:0.85rem;color:var(--gray-600);margin-bottom:0.5rem;">DevOps validates deployment health, confirms rollout metrics are within thresholds, and signs off before the next analysis cycle begins. Closes the loop.</p>
+      <div style="font-size:0.8rem;"><strong>Skill:</strong> <code>adlc-devops</code> <span style="color:var(--gray-500);">— post-deploy validation and sign-off</span></div>
+    </div>
   </div>
 
   <div style="text-align:center;color:var(--gray-400);font-size:0.8rem;padding:0.25rem 0;">↻ loops back to Analysis</div>
@@ -235,13 +263,15 @@
 <!-- Exit point -->
 <h2 style="margin-bottom:0.25rem;font-size:0.85rem;color:var(--gray-500);text-transform:uppercase;letter-spacing:0.08em;">Exit Point</h2>
 <div style="display:flex;flex-direction:column;gap:0.75rem;margin:0.5rem 0 1.5rem 0;">
-  <div style="background:white;border:1px solid var(--gray-200);border-left:4px solid #dc2626;border-radius:0.75rem;padding:1rem 1.25rem;">
-    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;">
+  <div class="lc-card exit" onclick="this.classList.toggle('open')">
+    <div class="lc-header">
       <span style="font-size:1.05rem;font-weight:700;">Deprecation Phase</span>
       <span style="font-size:0.7rem;padding:2px 8px;border-radius:999px;background:#fef2f2;color:#991b1b;font-weight:600;">Not started</span>
     </div>
-    <p style="font-size:0.85rem;color:var(--gray-600);margin-bottom:0.5rem;">Manages end-of-life — deactivating an agent, migrating to a replacement, archiving baselines and eval history, and ensuring no active channels point to a deprecated agent. Can be triggered from any point in the loop.</p>
-    <div style="font-size:0.8rem;"><strong>Skill:</strong> <code>adlc-deprecate</code> <span style="color:var(--gray-500);">— deactivation, migration, archival</span></div>
+    <div class="lc-body">
+      <p style="font-size:0.85rem;color:var(--gray-600);margin-bottom:0.5rem;">Manages end-of-life — deactivating an agent, migrating to a replacement, archiving baselines and eval history, and ensuring no active channels point to a deprecated agent. Can be triggered from any point in the loop.</p>
+      <div style="font-size:0.8rem;"><strong>Skill:</strong> <code>adlc-deprecate</code> <span style="color:var(--gray-500);">— deactivation, migration, archival</span></div>
+    </div>
   </div>
 </div>
 
