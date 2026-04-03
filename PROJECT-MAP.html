@@ -57,10 +57,8 @@
   .tree li:last-child::before { height: 0.8rem; }
   .node { display: inline-flex; align-items: center; gap: 0.35rem; padding: 1px 5px; border-radius: 3px; transition: opacity 0.2s; }
   .node.dimmed { opacity: 0.12; }
-  .node-repo { background: var(--repo-bg); border: 1px solid var(--repo-border); }
-  .node-custom { background: var(--custom-bg); border: 1px solid var(--custom-border); }
-  .node-modified { background: var(--modified-bg); border: 1px solid var(--modified-border); }
-  .node-scaffold { background: var(--scaffold-bg); border: 1px solid var(--scaffold-border); }
+  .node-neutral { background: white; border: 1px solid var(--gray-200); }
+  .dot-neutral { background: var(--gray-400); }
   .node-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
   .fname { font-weight: 600; } .fdesc { color: var(--gray-500); font-weight: 400; font-style: italic; }
   .folder > .node { cursor: pointer; }
@@ -223,73 +221,66 @@
 
 <section id="structure">
 <h1>Repo Structure</h1>
-<p class="subtitle">Click folders to expand. Click legend to filter by origin.</p>
-
-<div class="legend" id="legend">
-  <div class="legend-item" data-type="repo" onclick="toggleFilter('repo')"><div class="legend-dot dot-repo"></div><span><b>From repo</b> — agentforce-adlc</span></div>
-  <div class="legend-item" data-type="custom" onclick="toggleFilter('custom')"><div class="legend-dot dot-custom"></div><span><b>Custom</b> — created by us</span></div>
-  <div class="legend-item" data-type="modified" onclick="toggleFilter('modified')"><div class="legend-dot dot-modified"></div><span><b>Repo + additions</b> — original untouched</span></div>
-  <div class="legend-item" data-type="scaffold" onclick="toggleFilter('scaffold')"><div class="legend-dot dot-scaffold"></div><span><b>Scaffolding</b> — auto-generated</span></div>
-</div>
+<p class="subtitle">Click folders to expand.</p>
 
 <h3>Skills — From Repo (unchanged)</h3>
 <p style="font-size:0.8rem;color:var(--gray-500);margin-bottom:0.5rem;">Installed from <a href="https://github.com/almandsky/agentforce-adlc" style="color:var(--repo);">agentforce-adlc</a>. Do not modify.</p>
 <div class="tree"><ul>
-  <li><span class="node node-repo" data-type="repo"><span class="node-dot dot-repo"></span><span class="fname">adlc-author/</span> <span class="fdesc">Generate .agent files from requirements</span></span></li>
-  <li><span class="node node-repo" data-type="repo"><span class="node-dot dot-repo"></span><span class="fname">adlc-deploy/</span> <span class="fdesc">Deploy, publish, activate</span></span></li>
-  <li><span class="node node-repo" data-type="repo"><span class="node-dot dot-repo"></span><span class="fname">adlc-feedback/</span> <span class="fdesc">Collect feedback</span></span></li>
-  <li><span class="node node-repo" data-type="repo"><span class="node-dot dot-repo"></span><span class="fname">adlc-run/</span> <span class="fdesc">Execute actions via REST</span></span></li>
-  <li><span class="node node-repo" data-type="repo"><span class="node-dot dot-repo"></span><span class="fname">adlc-scaffold/</span> <span class="fdesc">Generate Flow/Apex stubs</span></span></li>
-  <li><span class="node node-repo" data-type="repo"><span class="node-dot dot-repo"></span><span class="fname">agentforce-testing-analysis/</span> <span class="fdesc">CSV test analysis</span></span></li>
+  <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">adlc-author/</span> <span class="fdesc">Generate .agent files from requirements</span></span></li>
+  <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">adlc-deploy/</span> <span class="fdesc">Deploy, publish, activate</span></span></li>
+  <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">adlc-feedback/</span> <span class="fdesc">Collect feedback</span></span></li>
+  <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">adlc-run/</span> <span class="fdesc">Execute actions via REST</span></span></li>
+  <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">adlc-scaffold/</span> <span class="fdesc">Generate Flow/Apex stubs</span></span></li>
+  <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">agentforce-testing-analysis/</span> <span class="fdesc">CSV test analysis</span></span></li>
 </ul></div>
 
 <h3>Skills — From Repo + Our Additions</h3>
 <p style="font-size:0.8rem;color:var(--gray-500);margin-bottom:0.5rem;">Original content untouched. We added new sections.</p>
 <div class="tree"><ul>
-  <li><span class="node node-modified" data-type="modified"><span class="node-dot dot-modified"></span><span class="fname">adlc-discover/</span> <span class="fdesc">+ Section 0: SOQL-based agent/topic resolution</span></span></li>
-  <li><span class="node node-modified" data-type="modified"><span class="node-dot dot-modified"></span><span class="fname">adlc-optimize/</span> <span class="fdesc">+ Section 3.UI: Tooling API for UI-built agents</span></span></li>
-  <li><span class="node node-modified" data-type="modified"><span class="node-dot dot-modified"></span><span class="fname">adlc-test/</span> <span class="fdesc">+ CSV export, HTML unescape, contextVariables format</span></span></li>
+  <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">adlc-discover/</span> <span class="fdesc">+ Section 0: SOQL-based agent/topic resolution</span></span></li>
+  <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">adlc-optimize/</span> <span class="fdesc">+ Section 3.UI: Tooling API for UI-built agents</span></span></li>
+  <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">adlc-test/</span> <span class="fdesc">+ CSV export, HTML unescape, contextVariables format</span></span></li>
 </ul></div>
 
 <h3>Skills — Custom (created by us)</h3>
 <div class="tree"><ul>
-  <li><span class="node node-custom" data-type="custom"><span class="node-dot dot-custom"></span><span class="fname">adlc-drive/</span> <span class="fdesc">Goal-driven orchestrator — reads playbook, delegates to sub-skills</span></span></li>
-  <li><span class="node node-custom" data-type="custom"><span class="node-dot dot-custom"></span><span class="fname">adlc-ticket/</span> <span class="fdesc">Create/evaluate tickets for drive — standalone or called by drive</span></span></li>
+  <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">adlc-drive/</span> <span class="fdesc">Goal-driven orchestrator — reads playbook, delegates to sub-skills</span></span></li>
+  <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">adlc-ticket/</span> <span class="fdesc">Create/evaluate tickets for drive — standalone or called by drive</span></span></li>
 </ul></div>
 
 <h3>Project — Eval Framework (all custom)</h3>
 <div class="tree"><ul>
-  <li class="folder open"><span class="node node-custom" data-type="custom"><span class="node-dot dot-custom"></span><span class="fname">evals/</span></span><ul>
-    <li><span class="node node-custom" data-type="custom"><span class="node-dot dot-custom"></span><span class="fname">prompt-engineering-playbook.md</span> <span class="fdesc">Principles + rule levels</span></span></li>
-    <li><span class="node node-custom" data-type="custom"><span class="node-dot dot-custom"></span><span class="fname">drive-architecture.md</span> <span class="fdesc">Delegation map</span></span></li>
-    <li class="folder"><span class="node node-custom" data-type="custom"><span class="node-dot dot-custom"></span><span class="fname">ticket-guides/</span> <span class="fdesc">Everything related to adlc-ticket</span></span><ul>
-      <li><span class="node node-custom" data-type="custom"><span class="node-dot dot-custom"></span><span class="fname">ticket-authoring-prompt.md</span> <span class="fdesc">How to write drive-ready tickets</span></span></li>
-      <li><span class="node node-custom" data-type="custom"><span class="node-dot dot-custom"></span><span class="fname">ticket-evaluation-samples.md</span> <span class="fdesc">15 real tickets evaluated (training material)</span></span></li>
-      <li><span class="node node-custom" data-type="custom"><span class="node-dot dot-custom"></span><span class="fname">ticket-rewrites-internal.md</span> <span class="fdesc">11 weak tickets rewritten (internal only)</span></span></li>
-      <li><span class="node node-custom" data-type="custom"><span class="node-dot dot-custom"></span><span class="fname">ticket-template.md</span> <span class="fdesc">Generic JIRA template</span></span></li>
-      <li><span class="node node-custom" data-type="custom"><span class="node-dot dot-custom"></span><span class="fname">ticket-template-generalfaq.md</span> <span class="fdesc">Pre-filled for GeneralFAQ</span></span></li>
+  <li class="folder open"><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">evals/</span></span><ul>
+    <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">prompt-engineering-playbook.md</span> <span class="fdesc">Principles + rule levels</span></span></li>
+    <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">drive-architecture.md</span> <span class="fdesc">Delegation map</span></span></li>
+    <li class="folder"><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">ticket-guides/</span> <span class="fdesc">Everything related to adlc-ticket</span></span><ul>
+      <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">ticket-authoring-prompt.md</span> <span class="fdesc">How to write drive-ready tickets</span></span></li>
+      <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">ticket-evaluation-samples.md</span> <span class="fdesc">15 real tickets evaluated (training material)</span></span></li>
+      <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">ticket-rewrites-internal.md</span> <span class="fdesc">11 weak tickets rewritten (internal only)</span></span></li>
+      <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">ticket-template.md</span> <span class="fdesc">Generic JIRA template</span></span></li>
+      <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">ticket-template-generalfaq.md</span> <span class="fdesc">Pre-filled for GeneralFAQ</span></span></li>
     </ul></li>
-    <li class="folder"><span class="node node-custom" data-type="custom"><span class="node-dot dot-custom"></span><span class="fname">eval-config/</span> <span class="fdesc">Versioned methodology</span></span><ul>
-      <li class="folder"><span class="node node-custom" data-type="custom"><span class="node-dot dot-custom"></span><span class="fname">scoring/current/</span></span><ul>
-        <li><span class="node node-custom" data-type="custom"><span class="node-dot dot-custom"></span><span class="fname">run_regression.py</span></span></li>
-        <li><span class="node node-custom" data-type="custom"><span class="node-dot dot-custom"></span><span class="fname">analyze_response.py</span></span></li>
+    <li class="folder"><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">eval-config/</span> <span class="fdesc">Versioned methodology</span></span><ul>
+      <li class="folder"><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">scoring/current/</span></span><ul>
+        <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">run_regression.py</span></span></li>
+        <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">analyze_response.py</span></span></li>
       </ul></li>
-      <li class="folder"><span class="node node-custom" data-type="custom"><span class="node-dot dot-custom"></span><span class="fname">utterances/current/</span></span><ul>
-        <li><span class="node node-custom" data-type="custom"><span class="node-dot dot-custom"></span><span class="fname">all-topics-102.yaml</span></span></li>
+      <li class="folder"><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">utterances/current/</span></span><ul>
+        <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">all-topics-102.yaml</span></span></li>
       </ul></li>
     </ul></li>
-    <li class="folder"><span class="node node-custom" data-type="custom"><span class="node-dot dot-custom"></span><span class="fname">scripts/</span></span><ul>
-      <li><span class="node node-custom" data-type="custom"><span class="node-dot dot-custom"></span><span class="fname">generate_report.py</span> <span class="fdesc">Topic-agnostic regression</span></span></li>
+    <li class="folder"><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">scripts/</span></span><ul>
+      <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">generate_report.py</span> <span class="fdesc">Topic-agnostic regression</span></span></li>
     </ul></li>
-    <li class="folder"><span class="node node-custom" data-type="custom"><span class="node-dot dot-custom"></span><span class="fname">indeed-service-agent/</span></span><ul>
-      <li class="folder"><span class="node node-custom" data-type="custom"><span class="node-dot dot-custom"></span><span class="fname">baselines/v21/</span> <span class="fdesc">Production baseline</span></span><ul>
-        <li><span class="node node-custom" data-type="custom"><span class="node-dot dot-custom"></span><span class="fname">instruction-invoice.txt</span> <span class="fdesc">7,422 words</span></span></li>
-        <li><span class="node node-custom" data-type="custom"><span class="node-dot dot-custom"></span><span class="fname">raw-outputs.csv</span> <span class="fdesc">850 rows</span></span></li>
+    <li class="folder"><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">indeed-service-agent/</span></span><ul>
+      <li class="folder"><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">baselines/v21/</span> <span class="fdesc">Production baseline</span></span><ul>
+        <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">instruction-invoice.txt</span> <span class="fdesc">7,422 words</span></span></li>
+        <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">raw-outputs.csv</span> <span class="fdesc">850 rows</span></span></li>
       </ul></li>
-      <li class="folder"><span class="node node-custom" data-type="custom"><span class="node-dot dot-custom"></span><span class="fname">tickets/PROJ-345-compact-invoice/</span></span><ul>
-        <li><span class="node node-custom" data-type="custom"><span class="node-dot dot-custom"></span><span class="fname">goal.md / config.json / STATUS.md</span></span></li>
-        <li class="folder"><span class="node node-custom" data-type="custom"><span class="node-dot dot-custom"></span><span class="fname">attempts/</span> <span class="fdesc">7 attempts, #04 deployed</span></span><ul>
-          <li><span class="node node-custom" data-type="custom"><span class="node-dot dot-custom"></span><span class="fname">04-v22c-fixed-explain/</span> <span class="fdesc">✅ Winner</span></span></li>
+      <li class="folder"><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">tickets/PROJ-345-compact-invoice/</span></span><ul>
+        <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">goal.md / config.json / STATUS.md</span></span></li>
+        <li class="folder"><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">attempts/</span> <span class="fdesc">7 attempts, #04 deployed</span></span><ul>
+          <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">04-v22c-fixed-explain/</span> <span class="fdesc">✅ Winner</span></span></li>
         </ul></li>
       </ul></li>
     </ul></li>
@@ -298,9 +289,9 @@
 
 <h3>Project — Salesforce DX (auto-generated)</h3>
 <div class="tree"><ul>
-  <li class="folder"><span class="node node-scaffold" data-type="scaffold"><span class="node-dot dot-scaffold"></span><span class="fname">force-app/</span> <span class="fdesc">Salesforce DX</span></span><ul>
-    <li><span class="node node-scaffold" data-type="scaffold"><span class="node-dot dot-scaffold"></span><span class="fname">aiEvaluationDefinitions/</span> <span class="fdesc">Testing Center specs (deployed to org)</span></span></li>
-    <li><span class="node node-scaffold" data-type="scaffold"><span class="node-dot dot-scaffold"></span><span class="fname">bots/</span> <span class="fdesc">Agent metadata (retrieved from org)</span></span></li>
+  <li class="folder"><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">force-app/</span> <span class="fdesc">Salesforce DX</span></span><ul>
+    <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">aiEvaluationDefinitions/</span> <span class="fdesc">Testing Center specs (deployed to org)</span></span></li>
+    <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">bots/</span> <span class="fdesc">Agent metadata (retrieved from org)</span></span></li>
   </ul></li>
 </ul></div>
 </section>
@@ -509,13 +500,6 @@
 // Folder toggle
 document.querySelectorAll('.folder > .node').forEach(n => n.addEventListener('click', () => n.parentElement.classList.toggle('open')));
 
-// Legend filter
-const af = new Set();
-function toggleFilter(t) {
-  const el = document.querySelector(`.legend-item[data-type="${t}"]`);
-  af.has(t) ? (af.delete(t), el.classList.remove('dimmed')) : (af.add(t), el.classList.add('dimmed'));
-  document.querySelectorAll('.node[data-type]').forEach(n => n.classList.toggle('dimmed', af.has(n.dataset.type)));
-}
 
 // Section switching
 function showSection(id, link) {
