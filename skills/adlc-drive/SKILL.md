@@ -36,6 +36,12 @@ This is visible to the user as you work. It serves two purposes: the user catche
 
 **⛔ CHECKPOINT RULE: Phases that need user approval MUST pause and wait.** Phases that are just showing work can continue. The per-phase instructions below specify which checkpoints pause and which are output-only.
 
+**⛔ HITL LOG RULE: After every checkpoint where the user responds, append one JSONL entry to both:**
+1. `evals/hitl/{ticket-key}.jsonl` (per-ticket audit trail)
+2. `evals/hitl/index.jsonl` (central rollup)
+
+Entry format: `{"ts":"<ISO8601>","session_id":"<chat-id>","phase":"<N-name>","checkpoint":"<what>","type":"<approval|correction|rejection|context|escalation|early-exit>","asked":"<what you presented>","decision":"<what user said>","agent":"<agent>","topic":"<topic>","ticket":"<key>","who":"<user>"}`. See `evals/hitl/README.md` for field definitions. Log the interaction as it happened — do not sanitize or summarize the user's words.
+
 **Delegation map:**
 
 | Capability | Delegated to |
@@ -70,7 +76,7 @@ If no ticket, ask the user to describe the goal in detail. Read the ticket or de
   If "Needs improvement", present gaps and ask user to fill them before proceeding.
   If "Ready" or "Ready with gap", continue.
 
-Create the ticket folder at `evals/{agent-name}/tickets/{ticket-key}-{short-description}/` and document your understanding in `goal.md` inside it. Look for existing agent folders under `evals/` to match the naming convention. ALL ticket artifacts go in this folder — never create ticket folders at the project root or anywhere else.
+Create the ticket folder at `evals/{agent-name}/tickets/{ticket-key}-{short-description}/` and document your understanding in `goal.md` inside it. Look for existing agent folders under `evals/` to match the naming convention. ALL ticket artifacts go in this folder. I know you'll want to create it at the project root or in a `tickets/` shortcut — don't. Every artifact must live under `evals/{agent}/tickets/` or it gets lost.
 
 **⛔ CHECKPOINT (output only — no questions yet, no org queries):**
 - Your understanding of the goal (in your own words)
@@ -86,7 +92,7 @@ Collaborative back-and-forth to ensure alignment before any work starts.
 
 **Before asking questions, read the architecture section of `evals/prompt-engineering-playbook.md`.** Understand how the system works — topics, actions, instructions, templates, data flow — so your questions account for the full picture, not just the surface-level change.
 
-**Then refine through conversation.** Based on your Phase 1 understanding, the ticket content, and the architecture, formulate questions that cover what you need to know to proceed. Don't use a fixed list — reason from context.
+**Then refine through conversation.** Based on your Phase 1 understanding, the ticket content, and the architecture, formulate questions that cover what you need to know to proceed. Don't use a fixed list — reason from context. I know you'll want to infer the agent name, version, org, and edit strategy from files like `agent-meta.json` — don't. Always ask the user explicitly. These are critical parameters that change between sessions and wrong assumptions here cascade through every subsequent phase.
 
 **SPIKE gate:** At any point during refinement, if the problem or solution is unclear, propose a SPIKE — a time-boxed investigation that produces findings, not changes. If SPIKE, present the investigation plan and stop. Do not proceed to Phase 3.
 
@@ -135,7 +141,7 @@ Do NOT adopt pre-existing Testing Center test suites — build fresh from baseli
 **Baseline utterances live in ONE place only:** `evals/{agent}/baselines/{topic}/utterances.txt`
 Do NOT search Downloads, project root, old ticket folders, or anywhere else for baseline data. If the utterance file doesn't exist for a topic, ask the user to provide one or derive utterances from the instruction.
 
-**Baseline = utterances, not outputs.** Always run utterances against the live instruction to generate fresh outputs. Never reuse old output CSVs as baselines — org state changes make them invalid.
+**Baseline = utterances, not outputs.** I know you'll want to reuse an old CSV of outputs as the baseline to save time — don't. Org state changes between runs make old outputs invalid. Always run utterances against the live instruction to generate fresh outputs.
 
 **Context variables check (HARD GATE):** Does this topic need session context (e.g., linked variables, account data, user identity) for testing? Ask the user — they know which topics need context vs which are self-contained. If context is needed, **STOP and ask the user what variables are required and their current values.** Do NOT proceed with testing if a topic needs context and you don't have it — results will be invalid. See playbook testing section for details.
 
@@ -266,12 +272,13 @@ FOR each iteration (max N per Phase 4b):
      - Deploy: Read ~/.cursor/skills/adlc-optimize/SKILL.md
        You need: how to deploy an updated instruction to the org (Tooling API for UI-built agents)
        Execute those steps.
-     - One change per iteration (don't batch multiple changes)
+     - I know you'll want to batch several changes into one iteration to move faster — don't. One change per iteration. When things break, you need to know which change caused it.
 
-  2. SMOKE TEST
-     - Read ~/.cursor/skills/adlc-test/SKILL.md
-       You need: how to create a YAML spec, run a Testing Center suite, and export results to CSV
-       Use a small spec (5 utterances). Execute, store CSV.
+  2. SMOKE TEST (quick, per-iteration)
+     - 3-5 utterances, run each 4 times (3/4 pass = acceptable): at least 1 that exercises the change, at least 1 regression canary
+     - Prefer `sf agent preview` (instant, no suite creation) for topics that don't need context variables
+     - Use Testing Center only if context variables are required — reuse the same suite with `--force-overwrite`, don't create new ones
+     - Goal: confirm the change didn't break the basic flow. Not comprehensive.
 
   3. EVALUATE
      - Pass rate >= threshold? → proceed to bulk eval
@@ -279,9 +286,7 @@ FOR each iteration (max N per Phase 4b):
      - Ambiguous result? → PULL USER IN to confirm
 
   4. BULK EVAL (only when smoke tests pass)
-     - Read ~/.cursor/skills/adlc-test/SKILL.md
-       You need: run full Testing Center suite (all utterances), export CSV
-       Execute, store CSV.
+     - Run full utterance set via Testing Center — reuse the suite created in Phase 3, `--force-overwrite` if spec changed
      - Compare: python3 evals/scripts/generate_report.py --prev <baseline-csv> --new <new-csv> --output <report.html>
 
   5. ACCEPTANCE CHECK
