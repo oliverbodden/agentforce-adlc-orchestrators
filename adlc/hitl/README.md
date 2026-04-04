@@ -24,7 +24,10 @@ One JSON object per line, append-only.
   "agent": "indeed-service-agent",
   "topic": "invoice",
   "ticket": "ESCHAT-1234",
-  "who": "obguzman"
+  "who": "obguzman",
+  "org": "devesa3",
+  "agent_version": "Agentforce_Service_Agent_v25_v28_v30",
+  "edit_strategy": "tooling-api"
 }
 ```
 
@@ -43,6 +46,9 @@ One JSON object per line, append-only.
 | `topic` | string | no | Topic name (if applicable) |
 | `ticket` | string | no | Ticket key (if applicable) |
 | `who` | string | yes | Who made the decision |
+| `org` | string | no | Org alias confirmed in Phase 2 — include from Phase 2 onward |
+| `agent_version` | string | no | Planner version confirmed in Phase 2 — include from Phase 2 onward |
+| `edit_strategy` | string | no | `tooling-api` or `authoring-bundle` — include from Phase 2 onward |
 
 ## Type definitions
 

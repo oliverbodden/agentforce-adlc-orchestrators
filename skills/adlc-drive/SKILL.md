@@ -40,7 +40,7 @@ This is visible to the user as you work. It serves two purposes: the user catche
 1. `adlc/hitl/{ticket-key}.jsonl` (per-ticket audit trail)
 2. `adlc/hitl/index.jsonl` (central rollup)
 
-Entry format: `{"ts":"<ISO8601>","session_id":"<chat-id>","phase":"<N-name>","checkpoint":"<what>","type":"<approval|correction|rejection|context|escalation|early-exit>","asked":"<what you presented>","decision":"<what user said>","agent":"<agent>","topic":"<topic>","ticket":"<key>","who":"<user>"}`. See `adlc/hitl/README.md` for field definitions. Log the interaction as it happened — do not sanitize or summarize the user's words.
+Entry format: `{"ts":"<ISO8601>","session_id":"<chat-id>","phase":"<N-name>","checkpoint":"<what>","type":"<approval|correction|rejection|context|escalation|early-exit>","asked":"<what you presented>","decision":"<what user said>","agent":"<agent>","topic":"<topic>","ticket":"<key>","who":"<user>","org":"<org>","agent_version":"<version>","edit_strategy":"<strategy>"}`. Include `org`, `agent_version`, and `edit_strategy` from Phase 2 onward (once confirmed by user). See `adlc/hitl/README.md` for field definitions. Log the interaction as it happened — do not sanitize or summarize the user's words.
 
 **Delegation map:**
 
@@ -106,6 +106,10 @@ Collaborative back-and-forth to ensure alignment before any work starts.
 ### Phase 3: Discover
 
 Gather evidence about the current state. This is where the machine starts investigating — Phases 1-2 were human conversation only.
+
+**3a-pre. Pull prior HITL history:**
+
+Check `adlc/hitl/index.jsonl` for prior entries matching this agent and/or topic. Look for patterns: recurring corrections, prior rejections, known gotchas from earlier drives. Summarize relevant findings in the ticket's `goal.md` under a "Prior HITL context" heading. This informs your Phase 3 investigation and Phase 4 planning — don't repeat mistakes that were already caught.
 
 **3a. Resolve agent/topic metadata:**
 
