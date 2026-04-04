@@ -4,6 +4,6 @@ Goal-driven Agentforce agent optimization with JIRA integration, eval framework,
 
 Built on top of [agentforce-adlc](https://github.com/almandsky/agentforce-adlc) by almandsky.
 
-## 📖 [Full Documentation →](https://oliverbodden.github.io/agentforce-adlc-orchestrators/PROJECT-MAP.html)
+## 📖 [Full Documentation →](adlc/docs/PROJECT-MAP.html)
 
-The interactive guide covers setup, repo structure, how adlc-drive works step-by-step, and all connections between skills.
+Open `adlc/docs/PROJECT-MAP.html` in a browser — interactive guide covering setup, lifecycle overview, repo structure, and how adlc-drive works step-by-step.
