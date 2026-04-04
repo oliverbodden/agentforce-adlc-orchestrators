@@ -34,7 +34,7 @@ These are global — available across all projects.
 ```
 agentforce-project/
 │
-├── 🟢 evals/                                  # Eval framework (ALL custom)
+├── 🟢 adlc/                                  # Eval framework (ALL custom)
 │   ├── 🟢 prompt-engineering-playbook.md       # Living doc — principles, rule levels, patterns
 │   ├── 🟢 drive-architecture.md                # Drive delegation map + sub-skill requirements
 │   ├── 🟢 ticket-template.md                   # Generic ticket template
@@ -61,7 +61,6 @@ agentforce-project/
 │   │       └── run_eval.py                      # → now in adlc-test
 │   │
 │   └── 🟢 indeed-service-agent/                # Agent-level eval data
-│       ├── agent-meta.json                      # IDs, topics, actions
 │       ├── baselines/
 │       │   └── v21/                             # Production baseline
 │       │       ├── instruction-invoice.txt      # 7,422 words (original)
@@ -129,5 +128,5 @@ adlc-drive (orchestrator)
     ├── calls: adlc-optimize    → read/write instructions (Tooling API or .agent)
     ├── calls: adlc-test        → run Testing Center, export CSV
     ├── calls: generate_report.py → regression comparison + HTML
-    └── writes to: evals/{agent}/tickets/{ticket-key}/
+    └── writes to: adlc/{agent}/tickets/{ticket-key}/
 ```
