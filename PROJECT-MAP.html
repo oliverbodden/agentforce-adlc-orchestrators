@@ -396,7 +396,7 @@
     <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">1</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Install base skills from <code>agentforce-adlc</code></td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><code>~/.cursor/skills/adlc-*</code></td></tr>
     <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">2</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Install custom skills (drive, ticket)</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><code>~/.cursor/skills/adlc-drive/</code>, <code>adlc-ticket/</code></td></tr>
     <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">3</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Apply patches to 3 base skills (additive only)</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">discover: SOQL resolution, optimize: Tooling API, test: CSV export</td></tr>
-    <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">4</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Set up eval framework</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><code>evals/</code> in your project</td></tr>
+    <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">4</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Set up eval framework</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><code>adlc/</code> in your project</td></tr>
     <tr><td style="padding:0.4rem 0.75rem;">5</td><td style="padding:0.4rem 0.75rem;">Copy project documentation</td><td style="padding:0.4rem 0.75rem;"><code>PROJECT-MAP.html</code>, <code>PROJECT-MAP.md</code></td></tr>
   </table>
   <p style="margin-top:0.75rem;color:var(--gray-500);font-size:0.8rem;">Safe to re-run — patches check for existing content before applying. Existing files are preserved.</p>
@@ -434,7 +434,7 @@
 
 <h3>Project — Eval Framework (all custom)</h3>
 <div class="tree"><ul>
-  <li class="folder open"><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">evals/</span></span><ul>
+  <li class="folder open"><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">adlc/</span></span><ul>
     <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">prompt-engineering-playbook.md</span> <span class="fdesc">Principles + rule levels</span></span></li>
     <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">drive-architecture.md</span> <span class="fdesc">Delegation map</span></span></li>
     <li class="folder"><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">ticket-guides/</span> <span class="fdesc">Everything related to adlc-ticket</span></span><ul>
@@ -510,7 +510,7 @@
         <div class="step-body"><span class="tag-skill tag-drive">drive</span> — NO questions, NO org queries. Just show what you understood.</div>
         <div class="details">Present: goal in own words, ticket readiness, what you know vs what you need to find out, assumptions. <b>No user interaction</b> — this is the agent showing its homework. Questions come in Phase 2.<br><br>
           <b>Do NOT:</b> query the org, infer agent/version from project files, use fixed checklists.<br><br>
-          <span class="files"><span>→ Writes: evals/{agent}/tickets/{key}/goal.md</span></span></div>
+          <span class="files"><span>→ Writes: adlc/{agent}/tickets/{key}/goal.md</span></span></div>
       </div>
     </div>
   </div>
@@ -629,7 +629,7 @@
           2. If QA-level eval (8x runs) doesn't exist yet, run one before promoting<br>
           3. Copy winning attempt artifacts to baseline:<br><br>
           <span class="files">
-            <span>→ evals/{agent}/baselines/v{N+1}/</span>
+            <span>→ adlc/{agent}/baselines/v{N+1}/</span>
             <span>&nbsp;&nbsp;instruction-{topic}.txt ← from attempts/NN/</span>
             <span>&nbsp;&nbsp;raw-outputs.csv ← QA 8x run (NOT dev 4x)</span>
             <span>&nbsp;&nbsp;metadata.json ← version, date, ticket, scoring version</span>

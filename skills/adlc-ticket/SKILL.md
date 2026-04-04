@@ -210,7 +210,7 @@ Same as adlc-drive:
 
 ## Reference
 
-The detailed ticket guides are at `evals/ticket-guides/`:
+The detailed ticket guides are at `adlc/ticket-guides/`:
 - `ticket-authoring-prompt.md` — how to write drive-ready tickets, good/bad examples, checklist
 - `ticket-evaluation-samples.md` — 15 real tickets evaluated (training material)
 - `ticket-template.md` — generic JIRA template to copy

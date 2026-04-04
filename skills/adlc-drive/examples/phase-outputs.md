@@ -98,10 +98,10 @@ breaks classification. Surgical compaction preserves the reasoning scaffolding.
 - [ ] Deploy behind proctor: n/a
 
 ### Artifacts
-- Instruction file: evals/indeed-service-agent/tickets/ESCHAT-1234/attempts/03/instruction.txt
+- Instruction file: adlc/indeed-service-agent/tickets/ESCHAT-1234/attempts/03/instruction.txt
 - Test suite: ESCHAT-1234-invoice-compaction
-- Eval report: evals/indeed-service-agent/tickets/ESCHAT-1234/attempts/03/eval-report.html
-- Ticket folder: evals/indeed-service-agent/tickets/ESCHAT-1234/
+- Eval report: adlc/indeed-service-agent/tickets/ESCHAT-1234/attempts/03/eval-report.html
+- Ticket folder: adlc/indeed-service-agent/tickets/ESCHAT-1234/
 ```
 
 ## HITL Log Entry (what gets appended after each checkpoint)

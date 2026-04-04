@@ -37,10 +37,10 @@ This is visible to the user as you work. It serves two purposes: the user catche
 **⛔ CHECKPOINT RULE: Phases that need user approval MUST pause and wait.** Phases that are just showing work can continue. The per-phase instructions below specify which checkpoints pause and which are output-only.
 
 **⛔ HITL LOG RULE: After every checkpoint where the user responds, append one JSONL entry to both:**
-1. `evals/hitl/{ticket-key}.jsonl` (per-ticket audit trail)
-2. `evals/hitl/index.jsonl` (central rollup)
+1. `adlc/hitl/{ticket-key}.jsonl` (per-ticket audit trail)
+2. `adlc/hitl/index.jsonl` (central rollup)
 
-Entry format: `{"ts":"<ISO8601>","session_id":"<chat-id>","phase":"<N-name>","checkpoint":"<what>","type":"<approval|correction|rejection|context|escalation|early-exit>","asked":"<what you presented>","decision":"<what user said>","agent":"<agent>","topic":"<topic>","ticket":"<key>","who":"<user>"}`. See `evals/hitl/README.md` for field definitions. Log the interaction as it happened — do not sanitize or summarize the user's words.
+Entry format: `{"ts":"<ISO8601>","session_id":"<chat-id>","phase":"<N-name>","checkpoint":"<what>","type":"<approval|correction|rejection|context|escalation|early-exit>","asked":"<what you presented>","decision":"<what user said>","agent":"<agent>","topic":"<topic>","ticket":"<key>","who":"<user>"}`. See `adlc/hitl/README.md` for field definitions. Log the interaction as it happened — do not sanitize or summarize the user's words.
 
 **Delegation map:**
 
@@ -76,7 +76,7 @@ If no ticket, ask the user to describe the goal in detail. Read the ticket or de
   If "Needs improvement", present gaps and ask user to fill them before proceeding.
   If "Ready" or "Ready with gap", continue.
 
-Create the ticket folder at `evals/{agent-name}/tickets/{ticket-key}-{short-description}/` and document your understanding in `goal.md` inside it. Look for existing agent folders under `evals/` to match the naming convention. ALL ticket artifacts go in this folder. I know you'll want to create it at the project root or in a `tickets/` shortcut — don't. Every artifact must live under `evals/{agent}/tickets/` or it gets lost.
+Create the ticket folder at `adlc/{agent-name}/tickets/{ticket-key}-{short-description}/` and document your understanding in `goal.md` inside it. Look for existing agent folders under `adlc/` to match the naming convention. ALL ticket artifacts go in this folder. I know you'll want to create it at the project root or in a `tickets/` shortcut — don't. Every artifact must live under `adlc/{agent}/tickets/` or it gets lost.
 
 **⛔ CHECKPOINT (output only — no questions yet, no org queries):**
 - Your understanding of the goal (in your own words)
@@ -90,7 +90,7 @@ Then immediately proceed to Phase 2 — that's where questions happen.
 
 Collaborative back-and-forth to ensure alignment before any work starts.
 
-**Before asking questions, read the architecture section of `evals/prompt-engineering-playbook.md`.** Understand how the system works — topics, actions, instructions, templates, data flow — so your questions account for the full picture, not just the surface-level change.
+**Before asking questions, read the architecture section of `adlc/prompt-engineering-playbook.md`.** Understand how the system works — topics, actions, instructions, templates, data flow — so your questions account for the full picture, not just the surface-level change.
 
 **Then refine through conversation.** Based on your Phase 1 understanding, the ticket content, and the architecture, formulate questions that cover what you need to know to proceed. Don't use a fixed list — reason from context. I know you'll want to infer the agent name, version, org, and edit strategy from files like `agent-meta.json` — don't. Always ask the user explicitly. These are critical parameters that change between sessions and wrong assumptions here cascade through every subsequent phase.
 
@@ -122,7 +122,7 @@ Use the agent/topic IDs resolved in step 3a.
 
 **Save the original instruction text immediately** — before any analysis or editing. Store each instruction record as-is in the ticket folder:
 ```
-evals/{agent}/tickets/{key}/originals/
+adlc/{agent}/tickets/{key}/originals/
   {topic-name}-{record-id}.txt
 ```
 These are the rollback point. Never modify the originals folder.
@@ -138,7 +138,7 @@ Then audit: do any existing instructions contradict the new guidelines? Flag con
 
 Do NOT adopt pre-existing Testing Center test suites — build fresh from baseline utterances.
 
-**Baseline utterances live in ONE place only:** `evals/{agent}/baselines/{topic}/utterances.txt`
+**Baseline utterances live in ONE place only:** `adlc/{agent}/baselines/{topic}/utterances.txt`
 Do NOT search Downloads, project root, old ticket folders, or anywhere else for baseline data. If the utterance file doesn't exist for a topic, ask the user to provide one or derive utterances from the instruction.
 
 **Baseline = utterances, not outputs.** I know you'll want to reuse an old CSV of outputs as the baseline to save time — don't. Org state changes between runs make old outputs invalid. Always run utterances against the live instruction to generate fresh outputs.
@@ -171,7 +171,7 @@ Store regression spec and capability spec separately in `specs/`.
 **3d. Analyze baseline and establish acceptance criteria:**
 
 Before proposing criteria, analyze the baseline CSV to understand current metrics:
-- Run `python3 evals/scripts/generate_report.py --prev <baseline.csv> --new <baseline.csv> --output /tmp/baseline-analysis.html` (comparing baseline to itself gives you the feature profile)
+- Run `python3 adlc/scripts/generate_report.py --prev <baseline.csv> --new <baseline.csv> --output /tmp/baseline-analysis.html` (comparing baseline to itself gives you the feature profile)
 - Or manually: count utterances, compute response feature rates, check redundancy, measure response lengths
 - Identify which metrics are relevant for THIS topic (not all topics have the same features)
 
@@ -264,7 +264,7 @@ The iterative loop. This is where the work happens.
 FOR each iteration (max N per Phase 4b):
 
   1. CHANGE — Edit instruction based on the goal
-     - Consult evals/prompt-engineering-playbook.md for editing principles and rule levels
+     - Consult adlc/prompt-engineering-playbook.md for editing principles and rule levels
      - Refer to the goal and scope documented in goal.md
      - Make the targeted edit (reduce, modify, add, or restructure — whatever the goal requires)
      - If ADDING content: check % increase vs current instruction size. If exceeding playbook guidelines, pause and get user approval before proceeding.
@@ -287,7 +287,7 @@ FOR each iteration (max N per Phase 4b):
 
   4. BULK EVAL (only when smoke tests pass)
      - Run full utterance set via Testing Center — reuse the suite created in Phase 3, `--force-overwrite` if spec changed
-     - Compare: python3 evals/scripts/generate_report.py --prev <baseline-csv> --new <new-csv> --output <report.html>
+     - Compare: python3 adlc/scripts/generate_report.py --prev <baseline-csv> --new <new-csv> --output <report.html>
 
   5. ACCEPTANCE CHECK
      - All acceptance criteria met? → EXIT loop, proceed to Phase 6
@@ -300,7 +300,7 @@ FOR each iteration (max N per Phase 4b):
      - Ask user: continue with more iterations, adjust criteria, or abandon?
 ```
 
-Sub-skills are the source of truth for HOW. Drive decides WHAT and WHEN. When a step says "Read adlc-X/SKILL.md", read it, find the relevant section, execute, return here. Consult `evals/prompt-engineering-playbook.md` before editing instructions.
+Sub-skills are the source of truth for HOW. Drive decides WHAT and WHEN. When a step says "Read adlc-X/SKILL.md", read it, find the relevant section, execute, return here. Consult `adlc/prompt-engineering-playbook.md` before editing instructions.
 
 **Checkpointing:**
 
@@ -314,7 +314,7 @@ Pull the user in when results are ambiguous, regressions appear, or you're stuck
 
 After acceptance criteria are met (or max iterations reached):
 
-1. **Propose playbook updates** — If new patterns were discovered during this ticket, propose additions to `evals/prompt-engineering-playbook.md`. User approves before changes are made.
+1. **Propose playbook updates** — If new patterns were discovered during this ticket, propose additions to `adlc/prompt-engineering-playbook.md`. User approves before changes are made.
 2. Present a summary:
 
 ```markdown
@@ -367,7 +367,7 @@ The winning attempt becomes the new baseline. This is the ONLY way baselines are
 1. Ask user: "Attempt NN passed acceptance. Promote to baseline v[N+1]?"
 2. If yes, copy the winning attempt's artifacts:
    ```
-   evals/{agent}/baselines/v{N+1}/
+   adlc/{agent}/baselines/v{N+1}/
      instruction-{topic}.txt    ← from attempts/NN/instruction.txt
      raw-outputs.csv            ← from attempts/NN/ (QA 8x run, not dev 4x)
      metadata.json              ← record: version, date, ticket, scoring version, org state
@@ -389,7 +389,7 @@ Review if the ticket introduced behavior not covered by existing baseline uttera
 - Were new utterances created during Phase 3d (capability spec) that should become permanent?
 - Did requirements change what "good" looks like, making some existing utterances obsolete?
 
-If yes, propose additions/removals to the baseline utterance list (`evals/{agent}/baselines/{topic}/utterances.txt`). Get user approval before modifying.
+If yes, propose additions/removals to the baseline utterance list (`adlc/{agent}/baselines/{topic}/utterances.txt`). Get user approval before modifying.
 
 **7d. Always:**
 

@@ -268,7 +268,7 @@ The ticket defines which phase applies. Not every ticket needs full cross-topic 
 - **Three layers:** `eval-config/` (versioned scoring scripts), `baselines/` (agent-level, one per shipped version), `tickets/` (work-item scoped with numbered attempts).
 - **Baselines are agent-level.** Only winning attempts promote to baseline.
 - **Separate raw outputs from scored results.** Raw CSVs are expensive to regenerate. Scored reports are cheap.
-- **Regression script is topic-agnostic.** `evals/scripts/generate_report.py` discovers features from data. Topic-specific eval criteria live in the ticket's config.json and specs.
+- **Regression script is topic-agnostic.** `adlc/scripts/generate_report.py` discovers features from data. Topic-specific eval criteria live in the ticket's config.json and specs.
 
 ---
 

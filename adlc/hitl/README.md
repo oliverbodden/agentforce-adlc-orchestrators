@@ -74,7 +74,7 @@ for e in entries:
         print(f'{e["phase"]} | {e["asked"][:60]} → {e["decision"][:60]}')
 ```
 
-Or ask an AI: "Read evals/hitl/index.jsonl and tell me what patterns you see in corrections and rejections."
+Or ask an AI: "Read adlc/hitl/index.jsonl and tell me what patterns you see in corrections and rejections."
 
 ## Rotation
 

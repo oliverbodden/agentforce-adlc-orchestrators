@@ -25,10 +25,10 @@
 |                 | 5.3. Run smoke test          | 5-utterance quick validation                              | `adlc-test` Mode B                    |
 |                 | 5.4. Evaluate smoke          | Check pass rate against threshold                         | Drive directly                        |
 |                 | 5.5. Run bulk eval           | Full utterance set, export CSV                            | `adlc-test` Mode B                    |
-|                 | 5.6. Run regression          | Compare new CSV vs baseline CSV                           | `evals/scripts/generate_report.py`    |
+|                 | 5.6. Run regression          | Compare new CSV vs baseline CSV                           | `adlc/scripts/generate_report.py`    |
 |                 | 5.7. Acceptance check        | Evaluate metrics against criteria, pull user if ambiguous | Drive directly                        |
 |                 | 5.8. Iterate or stop         | Decide: fix and loop back to 5.1, or exit                 | Drive directly                        |
-| **6. Present**  | 6a. Generate report          | HTML eval report from regression data                     | `evals/scripts/generate_report.py`    |
+| **6. Present**  | 6a. Generate report          | HTML eval report from regression data                     | `adlc/scripts/generate_report.py`    |
 |                 | 6b. Write status             | Update CHANGELOG.md, STATUS.md in ticket folder           | Drive directly                        |
 |                 | 6c. Present to user          | Show summary, recommendation                              | Drive directly                        |
 | **7. Hand off** | 7a. Rollback if needed       | Restore baseline instruction                              | `adlc-optimize`                       |
@@ -45,7 +45,7 @@
 | **adlc-discover** | 1c                                                           | Find agent/topic metadata in org                                         |
 | **adlc-optimize** | 3a, 3b, 5.2, 7a                                              | Read/write instructions, structural analysis                             |
 | **adlc-test**     | 3c, 3d, 5.3, 5.5                                             | All Testing Center operations                                            |
-| **Shared script** | 5.6, 6a                                                      | `evals/scripts/generate_report.py` — regression comparison + HTML report |
+| **Shared script** | 5.6, 6a                                                      | `adlc/scripts/generate_report.py` — regression comparison + HTML report |
 | **JIRA MCP**      | 1b                                                           | Read-only ticket access via `user-atlassian`                             |
 
 
@@ -74,9 +74,9 @@
 
 ### Shared Scripts
 
-- `evals/scripts/generate_report.py` — runs `run_regression.py` with correct paths, wraps in HTML.
-- `evals/scripts/update_instruction.py` — Tooling API deploy + backup. To be replaced by `adlc-optimize` once it supports Tooling API.
-- `evals/scripts/run_eval.py` — Testing Center runner + CSV export. To be replaced by `adlc-test` once it exposes CSV output.
+- `adlc/scripts/generate_report.py` — runs `run_regression.py` with correct paths, wraps in HTML.
+- `adlc/scripts/update_instruction.py` — Tooling API deploy + backup. To be replaced by `adlc-optimize` once it supports Tooling API.
+- `adlc/scripts/run_eval.py` — Testing Center runner + CSV export. To be replaced by `adlc-test` once it exposes CSV output.
 
 ## What Needs to Change
 
