@@ -68,7 +68,7 @@ Capture what the user wants to achieve.
 
 If no ticket, ask the user to describe the goal in detail. Read the ticket or description and formulate your own understanding — different tickets need different questions.
 
-**1b2. Evaluate ticket readiness:**
+**Evaluate ticket readiness:**
 
 → Read `~/.cursor/skills/adlc-ticket/SKILL.md`
   You need: evaluate if this ticket has enough context for drive to execute
@@ -146,7 +146,7 @@ Do NOT search Downloads, project root, old ticket folders, or anywhere else for 
 **Context variables check (HARD GATE):** Does this topic need session context (e.g., linked variables, account data, user identity) for testing? Ask the user — they know which topics need context vs which are self-contained. If context is needed, **STOP and ask the user what variables are required and their current values.** Do NOT proceed with testing if a topic needs context and you don't have it — results will be invalid. See playbook testing section for details.
 
 **Combine ALL available sources for the test spec (AND, not OR):**
-1. **Baseline utterances** (from `baselines/{topic}/utterances.txt`) → regression tests
+1. **Baseline utterances** (from `adlc/{agent}/baselines/{topic}/utterances.txt`) → regression tests
 2. **Ticket attachments** → examples of bad/new behavior
 3. **Derived from instruction + requirements** → edge cases, gaps
 
@@ -330,7 +330,7 @@ After acceptance criteria are met (or max iterations reached):
 ### Test Results
 | Metric | Baseline | Final | Delta |
 |---|---|---|---|
-[Include whatever metrics are relevant for this goal — discovered during Phase 3e]
+[Include whatever metrics are relevant for this goal — discovered during Phase 3d]
 
 ### Remaining Risks
 - <any known gaps or edge cases>
@@ -386,7 +386,7 @@ The winning attempt becomes the new baseline. This is the ONLY way baselines are
 
 Review if the ticket introduced behavior not covered by existing baseline utterances:
 - Did this ticket add new capabilities that need new test utterances?
-- Were new utterances created during Phase 3d (capability spec) that should become permanent?
+- Were new utterances created during Phase 3c (capability spec) that should become permanent?
 - Did requirements change what "good" looks like, making some existing utterances obsolete?
 
 If yes, propose additions/removals to the baseline utterance list (`adlc/{agent}/baselines/{topic}/utterances.txt`). Get user approval before modifying.
