@@ -168,6 +168,8 @@ Do NOT search Downloads, project root, old ticket folders, or anywhere else for 
 
 Store regression spec and capability spec separately in `specs/`.
 
+**Run the baseline now.** Invoke `adlc-test` to run the regression utterances against the live instruction and export results as CSV. This is the fresh baseline — save it to the ticket folder as `baseline.csv`. This CSV is what Phase 3d analyzes.
+
 **3d. Analyze baseline and establish acceptance criteria:**
 
 Before proposing criteria, analyze the baseline CSV to understand current metrics:
@@ -362,7 +364,7 @@ Clean exit. Two paths depending on whether this goes to prod.
 
 **7a. If deploying to prod (promote to baseline):**
 
-The winning attempt becomes the new baseline. This is the ONLY way baselines are created.
+The winning attempt becomes the new baseline. Baselines have two layers: **utterances** (`baselines/{topic}/utterances.txt`) are the permanent test inputs that persist across versions — Phase 7c manages those. **Version snapshots** (`baselines/v{N+1}/`) capture the instruction + eval results for a specific deployment — that's what 7a creates.
 
 1. Ask user: "Attempt NN passed acceptance. Promote to baseline v[N+1]?"
 2. If yes, copy the winning attempt's artifacts:
