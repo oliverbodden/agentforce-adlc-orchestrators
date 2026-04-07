@@ -117,6 +117,31 @@ When a conflict arises between a ticket requirement and a playbook principle:
 
 ---
 
+## Diagnose Before Editing
+
+**[STRONG] Classify why something isn't working before deciding how to fix it.**
+
+When a behavior is wrong, the fix depends on the root cause — not the symptom. Before writing any edit, classify. For trivially obvious fixes (typo, missing closing phrase), skip the full classification.
+
+| Root cause | Right fix | Wrong fix |
+|---|---|---|
+| Instruction is missing | Add it | — |
+| Instruction scope is too narrow | Widen the scope | Add a duplicate elsewhere |
+| Instruction wording is ambiguous | Clarify the wording | Add more words |
+| Instruction is clear but not followed | Investigate why — model limit? context window? contradicted by another instruction? | Make it "louder" or add emphasis |
+| Instruction is contradicted by another | Resolve the contradiction | Add a third instruction to override both |
+| Problem is outside instructions entirely | Exit ramp (see Editing Instructions) | Attempt an instruction workaround |
+
+**How to classify:** Find the specific line in the current instruction that should govern the behavior. Then:
+1. **Line doesn't exist** → missing. Add it.
+2. **Line exists but doesn't cover this case** → scope. Widen it.
+3. **Line exists, covers this case, but could be read two ways** → ambiguous. Reword it.
+4. **Line exists, is clear, and still not followed** → compliance failure. Adding more text won't help. Investigate: is another instruction contradicting it? Is it buried too deep? Is the context window too full?
+
+This applies to both Agentforce agent instructions (Phase 5 edits) and to the ADLC skills themselves (postmortem improvements). Discovered in ESCHAT-1192.
+
+---
+
 ## Instruction Structure
 
 **[STRONG] Follow Understand → Gather → Build as the universal instruction pattern.**
