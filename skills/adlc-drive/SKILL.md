@@ -36,22 +36,11 @@ This is visible to the user as you work. It serves two purposes: the user catche
 
 **⛔ CHECKPOINT RULE: Phases that need user approval MUST pause and wait.** Phases that are just showing work can continue. The per-phase instructions below specify which checkpoints pause and which are output-only.
 
-**⛔ PROCESS FAILURE RECOVERY: When the user identifies a process failure, STOP all work.** Re-read the FULL requirements for the current phase. Audit every requirement against your actual actions — not just the one the user flagged. Log ALL gaps found to HITL. Only resume after the audit is logged and the user confirms.
-
-**⛔ HITL LOG RULE: Append a JSONL entry to both files IMMEDIATELY after each of these events:**
-- User responds to a checkpoint (type: approval/correction/rejection)
-- User provides information (type: context)
-- Agent generates significant analysis — triage, blast radius, test matrix, plan options, acceptance criteria (type: context)
-- Process failure is identified (type: process-failure)
-- Session ends early (type: early-exit)
-
-Files:
+**⛔ HITL LOG RULE: After every checkpoint where the user responds, append one JSONL entry to both:**
 1. `adlc/hitl/{ticket-key}.jsonl` (per-ticket audit trail)
 2. `adlc/hitl/index.jsonl` (central rollup)
 
-HITL is the single source of truth for the session — not chat, not separate files.
-
-Entry format: `{"ts":"<ISO8601>","session_id":"<chat-id>","phase":"<N-name>","checkpoint":"<what>","type":"<approval|correction|rejection|context|escalation|early-exit|process-failure>","asked":"<what you presented>","decision":"<what user said>","agent":"<agent>","topic":"<topic>","ticket":"<key>","who":"<user>","org":"<org>","agent_version":"<version>","edit_strategy":"<strategy>"}`. Include `org`, `agent_version`, and `edit_strategy` from Phase 2 onward (once confirmed by user). See `adlc/hitl/README.md` for field definitions. Log the interaction as it happened — do not sanitize or summarize the user's words.
+Entry format: `{"ts":"<ISO8601>","session_id":"<chat-id>","phase":"<N-name>","checkpoint":"<what>","type":"<approval|correction|rejection|context|escalation|early-exit>","asked":"<what you presented>","decision":"<what user said>","agent":"<agent>","topic":"<topic>","ticket":"<key>","who":"<user>","org":"<org>","agent_version":"<version>","edit_strategy":"<strategy>"}`. Include `org`, `agent_version`, and `edit_strategy` from Phase 2 onward (once confirmed by user). See `adlc/hitl/README.md` for field definitions. Log the interaction as it happened — do not sanitize or summarize the user's words.
 
 **Delegation map:**
 
@@ -281,7 +270,7 @@ The iterative loop. This is where the work happens.
 FOR each iteration (max N per Phase 4b):
 
   1. CHANGE — Edit instruction based on the goal
-     - Re-read the Editing Instructions and Testing sections of adlc/prompt-engineering-playbook.md NOW using the Read tool. Do not proceed from memory.
+     - Consult adlc/prompt-engineering-playbook.md for editing principles and rule levels
      - Refer to the goal and scope documented in goal.md
      - Make the targeted edit (reduce, modify, add, or restructure — whatever the goal requires)
      - If ADDING content: check % increase vs current instruction size. If exceeding playbook guidelines, pause and get user approval before proceeding.
@@ -317,7 +306,7 @@ FOR each iteration (max N per Phase 4b):
      - Ask user: continue with more iterations, adjust criteria, or abandon?
 ```
 
-Sub-skills are the source of truth for HOW. Drive decides WHAT and WHEN. When a step says "Read adlc-X/SKILL.md", read it, find the relevant section, execute, return here. The playbook re-read in step 1 above is not optional — it's where the Diagnose Before Editing framework lives.
+Sub-skills are the source of truth for HOW. Drive decides WHAT and WHEN. When a step says "Read adlc-X/SKILL.md", read it, find the relevant section, execute, return here. Consult `adlc/prompt-engineering-playbook.md` before editing instructions.
 
 **Checkpointing:**
 
