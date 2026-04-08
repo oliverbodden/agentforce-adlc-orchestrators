@@ -112,7 +112,7 @@ Gather evidence about the current state. This is where the machine starts invest
 
 **3a-pre. Pull prior HITL history:**
 
-Check `adlc/hitl/index.jsonl` for prior entries matching this agent and/or topic. Look for patterns: recurring corrections, prior rejections, known gotchas from earlier drives. Summarize relevant findings in the ticket's `goal.md` under a "Prior HITL context" heading. This informs your Phase 3 investigation and Phase 4 planning — don't repeat mistakes that were already caught.
+Check prior ticket folders under `adlc/{agent}/tickets/*/hitl.jsonl` for entries matching this agent and/or topic. Look for patterns: recurring corrections, prior rejections, known gotchas from earlier drives. Summarize relevant findings in the ticket's `goal.md` under a "Prior HITL context" heading. This informs your Phase 3 investigation and Phase 4 planning — don't repeat mistakes that were already caught.
 
 **3a. Resolve agent/topic metadata:**
 
