@@ -2,30 +2,23 @@
 name: adlc-drive
 description: >-
   Goal-driven Agentforce agent improvement. Takes a goal or requirement,
-  refines it collaboratively, discovers baseline state, plans and triages
-  the work (proctor/design review/SPIKE/ship-it), executes changes via
-  other ADLC skills, iterates until acceptance criteria are met, and
-  presents results. Use when the user has a goal, improvement, bug fix,
-  or feature request for an Agentforce agent.
+  refines it collaboratively, discovers baseline state, then hands off to
+  adlc-execute for planning and iterative execution. Use when the user has
+  a goal, improvement, bug fix, or feature request for an Agentforce agent.
 ---
 
 # ADLC Drive
 
-Orchestrate goal-driven agent improvements end-to-end: from intake through
-execution to verified results. This skill owns the *what* and *why*; it
-delegates the *how* to other ADLC skills (`adlc-optimize`, `adlc-test`,
-`adlc-author`, `adlc-scaffold`, `adlc-discover`).
+Orchestrate goal-driven agent improvements: from intake through discovery
+to a verified baseline. This skill owns Phases 1-3 (Goal, Refine, Discover).
+Once discovery is complete and the user approves, it delegates Phases 4-7
+(Plan, Execute, Present, Hand Off) to `adlc-execute`.
+
+Drive owns the *what* and *why*; it delegates the *how* to other ADLC skills.
 
 ---
 
-## 1. ROLE
-
-Drive is the **brain**, not the hands. It:
-- Tracks the goal and acceptance criteria across the entire session
-- Decides which skill to invoke and when
-- Evaluates results against criteria after each iteration
-- Pulls the user in when decisions are ambiguous
-- Stops when done (or when stuck)
+## 1. RULES (apply to all phases, including adlc-execute)
 
 **⛔ TRANSPARENCY RULE: Commit to decisions in writing BEFORE acting on them.** For every significant decision (which phase to enter, which skill to call, what to change, what to test, whether to proceed or stop), write out:
 1. What you decided
@@ -36,11 +29,20 @@ This is visible to the user as you work. It serves two purposes: the user catche
 
 **⛔ CHECKPOINT RULE: Phases that need user approval MUST pause and wait.** Phases that are just showing work can continue. The per-phase instructions below specify which checkpoints pause and which are output-only.
 
-**⛔ HITL LOG RULE: After every checkpoint where the user responds, append one JSONL entry to both:**
-1. `adlc/hitl/{ticket-key}.jsonl` (per-ticket audit trail)
-2. `adlc/hitl/index.jsonl` (central rollup)
+**⛔ PROCESS FAILURE RECOVERY: When the user identifies a process failure, STOP all work.** Re-read the FULL requirements for the current phase. Audit every requirement against your actual actions — not just the one the user flagged. Log ALL gaps found to HITL. Only resume after the audit is logged and the user confirms.
 
-Entry format: `{"ts":"<ISO8601>","session_id":"<chat-id>","phase":"<N-name>","checkpoint":"<what>","type":"<approval|correction|rejection|context|escalation|early-exit>","asked":"<what you presented>","decision":"<what user said>","agent":"<agent>","topic":"<topic>","ticket":"<key>","who":"<user>","org":"<org>","agent_version":"<version>","edit_strategy":"<strategy>"}`. Include `org`, `agent_version`, and `edit_strategy` from Phase 2 onward (once confirmed by user). See `adlc/hitl/README.md` for field definitions. Log the interaction as it happened — do not sanitize or summarize the user's words.
+**⛔ HITL LOG RULE: Append a JSONL entry to the ticket's `hitl.jsonl` IMMEDIATELY after each of these events:**
+- User responds to a checkpoint (type: approval/correction/rejection)
+- User provides information (type: context)
+- Agent generates significant analysis — triage, blast radius, test matrix, plan options, acceptance criteria (type: context)
+- Process failure is identified (type: process-failure)
+- Session ends early (type: early-exit)
+
+File: `adlc/{agent}/tickets/{key}/hitl.jsonl` — lives with the ticket, one file per ticket, no central index.
+
+HITL is the single source of truth for the session — not chat, not separate files.
+
+Entry format: `{"ts":"<ISO8601>","session_id":"<chat-id>","phase":"<N-name>","checkpoint":"<what>","type":"<approval|correction|rejection|context|escalation|early-exit|process-failure>","asked":"<what you presented>","decision":"<what user said>","agent":"<agent>","topic":"<topic>","ticket":"<key>","who":"<user>","org":"<org>","agent_version":"<version>","edit_strategy":"<strategy>"}`. Include `org`, `agent_version`, and `edit_strategy` from Phase 2 onward. Log the interaction as it happened — do not sanitize or summarize the user's words.
 
 **Delegation map:**
 
@@ -52,6 +54,7 @@ Entry format: `{"ts":"<ISO8601>","session_id":"<chat-id>","phase":"<N-name>","ch
 | Resolve agent/topic metadata in org | `adlc-discover` |
 | Generate missing Flow/Apex stubs | `adlc-scaffold` |
 | Build new agent or major rewrite | `adlc-author` |
+| Plan, execute iterations, present results, hand off | `adlc-execute` |
 | Deploy, publish, activate | `adlc-deploy` (user invokes separately) |
 
 ---
@@ -213,198 +216,12 @@ Document the criteria in the ticket folder's `config.json`.
 - Exit ramps (anything out of scope)
 - Assumptions and WHY
 
-### Phase 4: Plan
+### Hand off to adlc-execute
 
-Based on discovery findings, produce the execution plan.
+Once the user approves Phase 3, proceed:
 
-**4a. Triage classification:**
-
-| Gate | Question | Outcome |
-|---|---|---|
-| Design review | Does this change what users see or how they interact? | Tag for **DESIGN REVIEW** (parallel — doesn't block execution planning) |
-| Risk score | See blast radius scoring below | **SHIP IT** (0) / **JUDGMENT CALL** (1) / **PROCTOR** (2+) |
-
-**Blast radius scoring (1 point each):**
-
-- Touches more than one topic?
-- Affects >10% of sessions (estimate from baseline data)?
-- Hard to roll back?
-- Touches PII, auth, payment, or escalation flows?
-- Changes system-level instructions (affects all topics)?
-
-| Score | Verdict |
-|---|---|
-| 0 | **SHIP IT** |
-| 1 | **JUDGMENT CALL** — default to proctor if unsure |
-| 2+ | **PROCTOR** — feature flag, gradual ramp |
-
-**4b. Determine test matrix:**
-
-Scale testing to the change scope. These are starting guidelines — adjust based on the topic's complexity and the user's requirements:
-- **Narrow change** (single instruction edit): ~5 smoke tests, 3 scenarios
-- **Moderate change** (new behavior or multi-section edit): ~10 tests, 5 scenarios
-- **Broad change** (system-level or multi-topic): ~15 tests, 7 scenarios
-- **Pass threshold:** default 90%, adjust per user's acceptance criteria
-
-**4c. Generate plan options:**
-
-For changes with multiple implementation approaches, generate 2-3 plan options with pros/cons/risks. Recommend one. If the change affects architecture, flag for HITL. If eval fails on one approach, try the next.
-
-**⛔ CHECKPOINT:** Present to user and wait for approval:
-- Plan options (2-3 if multiple approaches exist) with pros/cons
-- Recommended option and WHY
-- Triage classification (ship it / proctor / design review)
-- Execution order (which topics/changes first)
-- Test matrix (utterance counts, multi-turn ratio, run count, pass threshold)
-- Rollback strategy
-- Estimated instruction size change (% increase/decrease)
-- Any risks or concerns
-
-### Phase 5: Execute
-
-The iterative loop. This is where the work happens.
-
-**Loop structure:**
-
-```
-FOR each iteration (max N per Phase 4b):
-
-  1. CHANGE — Edit instruction based on the goal
-     - Consult adlc/prompt-engineering-playbook.md for editing principles and rule levels
-     - Refer to the goal and scope documented in goal.md
-     - Make the targeted edit (reduce, modify, add, or restructure — whatever the goal requires)
-     - If ADDING content: check % increase vs current instruction size. If exceeding playbook guidelines, pause and get user approval before proceeding.
-     - Save new version to attempts/NN-name/instruction.txt
-     - Deploy: Read ~/.cursor/skills/adlc-optimize/SKILL.md
-       You need: how to deploy an updated instruction to the org (Tooling API for UI-built agents)
-       Execute those steps.
-     - I know you'll want to batch several changes into one iteration to move faster — don't. One change per iteration. When things break, you need to know which change caused it.
-
-  2. SMOKE TEST (quick, per-iteration)
-     - 3-5 utterances, run each 4 times (3/4 pass = acceptable): at least 1 that exercises the change, at least 1 regression canary
-     - Prefer `sf agent preview` (instant, no suite creation) for topics that don't need context variables
-     - Use Testing Center only if context variables are required — reuse the same suite with `--force-overwrite`, don't create new ones
-     - Goal: confirm the change didn't break the basic flow. Not comprehensive.
-
-  3. EVALUATE
-     - Pass rate >= threshold? → proceed to bulk eval
-     - Pass rate < threshold? → diagnose, iterate (back to step 1)
-     - Ambiguous result? → PULL USER IN to confirm
-
-  4. BULK EVAL (only when smoke tests pass)
-     - Run full utterance set via Testing Center — reuse the suite created in Phase 3, `--force-overwrite` if spec changed
-     - Compare: python3 adlc/scripts/generate_report.py --prev <baseline-csv> --new <new-csv> --output <report.html>
-
-  5. ACCEPTANCE CHECK
-     - All acceptance criteria met? → EXIT loop, proceed to Phase 6
-     - Regression detected? → diagnose, iterate (back to step 1)
-     - Ambiguous? → PULL USER IN with data
-
-  IF max iterations reached without meeting criteria:
-     - STOP
-     - Present what was achieved vs what was targeted
-     - Ask user: continue with more iterations, adjust criteria, or abandon?
-```
-
-Sub-skills are the source of truth for HOW. Drive decides WHAT and WHEN. When a step says "Read adlc-X/SKILL.md", read it, find the relevant section, execute, return here. Consult `adlc/prompt-engineering-playbook.md` before editing instructions.
-
-**Checkpointing:**
-
-After each iteration, save state so progress isn't lost if the session breaks:
-
-Save state to `.adlc-drive-state.json` in the project root. Include at minimum: goal, agent, org, current phase, iteration count, changes made so far, acceptance criteria, and status. Add whatever metrics are relevant for this specific goal — don't use a fixed schema.
-
-Pull the user in when results are ambiguous, regressions appear, or you're stuck after 3 iterations.
-
-### Phase 6: Present
-
-After acceptance criteria are met (or max iterations reached):
-
-1. **Propose playbook updates** — If new patterns were discovered during this ticket, propose additions to `adlc/prompt-engineering-playbook.md`. User approves before changes are made.
-2. Present a summary:
-
-```markdown
-## Drive Summary: <goal>
-
-### Result: [ACHIEVED | PARTIALLY ACHIEVED | NOT ACHIEVED]
-
-### Changes Made
-| # | Change | File/Topic | Iteration |
-|---|--------|-----------|-----------|
-| 1 | <what changed> | <where> | <which iteration> |
-
-### Test Results
-| Metric | Baseline | Final | Delta |
-|---|---|---|---|
-[Include whatever metrics are relevant for this goal — discovered during Phase 3d]
-
-### Remaining Risks
-- <any known gaps or edge cases>
-
-### Recommendation
-- [ ] Ready to deploy (invoke `adlc-deploy`)
-- [ ] Needs design review on: <items>
-- [ ] Deploy behind proctor — flag: <name>, ramp: <plan>
-
-### Artifacts
-- Instruction file: <path>
-- Test suite: <name in org>
-- Eval report: <path to HTML>
-- Ticket folder: <path>
-```
-
-**⛔ CHECKPOINT:** Present to user and wait for approval:
-- All changes made (what was edited, in which instruction records)
-- Test results: baseline vs final for each metric
-- Metrics that improved, held, or regressed
-- Whether acceptance criteria were met (per criterion)
-- Remaining risks or known gaps
-- Recommendation (deploy / proctor / hold / needs more work) and WHY
-- Proposed playbook updates (if new patterns discovered)
-
-### Phase 7: Hand Off
-
-Clean exit. Two paths depending on whether this goes to prod.
-
-**7a. If deploying to prod (promote to baseline):**
-
-The winning attempt becomes the new baseline. Baselines have two layers: **utterances** (`baselines/{topic}/utterances.txt`) are the permanent test inputs that persist across versions — Phase 7c manages those. **Version snapshots** (`baselines/v{N+1}/`) capture the instruction + eval results for a specific deployment — that's what 7a creates.
-
-1. Ask user: "Attempt NN passed acceptance. Promote to baseline v[N+1]?"
-2. If yes, copy the winning attempt's artifacts:
-   ```
-   adlc/{agent}/baselines/v{N+1}/
-     instruction-{topic}.txt    ← from attempts/NN/instruction.txt
-     raw-outputs.csv            ← from attempts/NN/ (QA 8x run, not dev 4x)
-     metadata.json              ← record: version, date, ticket, scoring version, org state
-     eval-report.html           ← from attempts/NN/
-   ```
-3. The baseline raw-outputs.csv should be from a **QA-level eval (8x runs)**, not the dev smoke test. If only dev-level (4x) exists, run a QA eval before promoting.
-4. Remind user to invoke `adlc-deploy` for the actual org deployment.
-
-**7b. If NOT deploying yet (keep in sandbox):**
-
-- Roll back org to previous baseline instruction
-- Leave the winning attempt in the ticket folder — it's ready for promotion later
-- Note in STATUS.md which attempt is the candidate
-
-**7c. Update baseline utterances:**
-
-Review if the ticket introduced behavior not covered by existing baseline utterances:
-- Did this ticket add new capabilities that need new test utterances?
-- Were new utterances created during Phase 3c (capability spec) that should become permanent?
-- Did requirements change what "good" looks like, making some existing utterances obsolete?
-
-If yes, propose additions/removals to the baseline utterance list (`adlc/{agent}/baselines/{topic}/utterances.txt`). Get user approval before modifying.
-
-**7d. Always:**
-
-- Confirm the user has reviewed the Phase 6 summary
-- If proctor was recommended, note the flag strategy
-- If design review was tagged, note which items need sign-off
-- Clean up `.adlc-drive-state.json` (or leave as audit trail)
-
-**Do NOT auto-deploy.** Deployment is a separate decision with its own safety gates.
+→ Read `~/.cursor/skills/adlc-execute/SKILL.md`
+  Continue with Phase 4 (Plan). All discovery artifacts, acceptance criteria, and conversation context carry forward.
 
 ---
 
