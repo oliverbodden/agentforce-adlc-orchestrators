@@ -27,6 +27,21 @@ Based on discovery findings, produce the execution plan.
 
 **First: Re-read the Diagnose Before Editing and Editing Instructions sections of `adlc/prompt-engineering-playbook.md` NOW using the Read tool.** Do not proceed from memory. The playbook contains the framework for classifying problems and the rules for making changes. Extract the principles that apply to THIS goal before planning.
 
+**4-pre. Architecture review:**
+
+Before triaging or generating plan options, determine the work type and what sub-skills Phase 5 will need. Review the Phase 3 discovery artifacts and answer:
+
+1. **Work type:** Is this an instruction edit (modifying existing topic instructions), a new agent authoring (creating an agent via `.agent` file), a scaffold + edit (creating missing actions then editing instructions), or a combination?
+2. **Sub-skills needed:** Based on the work type, which skills will the CHANGE step in Phase 5 invoke? Map each planned change to a skill:
+   - Instruction edits → `adlc-optimize` (Tooling API)
+   - New agent or major rewrite → `adlc-author` (Agent Script bundle)
+   - Missing Flow/Apex stubs → `adlc-scaffold`
+3. **Iteration model:** For instruction edits, one iteration = one instruction change. For authoring, define what constitutes an iteration explicitly (e.g., "Iteration 1: generate .agent file. Iteration 2: publish and fix validation errors. Iteration 3: verify live actions with --use-live-actions. Iteration 4: run full eval."). Each iteration must be a single logical step with a testable outcome.
+4. **Validation model:** For instruction edits, validation = smoke test utterances. For authoring, validation also includes publish success, action invocation (live, not mocked), and org metadata checks. Document what "passing" means for each iteration.
+5. **Comparison model:** For instruction edits, comparison is same-agent before/after (baseline.csv vs new.csv). For authoring that replicates a source agent, comparison is cross-agent (source agent outputs vs new agent outputs for the same utterances). Document which model applies.
+
+Log the architecture review to HITL. This review drives everything in Phase 5 — if it's wrong, the execution will be wrong.
+
 **4a. Triage classification:**
 
 | Gate | Question | Outcome |
@@ -83,9 +98,12 @@ The iterative loop. This is where the work happens.
 ```
 FOR each iteration (max N from Phase 4b):
 
-  1. CHANGE — Edit instruction based on the goal
+  1. CHANGE — Execute the change defined by the Phase 4 plan for this iteration.
+     - **Log to HITL:** "Entering Phase 5 iteration N, executing CHANGE using [skill] per Phase 4 plan." If the skill you're about to call doesn't match what Phase 4 planned, STOP — that's a process failure.
      - Re-read the Editing Instructions and Testing sections of adlc/prompt-engineering-playbook.md NOW using the Read tool. Do not proceed from memory.
      - Refer to the goal and scope documented in goal.md
+
+     **For instruction edits (adlc-optimize path):**
      - Make the targeted edit (reduce, modify, add, or restructure — whatever the goal requires)
      - If ADDING content: check % increase vs current instruction size. If exceeding playbook guidelines, pause and get user approval before proceeding.
      - If ADDING content: draft 2-3 variants of varying verbosity and placement. Present all variants to the user with pros/cons before deploying any.
@@ -93,7 +111,20 @@ FOR each iteration (max N from Phase 4b):
      - Deploy: Read ~/.cursor/skills/adlc-optimize/SKILL.md
        You need: how to deploy an updated instruction to the org (Tooling API for UI-built agents)
        Execute those steps.
-     - I know you'll want to batch several changes into one iteration to move faster — don't. One change per iteration. When things break, you need to know which change caused it.
+     - One change per iteration. When things break, you need to know which change caused it.
+
+     **For new agent authoring (adlc-author path):**
+     - Read ~/.cursor/skills/adlc-author/SKILL.md and execute the generation step.
+     - Save the .agent file to the authoring bundle path.
+     - Publish: run `sf agent publish authoring-bundle` and treat publish errors as iteration failures (back to step 1 with the fix, not ad-hoc debugging).
+     - After publish succeeds, validate with `sf agent preview --authoring-bundle <name> --use-live-actions` — mocked actions do NOT count as validation. Confirm actions execute with real org data.
+     - One logical step per iteration. For authoring, the iteration boundaries from Phase 4-pre apply.
+
+     **For scaffold (adlc-scaffold path):**
+     - Read ~/.cursor/skills/adlc-scaffold/SKILL.md and generate the missing stubs.
+     - Deploy stubs to the org before proceeding to instruction edits or authoring that depend on them.
+
+     The Phase 4 plan determines which path(s) you follow and in what order. Do not deviate.
 
   2. SMOKE TEST (quick, per-iteration)
      - 3-5 utterances, run each 4 times (3/4 pass = acceptable): at least 1 that exercises the change, at least 1 regression canary
@@ -108,7 +139,7 @@ FOR each iteration (max N from Phase 4b):
 
   4. BULK EVAL (only when smoke tests pass)
      - Run full utterance set via Testing Center — reuse the suite created in Phase 3, `--force-overwrite` if spec changed
-     - Compare: python3 adlc/scripts/generate_report.py --prev <baseline-csv> --new <new-csv> --output <report.html>
+     - Compare: python3 adlc/scripts/generate_report.py --prev <baseline-csv> --new <new-csv> --output <report.html> --json-output <report.json>
 
   5. ACCEPTANCE CHECK
      - All acceptance criteria met? → EXIT loop, proceed to Phase 6
@@ -137,46 +168,76 @@ Pull the user in when results are ambiguous, regressions appear, or you're stuck
 
 After acceptance criteria are met (or max iterations reached):
 
-1. **Propose playbook updates** — If new patterns were discovered during this ticket, propose additions to `adlc/prompt-engineering-playbook.md`. User approves before changes are made.
-2. Present a summary:
+1. **Generate the regression report:**
+   ```bash
+   python3 adlc/scripts/generate_report.py \
+     --prev <baseline.csv> --new <final.csv> \
+     --output <ticket-folder>/eval-report.html \
+     --json-output <ticket-folder>/eval-report.json \
+     --title "<goal summary>"
+   ```
+
+2. **Read the JSON output and produce the AI analysis layer.** The script handles metrics; you handle judgment. Read `eval-report.json` and cross-reference against the ticket's acceptance criteria from `config.json`:
+
+   - **Scorecard interpretation:** Are the wins in areas the ticket targeted? Are regressions in areas the ticket didn't touch (unexpected) or expected trade-offs?
+   - **Acceptance criteria check:** For each criterion in `config.json`, map it to specific metrics from the JSON. State pass/fail with evidence.
+   - **Tool call accuracy** (if applicable): Compute from the raw CSV using the ticket's test spec annotations — which utterances should trigger which tools. The script doesn't do this; you do.
+   - **Template adherence** (if applicable): Check topic-specific response patterns from the ticket spec against the raw responses.
+   - **Regression explanation:** For each regression the scorecard flagged, explain whether it's blocking or acceptable and why. Reference the specific metric values.
+
+3. **Propose playbook updates** — If new patterns were discovered during this ticket, propose additions to `adlc/prompt-engineering-playbook.md`. User approves before changes are made.
+
+4. Present a summary:
 
 ```markdown
 ## Drive Summary: <goal>
 
-### Result: [ACHIEVED | PARTIALLY ACHIEVED | NOT ACHIEVED]
+### Recommendation: [GO | NO-GO | CONDITIONAL]
+
+### Executive Summary
+<2-3 sentences: what changed, key wins, key risks. Written from the JSON scorecard data.>
 
 ### Changes Made
 | # | Change | File/Topic | Iteration |
 |---|--------|-----------|-----------|
 | 1 | <what changed> | <where> | <which iteration> |
 
-### Test Results
-| Metric | Baseline | Final | Delta |
-|---|---|---|---|
-[Include whatever metrics are relevant for this goal — discovered during Phase 3d]
+### Scorecard
+<wins> wins | <regressions> regressions | <ties> ties
+
+### Acceptance Criteria
+| Criterion | Status | Evidence |
+|---|---|---|
+| <from config.json> | PASS/FAIL | <metric name: baseline → new, delta> |
+
+### Key Metrics
+| Metric | Baseline | Final | Delta | Verdict |
+|---|---|---|---|---|
+[Pull from JSON — focus on metrics relevant to this goal, not all 35+]
+
+### Regressions
+| Metric | Baseline | Final | Delta | Blocking? | Explanation |
+|---|---|---|---|---|---|
+[Only regressions. State whether each is blocking or acceptable and why.]
 
 ### Remaining Risks
 - <any known gaps or edge cases>
 
-### Recommendation
-- [ ] Ready to deploy (invoke `adlc-deploy`)
-- [ ] Needs design review on: <items>
-- [ ] Deploy behind proctor — flag: <name>, ramp: <plan>
-
 ### Artifacts
 - Instruction file: <path>
 - Test suite: <name in org>
-- Eval report: <path to HTML>
+- Eval report (HTML): <path>
+- Eval report (JSON): <path>
 - Ticket folder: <path>
 ```
 
 **⛔ CHECKPOINT:** Present to user and wait for approval:
+- GO / NO-GO / CONDITIONAL recommendation and WHY
 - All changes made (what was edited, in which instruction records)
-- Test results: baseline vs final for each metric
-- Metrics that improved, held, or regressed
-- Whether acceptance criteria were met (per criterion)
+- Acceptance criteria: pass/fail per criterion with evidence
+- Scorecard summary + key metrics
+- Each regression explained (blocking vs acceptable)
 - Remaining risks or known gaps
-- Recommendation (deploy / proctor / hold / needs more work) and WHY
 - Proposed playbook updates (if new patterns discovered)
 
 ---
@@ -192,7 +253,7 @@ The winning attempt becomes the new baseline. Baselines have two layers: **utter
 1. Ask user: "Attempt NN passed acceptance. Promote to baseline v[N+1]?"
 2. If yes, copy the winning attempt's artifacts:
    ```
-   adlc/{agent}/baselines/v{N+1}/
+   adlc/{agent-dev-name}__{org-alias}/baselines/v{N+1}/
      instruction-{topic}.txt    ← from attempts/NN/instruction.txt
      raw-outputs.csv            ← from attempts/NN/ (QA 8x run, not dev 4x)
      metadata.json              ← record: version, date, ticket, scoring version, org state
@@ -214,7 +275,7 @@ Review if the ticket introduced behavior not covered by existing baseline uttera
 - Were new utterances created during Phase 3c (capability spec) that should become permanent?
 - Did requirements change what "good" looks like, making some existing utterances obsolete?
 
-If yes, propose additions/removals to the baseline utterance list (`adlc/{agent}/baselines/{topic}/utterances.txt`). Get user approval before modifying.
+If yes, propose additions/removals to the baseline utterance list (`adlc/{agent-dev-name}__{org-alias}/baselines/{topic}/utterances.txt`). Get user approval before modifying.
 
 **7d. Always:**
 

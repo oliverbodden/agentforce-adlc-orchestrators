@@ -38,7 +38,7 @@ This is visible to the user as you work. It serves two purposes: the user catche
 - Process failure is identified (type: process-failure)
 - Session ends early (type: early-exit)
 
-File: `adlc/{agent}/tickets/{key}/hitl.jsonl` — lives with the ticket, one file per ticket, no central index.
+File: `adlc/{agent-dev-name}__{org-alias}/tickets/{key}/hitl.jsonl` — lives with the ticket, one file per ticket, no central index.
 
 HITL is the single source of truth for the session — not chat, not separate files.
 
@@ -79,7 +79,19 @@ If no ticket, ask the user to describe the goal in detail. Read the ticket or de
   If "Needs improvement", present gaps and ask user to fill them before proceeding.
   If "Ready" or "Ready with gap", continue.
 
-Create the ticket folder at `adlc/{agent-name}/tickets/{ticket-key}-{short-description}/` and document your understanding in `goal.md` inside it. Look for existing agent folders under `adlc/` to match the naming convention. ALL ticket artifacts go in this folder. I know you'll want to create it at the project root or in a `tickets/` shortcut — don't. Every artifact must live under `adlc/{agent}/tickets/` or it gets lost.
+Create the ticket folder at `adlc/{agent-dev-name}__{org-alias}/tickets/{ticket-key}-{short-description}/` and document your understanding in `goal.md` inside it.
+
+**Agent folder naming (`{agent-dev-name}__{org-alias}`):**
+- Use the agent's `DeveloperName` (from `BotDefinition`), not the kebab-cased display label. This guarantees uniqueness within an org.
+- Append `__{org-alias}` (double underscore separator) to disambiguate agents with the same developer name across different orgs.
+- If the agent folder doesn't exist yet, create it and write a `meta.json` at the agent-folder root with: `agent_dev_name`, `agent_label`, `bot_definition_id`, `org_alias`, `org_id`, `org_instance_url`, `created`, and any session notes.
+- Legacy folders (e.g. `adlc/indeed-service-agent/`) predate this convention; leave them in place, don't rename retroactively.
+
+**Work item folder naming (`{ticket-key}-{short-description}` or `NOTICKET-NN-{short-description}`):**
+- Ticketed work: use the real key (e.g. `HELP-1234-fix-escalation`).
+- Ticketless work: use `NOTICKET-NN-{short-description}` where `NN` is a zero-padded running counter scoped **per agent folder** (start at `01`, increment by looking at existing `NOTICKET-*` dirs under `tickets/`), and `{short-description}` is at most 4 words in kebab-case. Example: `NOTICKET-01-match-prod-v2`.
+
+ALL ticket artifacts go in this folder. I know you'll want to create it at the project root or in a `tickets/` shortcut — don't. Every artifact must live under `adlc/{agent-dev-name}__{org-alias}/tickets/` or it gets lost.
 
 **⛔ CHECKPOINT (output only — no questions yet, no org queries):**
 - Your understanding of the goal (in your own words)
@@ -112,7 +124,7 @@ Gather evidence about the current state. This is where the machine starts invest
 
 **3a-pre. Pull prior HITL history:**
 
-Check prior ticket folders under `adlc/{agent}/tickets/*/hitl.jsonl` for entries matching this agent and/or topic. Look for patterns: recurring corrections, prior rejections, known gotchas from earlier drives. Summarize relevant findings in the ticket's `goal.md` under a "Prior HITL context" heading. This informs your Phase 3 investigation and Phase 4 planning — don't repeat mistakes that were already caught.
+Check prior ticket folders under `adlc/{agent-dev-name}__{org-alias}/tickets/*/hitl.jsonl` for entries matching this agent and/or topic. Look for patterns: recurring corrections, prior rejections, known gotchas from earlier drives. Summarize relevant findings in the ticket's `goal.md` under a "Prior HITL context" heading. This informs your Phase 3 investigation and Phase 4 planning — don't repeat mistakes that were already caught.
 
 **3a. Resolve agent/topic metadata:**
 
@@ -123,13 +135,15 @@ Check prior ticket folders under `adlc/{agent}/tickets/*/hitl.jsonl` for entries
 
 If discovery reveals surprises (more instruction records than expected, unexpected topic structure, agent version mismatch), HITL — present findings and re-confirm scope with user before continuing.
 
-**3b. Pull current instructions + audit for conflicts:**
+**3b. Pull current state + audit for conflicts:**
 
-Use the agent/topic IDs resolved in step 3a.
+Use the agent/topic IDs resolved in step 3a. The approach depends on the work type confirmed in Phase 2:
+
+**For instruction edits (modifying an existing agent's topic instructions):**
 
 **Save the original instruction text immediately** — before any analysis or editing. Store each instruction record as-is in the ticket folder:
 ```
-adlc/{agent}/tickets/{key}/originals/
+adlc/{agent-dev-name}__{org-alias}/tickets/{key}/originals/
   {topic-name}-{record-id}.txt
 ```
 These are the rollback point. Never modify the originals folder.
@@ -138,22 +152,35 @@ These are the rollback point. Never modify the originals folder.
   You need: how to read the current topic instruction from the org (for UI-built agents without authoring bundles, look for the Tooling API path)
   Execute those steps. Store: instruction text, word count for ALL affected instruction records (global + per-topic).
 
-Then audit: do any existing instructions contradict the new guidelines? Flag conflicts (e.g., existing instruction says "use Here's what I found" but ticket says remove it). Document conflicts in goal.md.
+**For new agent authoring or major rewrite (creating an agent that replicates/replaces an existing one):**
+
+Use `adlc-discover` (already run in 3a) to map the **source agent's** full structure: all topics, actions per topic, action targets (flows, prompt templates, apex), variables (linked and mutable), and system-level instructions. Store the structure snapshot in the ticket folder:
+```
+adlc/{agent-dev-name}__{org-alias}/tickets/{key}/originals/
+  source-agent-structure.md
+```
+This is the reference the authoring skill will use. For each topic, also save the source instruction text (via Tooling API query on the source agent's `GenAiPluginInstructionDef` records) so the authored agent can replicate behavior faithfully.
+
+**Then, for both paths:**
+
+Audit: do any existing instructions or structures contradict the new guidelines? Flag conflicts (e.g., existing instruction says "use Here's what I found" but ticket says remove it). Document conflicts in goal.md.
   Then continue to 3c.
 
 **3c. Establish baseline + build test utterances:**
 
 Do NOT adopt pre-existing Testing Center test suites — build fresh from baseline utterances.
 
-**Baseline utterances live in ONE place only:** `adlc/{agent}/baselines/{topic}/utterances.txt`
+**Baseline utterances live in ONE place only:** `adlc/{agent-dev-name}__{org-alias}/baselines/{topic}/utterances.txt`
 Do NOT search Downloads, project root, old ticket folders, or anywhere else for baseline data. If the utterance file doesn't exist for a topic, ask the user to provide one or derive utterances from the instruction.
+
+**Baseline folder matching (required before using utterances):** After Phase 3a discovery, list existing folders under `adlc/{agent-dev-name}__{org-alias}/baselines/` and match them against the topics discovered from the org. Flag mismatches: folders with no matching topic, topics with no matching folder, or multiple folders that map to a single topic. Present findings to the user and confirm which folder to use before proceeding. Do NOT silently pick a folder — a wrong match means testing the wrong utterances.
 
 **Baseline = utterances, not outputs.** I know you'll want to reuse an old CSV of outputs as the baseline to save time — don't. Org state changes between runs make old outputs invalid. Always run utterances against the live instruction to generate fresh outputs.
 
 **Context variables check (HARD GATE):** Does this topic need session context (e.g., linked variables, account data, user identity) for testing? Ask the user — they know which topics need context vs which are self-contained. If context is needed, **STOP and ask the user what variables are required and their current values.** Do NOT proceed with testing if a topic needs context and you don't have it — results will be invalid. See playbook testing section for details.
 
 **Combine ALL available sources for the test spec (AND, not OR):**
-1. **Baseline utterances** (from `adlc/{agent}/baselines/{topic}/utterances.txt`) → regression tests
+1. **Baseline utterances** (from `adlc/{agent-dev-name}__{org-alias}/baselines/{topic}/utterances.txt`) → regression tests
 2. **Ticket attachments** → examples of bad/new behavior
 3. **Derived from instruction + requirements** → edge cases, gaps
 
@@ -218,10 +245,15 @@ Document the criteria in the ticket folder's `config.json`.
 
 ### Hand off to adlc-execute
 
-Once the user approves Phase 3, proceed:
+**⛔ HARD GATE — do NOT skip this step.** Once the user approves Phase 3:
 
-→ Read `~/.cursor/skills/adlc-execute/SKILL.md`
-  Continue with Phase 4 (Plan). All discovery artifacts, acceptance criteria, and conversation context carry forward.
+1. **STOP.** Do not continue planning, editing, authoring, or debugging inline.
+2. **Log to HITL:** `{"phase":"3-handoff","type":"context","decision":"Entering Phase 4 via adlc-execute"}` — this creates an audit trail that the handoff happened.
+3. **Read `~/.cursor/skills/adlc-execute/SKILL.md` NOW.** Do not proceed without reading it. Phase 4 starts inside that skill.
+
+All discovery artifacts, acceptance criteria, and conversation context carry forward.
+
+**⛔ Sub-skills do NOT replace adlc-execute.** Skills like `adlc-author`, `adlc-optimize`, and `adlc-scaffold` are tools that adlc-execute orchestrates during Phase 5. They are NOT standalone phases. If you just finished running adlc-author to generate an agent, you are NOT done — adlc-execute still owns the test-evaluate-iterate loop, the publish validation, and the acceptance check. Going ad-hoc after a sub-skill call is the #1 process failure mode.
 
 ---
 

@@ -84,7 +84,7 @@ inconsistencies in tone across agents. Most are quick fixes.
 
 ## Baseline
 - Baseline CSV: attached
-- Prior eval: evals/indeed-service-agent/baselines/v21/
+- Prior eval: adlc/indeed-service-agent/baselines/v21/
 ```
 
 **Why it works:** Specific changes per topic, measurable acceptance, baseline referenced, before/after implied.

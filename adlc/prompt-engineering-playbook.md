@@ -28,6 +28,8 @@ User utterance
 
 **Topics are sub-agents.** Each has its own classification (WHEN to call it), instructions (WHAT to do), and actions (HOW to get data). More topics = more maintenance + more classification risk. If classification fails, everything downstream fails — this is the #1 priority to get right.
 
+**Classification lives in `GenAiPlannerAttrDefinition`.** This is the Salesforce object that defines topic routing rules — which utterances get routed to which topic. The ADLC skills do not currently read or edit this table. If a ticket requires changing topic routing or classification boundaries, query `GenAiPlannerAttrDefinition` directly via Tooling API.
+
 **Instructions are the presentation layer for action output.** Actions (Flows, Apex, Prompt Templates) return raw data — invoice details, job status, knowledge articles. Instructions tell the LLM how to format, frame, and present that data to the user. When editing instructions, you're changing the presentation of data that flows through actions. The actions don't change, but their output is referenced in templates within the instruction.
 
 **The runtime prompt includes (in order):** System rules (can't modify) → Scope → Your topic instructions → Tool/action definitions (auto-initialized with descriptions) → Action input/output field descriptions → Additional system rules. All of this goes to OpenAI as one prompt.
@@ -290,10 +292,12 @@ The ticket defines which phase applies. Not every ticket needs full cross-topic 
 
 **[Reference] How evals are organized in this project.**
 
-- **Three layers:** `eval-config/` (versioned scoring scripts), `baselines/` (agent-level, one per shipped version), `tickets/` (work-item scoped with numbered attempts).
+- **Two layers:** `baselines/` (permanent utterances + version snapshots, agent-level) and `tickets/` (work-item scoped with numbered attempts).
 - **Baselines are agent-level.** Only winning attempts promote to baseline.
 - **Separate raw outputs from scored results.** Raw CSVs are expensive to regenerate. Scored reports are cheap.
-- **Regression script is topic-agnostic.** `adlc/scripts/generate_report.py` discovers features from data. Topic-specific eval criteria live in the ticket's config.json and specs.
+- **Two-layer reporting model:**
+  - **Layer 1 — Script:** `adlc/scripts/generate_report.py` computes all metrics from CSV data: scorecard (wins/regressions/ties), strategy distribution, formatting compliance, opening behavior, response length buckets, multi-turn awareness, redundancy, consistency, and a filtered response comparison appendix. Outputs HTML report + optional JSON sidecar (`--json-output`).
+  - **Layer 2 — AI (Phase 6):** Reads the JSON output, cross-references against the ticket's acceptance criteria from `config.json`, and produces the executive summary, GO/NO-GO recommendation, tool call accuracy analysis, and template adherence checks. Topic-specific intelligence lives here, not in the script.
 
 ---
 
@@ -305,5 +309,3 @@ After each ticket:
 3. User reviews and approves before changes are made
 4. Label new entries with the appropriate rule level
 5. Reference the ticket that prompted the addition (e.g., "Discovered in PROJ-345")
-
-This playbook is versioned alongside the eval-config. Major changes should be noted in `eval-config/CHANGELOG.md`.

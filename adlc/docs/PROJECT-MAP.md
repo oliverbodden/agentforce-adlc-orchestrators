@@ -40,25 +40,11 @@ agentforce-project/
 │   ├── 🟢 ticket-template.md                   # Generic ticket template
 │   ├── 🟢 ticket-template-generalfaq.md        # Pre-filled for GeneralFAQ
 │   │
-│   ├── 🟢 eval-config/                         # Versioned eval methodology
-│   │   ├── CHANGELOG.md
-│   │   ├── scoring/
-│   │   │   ├── current/                         # Active scoring scripts
-│   │   │   │   ├── run_regression.py            # Metrics comparison (Invoice-era, topic-agnostic now)
-│   │   │   │   ├── analyze_response.py          # Response quality checker
-│   │   │   │   └── version.json                 # s1
-│   │   │   └── versions/s1/                     # Archived
-│   │   └── utterances/
-│   │       ├── current/
-│   │       │   ├── all-topics-102.yaml          # Canonical utterance set
-│   │       │   └── version.json                 # u1
-│   │       └── versions/u1/                     # Archived
-│   │
 │   ├── 🟢 scripts/                             # Shared utilities
-│   │   ├── generate_report.py                   # Topic-agnostic regression + HTML report
-│   │   └── _archived/                           # Replaced by sub-skills
-│   │       ├── update_instruction.py            # → now in adlc-optimize
-│   │       └── run_eval.py                      # → now in adlc-test
+│   │   └── generate_report.py                   # Regression report: scorecard, strategy, formatting,
+│   │                                            #   opening behavior, length buckets, multi-turn,
+│   │                                            #   consistency, response comparison appendix.
+│   │                                            #   Outputs HTML + optional JSON (--json-output).
 │   │
 │   └── 🟢 indeed-service-agent/                # Agent-level eval data
 │       ├── baselines/

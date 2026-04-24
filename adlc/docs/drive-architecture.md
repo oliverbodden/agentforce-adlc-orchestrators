@@ -74,9 +74,7 @@
 
 ### Shared Scripts
 
-- `adlc/scripts/generate_report.py` — runs `run_regression.py` with correct paths, wraps in HTML.
-- `adlc/scripts/update_instruction.py` — Tooling API deploy + backup. To be replaced by `adlc-optimize` once it supports Tooling API.
-- `adlc/scripts/run_eval.py` — Testing Center runner + CSV export. To be replaced by `adlc-test` once it exposes CSV output.
+- `adlc/scripts/generate_report.py` — Regression report engine. Computes scorecard (wins/regressions/ties), strategy distribution, formatting compliance, opening behavior, response length buckets, multi-turn awareness, consistency, and filtered response comparison appendix. Outputs HTML + optional JSON sidecar (`--json-output`). Topic-agnostic; topic-specific analysis (tool accuracy, template adherence, GO/NO-GO) is handled by the AI in Phase 6.
 
 ## What Needs to Change
 
@@ -87,5 +85,5 @@
 | `adlc-optimize` | Added Section 3.UI: Tooling API read/write/backup/rollback | Done |
 | `adlc-test`     | Added CSV export in Phase 3 + HTML unescape guidance | Done |
 | `adlc-drive`    | Phase 3 + 5 delegate to sub-skills | Done |
-| Shared scripts   | Archived `update_instruction.py`, `run_eval.py`. Kept `generate_report.py` | Done |
+| Shared scripts   | Archived `update_instruction.py`, `run_eval.py`. Upgraded `generate_report.py` with scorecard, strategy, formatting, multi-turn, JSON output, appendix | Done |
 
