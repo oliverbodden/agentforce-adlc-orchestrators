@@ -1,0 +1,34 @@
+{
+  "source": "SalesforceAIResearch/agentforce-adlc",
+  "repo_url": "https://github.com/SalesforceAIResearch/agentforce-adlc",
+  "branch": "main",
+  "local_clone": "/Users/obguzman/agentforce-adlc-salesforce",
+  "commit": "4fa57e376d7b6f372ba4a765fce475df5924bbfa",
+  "short_commit": "4fa57e3",
+  "version": "0.1.0",
+  "recorded_date": "2026-04-25",
+  "skill_model": {
+    "type": "consolidated",
+    "primary_skills": [
+      "developing-agentforce",
+      "testing-agentforce",
+      "observing-agentforce"
+    ],
+    "legacy_aliases": {
+      "adlc-author": "developing-agentforce",
+      "adlc-discover": "developing-agentforce",
+      "adlc-scaffold": "developing-agentforce",
+      "adlc-deploy": "developing-agentforce",
+      "adlc-safety": "developing-agentforce",
+      "adlc-feedback": "developing-agentforce",
+      "adlc-test": "testing-agentforce",
+      "adlc-run": "testing-agentforce",
+      "adlc-optimize": "observing-agentforce"
+    }
+  },
+  "notes": [
+    "Recorded during Phase 0 upstream alignment.",
+    "Standard Salesforce skill content must not be modified or deleted directly.",
+    "Local additions should be layered additively through overlays, wrappers, project playbooks, or install steps."
+  ]
+}

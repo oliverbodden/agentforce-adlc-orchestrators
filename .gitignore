@@ -1,0 +1,20 @@
+# Local Salesforce/session state
+.sfdx/
+.sf/
+
+# Production agent source should not be mixed into the ADLC overlay repo
+force-app/
+
+# Generated bootstrap/status evidence; keep source scripts, not local run outputs
+adlc/versioning/bootstrap-*.json
+
+# Salesforce upstream skills are installed from upstream, not vendored here
+skills/developing-agentforce/
+skills/testing-agentforce/
+skills/observing-agentforce/
+
+# Local resumability scratchpad
+.adlc-drive-state.json
+
+# OS/editor noise
+.DS_Store
