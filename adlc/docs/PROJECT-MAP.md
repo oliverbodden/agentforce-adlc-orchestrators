@@ -16,6 +16,16 @@ This map is a current orientation aid. The approved model is:
 
 Do not modify Salesforce standard skill content directly. Local behavior belongs in wrappers, overlay docs, project playbooks, bootstrap/install steps, or approved additive patches.
 
+## Install Order
+
+Install in this order:
+
+1. **Salesforce prerequisites** — Install Salesforce CLI, verify required `sf` command surfaces, and authenticate required org aliases.
+2. **Salesforce upstream ADLC skills** — Install or verify `developing-agentforce`, `testing-agentforce`, and `observing-agentforce` from `https://github.com/SalesforceAIResearch/agentforce-adlc`.
+3. **Indeed/local overlay** — Install or verify `adlc-drive`, `adlc-execute`, `adlc-ticket`, overlay docs, playbooks, bootstrap/status tooling, and artifact repo routing from this repo.
+
+The local overlay repo should not vendor copied Salesforce upstream skill directories. `tools/bootstrap_it_adlc.py` verifies the expected state and can copy missing consolidated Salesforce skills from a local upstream clone into the user's skill directory, but the repo source remains additive.
+
 ## Legend
 
 | Symbol | Meaning |

@@ -345,32 +345,48 @@
 <div style="background:white;border:1px solid var(--gray-200);border-radius:0.75rem;padding:1.25rem;margin:0.75rem 0;">
 
   <div style="margin-bottom:1.25rem;">
-    <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--gray-500);margin-bottom:0.5rem;">Step 1 — Clone the repo</div>
+    <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--gray-500);margin-bottom:0.5rem;">Step 1 — Verify Salesforce prerequisites</div>
     <div style="background:var(--gray-900);color:#e5e7eb;padding:0.75rem 1rem;border-radius:0.4rem;font-family:'SF Mono','Fira Code',monospace;font-size:0.82rem;overflow-x:auto;">
+      sf --version<br>
+      sf agent --help<br>
+      sf project --help<br>
+      sf data --help<br>
+      sf apex --help<br>
+      sf api --help<br>
+      sf org --help<br>
+      sf org list
+    </div>
+  </div>
+
+  <div style="margin-bottom:1.25rem;">
+    <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--gray-500);margin-bottom:0.5rem;">Step 2 — Install or verify Salesforce upstream ADLC skills</div>
+    <p style="font-size:0.85rem;margin-bottom:0.4rem;">Install the standard baseline from Salesforce upstream first. Required skills: <code>developing-agentforce</code>, <code>testing-agentforce</code>, and <code>observing-agentforce</code>.</p>
+    <div style="background:var(--gray-900);color:#e5e7eb;padding:0.75rem 1rem;border-radius:0.4rem;font-family:'SF Mono','Fira Code',monospace;font-size:0.82rem;">
+      git clone https://github.com/SalesforceAIResearch/agentforce-adlc.git ~/agentforce-adlc-salesforce
+    </div>
+    <p style="font-size:0.8rem;color:var(--gray-500);margin-top:0.4rem;">Follow Salesforce upstream install guidance for the standard skills. Do not modify or vendor those skill directories in this overlay repo.</p>
+  </div>
+
+  <div style="margin-bottom:1.25rem;">
+    <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--gray-500);margin-bottom:0.5rem;">Step 3 — Clone Indeed/local overlay repo</div>
+    <div style="background:var(--gray-900);color:#e5e7eb;padding:0.75rem 1rem;border-radius:0.4rem;font-family:'SF Mono','Fira Code',monospace;font-size:0.82rem;">
       git clone https://code.corp.indeed.com/telecom/it-adlc.git<br>
       cd it-adlc
     </div>
   </div>
 
   <div style="margin-bottom:1.25rem;">
-    <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--gray-500);margin-bottom:0.5rem;">Step 2 — Run bootstrap status/dry-run</div>
+    <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--gray-500);margin-bottom:0.5rem;">Step 4 — Verify/apply local overlay additively</div>
     <div style="background:var(--gray-900);color:#e5e7eb;padding:0.75rem 1rem;border-radius:0.4rem;font-family:'SF Mono','Fira Code',monospace;font-size:0.82rem;">
       python3 tools/bootstrap_it_adlc.py --dry-run<br>
-      python3 tools/bootstrap_it_adlc.py --status
-    </div>
-    <p style="font-size:0.8rem;color:var(--gray-500);margin-top:0.4rem;">The helper is conservative. Dry-run/status do not change files and there is no <code>--target</code> flag.</p>
-  </div>
-
-  <div style="margin-bottom:1.25rem;">
-    <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--gray-500);margin-bottom:0.5rem;">Step 3 — Install additively if needed</div>
-    <div style="background:var(--gray-900);color:#e5e7eb;padding:0.75rem 1rem;border-radius:0.4rem;font-family:'SF Mono','Fira Code',monospace;font-size:0.82rem;">
+      python3 tools/bootstrap_it_adlc.py --status<br>
       python3 tools/bootstrap_it_adlc.py --install-additive
     </div>
-    <p style="font-size:0.8rem;color:var(--gray-500);margin-top:0.4rem;">Copies missing consolidated Salesforce skills side-by-side. It does not delete legacy <code>adlc-*</code> skills or overwrite existing skill folders.</p>
+    <p style="font-size:0.8rem;color:var(--gray-500);margin-top:0.4rem;">The helper is conservative. It does not delete legacy skills, overwrite local wrapper skills, or vendor Salesforce upstream skill source into this repo.</p>
   </div>
 
   <div style="margin-bottom:1.25rem;">
-    <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--gray-500);margin-bottom:0.5rem;">Step 4 — Configure Atlassian MCP (JIRA access)</div>
+    <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--gray-500);margin-bottom:0.5rem;">Step 5 — Configure Atlassian MCP (JIRA access)</div>
     <p style="font-size:0.85rem;margin-bottom:0.4rem;">Add to <code>~/.cursor/mcp.json</code>:</p>
     <div style="background:var(--gray-900);color:#e5e7eb;padding:0.75rem 1rem;border-radius:0.4rem;font-family:'SF Mono','Fira Code',monospace;font-size:0.82rem;">
       {<br>
@@ -385,7 +401,7 @@
   </div>
 
   <div>
-    <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--gray-500);margin-bottom:0.5rem;">Step 5 — Restart Cursor</div>
+    <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--gray-500);margin-bottom:0.5rem;">Step 6 — Restart Cursor</div>
     <p style="font-size:0.85rem;">Restart Cursor to load the new skills and MCP server. Then try:</p>
     <div style="background:var(--gray-900);color:#e5e7eb;padding:0.75rem 1rem;border-radius:0.4rem;font-family:'SF Mono','Fira Code',monospace;font-size:0.82rem;margin-top:0.4rem;">
       adlc-ticket ESCHAT-1234 &nbsp;&nbsp;&nbsp;<span style="color:var(--gray-500);"># evaluate a ticket</span><br>
