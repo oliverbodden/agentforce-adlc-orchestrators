@@ -25,6 +25,15 @@ See `adlc/docs/developer-onboarding.md` for the full setup flow.
 
 ## Useful Commands
 
+Install Salesforce CLI if needed:
+
+```text
+node --version
+npm --version
+npm install --global @salesforce/cli
+sf --version
+```
+
 Install Salesforce upstream skills for Cursor:
 
 ```text

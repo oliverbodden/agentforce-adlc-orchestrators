@@ -30,6 +30,9 @@ Command sketch for Cursor:
 
 ```text
 # 1. Salesforce prerequisites
+node --version
+npm --version
+npm install --global @salesforce/cli
 sf --version
 sf agent --help
 sf org list

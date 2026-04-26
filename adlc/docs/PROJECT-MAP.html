@@ -345,8 +345,11 @@
 <div style="background:white;border:1px solid var(--gray-200);border-radius:0.75rem;padding:1.25rem;margin:0.75rem 0;">
 
   <div style="margin-bottom:1.25rem;">
-    <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--gray-500);margin-bottom:0.5rem;">Step 1 — Verify Salesforce prerequisites</div>
+    <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--gray-500);margin-bottom:0.5rem;">Step 1 — Install and verify Salesforce prerequisites</div>
     <div style="background:var(--gray-900);color:#e5e7eb;padding:0.75rem 1rem;border-radius:0.4rem;font-family:'SF Mono','Fira Code',monospace;font-size:0.82rem;overflow-x:auto;">
+      node --version<br>
+      npm --version<br>
+      npm install --global @salesforce/cli<br>
       sf --version<br>
       sf agent --help<br>
       sf project --help<br>

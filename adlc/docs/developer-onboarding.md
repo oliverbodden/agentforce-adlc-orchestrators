@@ -61,7 +61,10 @@ The GitLab repo should contain local overlay source, docs, playbooks, bootstrap/
 Target flow for a clean machine:
 
 ```text
-# 1. Verify Salesforce prerequisites first
+# 1. Install and verify Salesforce prerequisites first
+node --version
+npm --version
+npm install --global @salesforce/cli
 sf --version
 sf agent --help
 sf project --help
