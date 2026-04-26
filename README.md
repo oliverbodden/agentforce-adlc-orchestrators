@@ -25,7 +25,22 @@ See `adlc/docs/developer-onboarding.md` for the full setup flow.
 
 ## Useful Commands
 
+Install Salesforce upstream skills for Cursor:
+
 ```text
+# Option A: one-command upstream install
+curl -sSL https://raw.githubusercontent.com/SalesforceAIResearch/agentforce-adlc/main/tools/install.sh | bash
+
+# Option B: local upstream clone
+git clone https://github.com/SalesforceAIResearch/agentforce-adlc.git ~/agentforce-adlc-salesforce
+cd ~/agentforce-adlc-salesforce
+python3 tools/install.py --target cursor
+```
+
+Then verify/apply the Indeed/local overlay:
+
+```text
+cd ~/it-adlc
 python3 tools/bootstrap_it_adlc.py --dry-run
 python3 tools/bootstrap_it_adlc.py --status
 python3 tools/bootstrap_it_adlc.py --install-additive

@@ -73,8 +73,11 @@ sf org list
 
 # 2. Install or verify Salesforce upstream ADLC baseline
 git clone https://github.com/SalesforceAIResearch/agentforce-adlc.git ~/agentforce-adlc-salesforce
-# Follow Salesforce upstream install guidance for the standard consolidated skills.
-# Required skills: developing-agentforce, testing-agentforce, observing-agentforce.
+cd ~/agentforce-adlc-salesforce
+python3 tools/install.py --target cursor
+# Alternative one-command upstream install:
+# curl -sSL https://raw.githubusercontent.com/SalesforceAIResearch/agentforce-adlc/main/tools/install.sh | bash
+# Required installed skills: developing-agentforce, testing-agentforce, observing-agentforce.
 
 # 3. Clone the Indeed/local overlay repo
 git clone https://code.corp.indeed.com/telecom/it-adlc.git

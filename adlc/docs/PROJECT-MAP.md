@@ -26,6 +26,30 @@ Install in this order:
 
 The local overlay repo should not vendor copied Salesforce upstream skill directories. `tools/bootstrap_it_adlc.py` verifies the expected state and can copy missing consolidated Salesforce skills from a local upstream clone into the user's skill directory, but the repo source remains additive.
 
+Command sketch for Cursor:
+
+```text
+# 1. Salesforce prerequisites
+sf --version
+sf agent --help
+sf org list
+
+# 2. Salesforce upstream ADLC skills
+git clone https://github.com/SalesforceAIResearch/agentforce-adlc.git ~/agentforce-adlc-salesforce
+cd ~/agentforce-adlc-salesforce
+python3 tools/install.py --target cursor
+
+# Alternative one-command upstream install:
+curl -sSL https://raw.githubusercontent.com/SalesforceAIResearch/agentforce-adlc/main/tools/install.sh | bash
+
+# 3. Indeed/local overlay
+git clone https://code.corp.indeed.com/telecom/it-adlc.git ~/it-adlc
+cd ~/it-adlc
+python3 tools/bootstrap_it_adlc.py --dry-run
+python3 tools/bootstrap_it_adlc.py --status
+python3 tools/bootstrap_it_adlc.py --install-additive
+```
+
 ## Legend
 
 | Symbol | Meaning |

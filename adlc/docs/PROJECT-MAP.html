@@ -362,9 +362,11 @@
     <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--gray-500);margin-bottom:0.5rem;">Step 2 — Install or verify Salesforce upstream ADLC skills</div>
     <p style="font-size:0.85rem;margin-bottom:0.4rem;">Install the standard baseline from Salesforce upstream first. Required skills: <code>developing-agentforce</code>, <code>testing-agentforce</code>, and <code>observing-agentforce</code>.</p>
     <div style="background:var(--gray-900);color:#e5e7eb;padding:0.75rem 1rem;border-radius:0.4rem;font-family:'SF Mono','Fira Code',monospace;font-size:0.82rem;">
-      git clone https://github.com/SalesforceAIResearch/agentforce-adlc.git ~/agentforce-adlc-salesforce
+      git clone https://github.com/SalesforceAIResearch/agentforce-adlc.git ~/agentforce-adlc-salesforce<br>
+      cd ~/agentforce-adlc-salesforce<br>
+      python3 tools/install.py --target cursor
     </div>
-    <p style="font-size:0.8rem;color:var(--gray-500);margin-top:0.4rem;">Follow Salesforce upstream install guidance for the standard skills. Do not modify or vendor those skill directories in this overlay repo.</p>
+    <p style="font-size:0.8rem;color:var(--gray-500);margin-top:0.4rem;">Alternative: <code>curl -sSL https://raw.githubusercontent.com/SalesforceAIResearch/agentforce-adlc/main/tools/install.sh | bash</code>. Do not modify or vendor those skill directories in this overlay repo.</p>
   </div>
 
   <div style="margin-bottom:1.25rem;">
