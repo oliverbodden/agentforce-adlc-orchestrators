@@ -27,7 +27,20 @@ Same evaluation logic. Output format differs by mode.
 
 ---
 
-## Evaluation Criteria
+## Quick Routing
+
+| Situation | Read |
+|---|---|
+| User wants to write or improve a ticket | `Mode 1: Write / Improve Ticket` |
+| User provides an existing JIRA ticket | `Mode 2: Evaluate Existing Ticket` |
+| `adlc-drive` calls this skill for readiness | `Mode 3: Called By Drive` |
+| Ticket is prompt-facing with multiple requirements | `Readiness Checks` → `Prompt Modification Breadth Assessment` |
+| Ticket changes what "good" means | `Readiness Checks` → `Eval Criteria Assessment` |
+| Ticket might be a SPIKE | `Readiness Checks` → `Scope Check` and `Mode 1` SPIKE template |
+
+---
+
+## Readiness Checks
 
 ### 5 Required Elements
 
@@ -90,15 +103,34 @@ If the ticket introduces changes that affect what "good" looks like:
 - Flag any new metrics that don't exist in current evals
 - Note: "This ticket changes eval criteria — HITL required before drive proceeds"
 
+### Prompt Modification Breadth Assessment
+
+For prompt-facing tickets, assess whether the requested changes should be split or explicitly staged before `adlc-drive` starts:
+
+| Prompt change shape | Recommendation |
+|---|---|
+| Localized rule change on one response surface | Keep one ticket |
+| Multiple style/output rules on the same response surface | Keep one ticket, but recommend staged execution |
+| Broad compaction, restructure, or prompt rewrite plus style/output polish | Recommend separate tickets, or one ticket with explicit staged acceptance |
+| Multiple topics/actions affected | Recommend split unless a true global instruction layer intentionally owns the behavior |
+| Structural prompt change that other requirements depend on | Recommend that structural work be its own first-stage ticket or first-stage acceptance gate |
+
+When recommending split/stage, do not mark the ticket "Not ready" solely for breadth if the goal and acceptance criteria are otherwise clear. Instead, add a **Scope warning** and a concrete recommendation:
+
+```text
+Scope warning: This ticket combines broad prompt substrate work with output-style criteria. Recommend splitting compaction/restructure into its own ticket, or explicitly approving staged execution where Stage 1 reaches compaction acceptance before style criteria are attempted.
+```
+
 ---
 
-## Standalone Mode: Help Write a Ticket
+## Mode 1: Write / Improve Ticket
 
 When user provides a rough description or asks for help writing a ticket:
 
 1. **Ask the 5 key questions** (skip any already answered)
 2. **Determine scope** — is this instruction work, investigation, or infrastructure?
-3. **Generate a structured ticket** following this template:
+3. **Assess prompt modification breadth** if this is prompt-facing. If the request combines broad compaction/restructure with style/output polish, ask whether the user wants separate tickets or one explicitly staged ticket before drafting.
+4. **Generate a structured ticket** following this template:
 
 ```markdown
 ## Context
@@ -106,6 +138,9 @@ When user provides a rough description or asks for help writing a ticket:
 
 ## Requirements
 [Specific, actionable changes. Number them.]
+
+## Execution / Staging
+[If broad prompt substrate work is combined with output polish, state the approved staging: e.g., Stage 1 compaction acceptance, Stage 2 list formatting, Stage 3 contractions. If split into separate tickets, list the proposed ticket split.]
 
 ### [Sub-section per topic if multi-topic]
 
@@ -125,8 +160,8 @@ When user provides a rough description or asks for help writing a ticket:
 [Before/after response text, or link to doc with examples]
 ```
 
-4. **Present the generated ticket** for user review
-5. User copies into JIRA
+5. **Present the generated ticket** for user review
+6. User copies into JIRA
 
 ### For SPIKE tickets:
 
@@ -147,7 +182,7 @@ When user provides a rough description or asks for help writing a ticket:
 
 ---
 
-## Standalone Mode: Evaluate Existing Ticket
+## Mode 2: Evaluate Existing Ticket
 
 When user provides a JIRA key:
 
@@ -156,7 +191,8 @@ When user provides a JIRA key:
 2. **Run scope check** — is this in scope for drive?
 3. **Score against 5 criteria** — what's present, what's missing
 4. **Check for eval criteria impact** — does this change what "good" means?
-5. **Present assessment:**
+5. **Assess prompt modification breadth** — should this be split or staged before drive?
+6. **Present assessment:**
 
 ```
 Ticket: ESCHAT-XXXX
@@ -171,6 +207,9 @@ Score: N/5
 ⚠️ Eval impact:
   - [any metrics that would flip or need creating]
 
+⚠️ Scope / staging:
+  - [prompt modification breadth warning, split recommendation, or "none"]
+
 Verdict: [Ready / Ready with gap / Needs improvement / Not ready / Out of scope]
 
 Suggested additions:
@@ -179,12 +218,13 @@ Suggested additions:
 
 ---
 
-## Called by Drive: Readiness Assessment
+## Mode 3: Called By Drive
 
 When drive reads this skill during Phase 1:
 
 1. Evaluate the ticket using the same criteria above
-2. Return one of:
+2. Include eval impact and prompt modification breadth warnings in the readiness response
+3. Return one of:
 
 | Verdict | Drive action |
 |---|---|
@@ -193,6 +233,8 @@ When drive reads this skill during Phase 1:
 | **Needs improvement** (3/5) | Present gaps to user, ask them to update the ticket or provide missing info in chat |
 | **Not ready** (≤2/5) | Suggest converting to SPIKE or rewriting. Do not proceed. |
 | **Out of scope** | Tell user this isn't instruction work. Suggest appropriate approach. |
+
+If a ticket is otherwise ready but has prompt modification breadth risk, return `Ready with scope warning` in the narrative and tell drive to confirm split/staged execution during Phase 2.
 
 ---
 
