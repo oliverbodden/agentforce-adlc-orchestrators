@@ -98,14 +98,14 @@ breaks classification. Surgical compaction preserves the reasoning scaffolding.
 - [ ] Deploy behind proctor: n/a
 
 ### Artifacts
-- Instruction file: adlc/indeed-service-agent/tickets/ESCHAT-1234/attempts/03/instruction.txt
-- Test suite: ESCHAT-1234-invoice-compaction
-- Eval report: adlc/indeed-service-agent/tickets/ESCHAT-1234/attempts/03/eval-report.html
-- Ticket folder: adlc/indeed-service-agent/tickets/ESCHAT-1234/
+- Instruction file: adlc/example-service-agent/tickets/PROJ-1234/attempts/03/instruction.txt
+- Test suite: PROJ-1234-invoice-compaction
+- Eval report: adlc/example-service-agent/tickets/PROJ-1234/attempts/03/eval-report.html
+- Ticket folder: adlc/example-service-agent/tickets/PROJ-1234/
 ```
 
 ## HITL Log Entry (what gets appended after each checkpoint)
 
 ```json
-{"ts":"2026-03-27T15:10:00Z","session_id":"chat-af810067","phase":"4-plan","checkpoint":"approve-plan","type":"approval","asked":"Approve Option A: section-by-section compaction, 10 tests, 90% threshold","decision":"Approved, but preserve Store directives — they're load-bearing","agent":"indeed-service-agent","topic":"invoice","ticket":"ESCHAT-1234","who":"obguzman"}
+{"ts":"2026-03-27T15:10:00Z","session_id":"chat-af810067","phase":"4-plan","checkpoint":"approve-plan","type":"approval","asked":"Approve Option A: section-by-section compaction, 10 tests, 90% threshold","decision":"Approved, but preserve Store directives — they're load-bearing","agent":"example-service-agent","topic":"invoice","ticket":"PROJ-1234","who":"obguzman"}
 ```

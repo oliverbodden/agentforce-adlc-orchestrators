@@ -1,8 +1,0 @@
-{
-  "version": "u1",
-  "date": "2026-03-28",
-  "total_utterances": 102,
-  "single_turn": 88,
-  "multi_turn": 14,
-  "source": "v21 baseline CSV (850 rows, 102 unique)"
-}

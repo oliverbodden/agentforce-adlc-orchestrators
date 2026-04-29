@@ -1,10 +1,63 @@
 # Project Map
 
+## Current ADLC Model
+
+This map is a current orientation aid. The approved model is:
+
+- Salesforce upstream baseline: `https://github.com/SalesforceAIResearch/agentforce-adlc`
+- Consolidated standard skills: `developing-agentforce`, `testing-agentforce`, `observing-agentforce`
+- Local wrapper/process skills: `adlc-drive`, `adlc-execute`, `adlc-ticket`
+- Local overlay docs:
+  - `adlc/playbooks/agentforce-architecture-playbook.md`
+  - `adlc/docs/core-process-overlay.md`
+  - `adlc/docs/acceptance-eval-hitl-governance.md`
+  - `adlc/docs/artifact-repo-workflow.md`
+  - `adlc/docs/developer-onboarding.md`
+
+Do not modify Salesforce standard skill content directly. Local behavior belongs in wrappers, overlay docs, project playbooks, bootstrap/install steps, or approved additive patches.
+
+## Install Order
+
+Install in this order:
+
+1. **Salesforce prerequisites** — Install Salesforce CLI, verify required `sf` command surfaces, and authenticate required org aliases.
+2. **Salesforce upstream ADLC skills** — Install or verify `developing-agentforce`, `testing-agentforce`, and `observing-agentforce` from `https://github.com/SalesforceAIResearch/agentforce-adlc`.
+3. **Project/local overlay** — Install or verify `adlc-drive`, `adlc-execute`, `adlc-ticket`, overlay docs, playbooks, bootstrap/status tooling, and artifact repo routing from this repo.
+
+The local overlay repo should not vendor copied Salesforce upstream skill directories. `tools/bootstrap_it_adlc.py` verifies the expected state and can copy missing consolidated Salesforce skills from a local upstream clone into the user's skill directory, but the repo source remains additive.
+
+Command sketch for Cursor:
+
+```text
+# 1. Salesforce prerequisites
+node --version
+npm --version
+npm install --global @salesforce/cli
+sf --version
+sf agent --help
+sf org list
+
+# 2. Salesforce upstream ADLC skills
+git clone https://github.com/SalesforceAIResearch/agentforce-adlc.git ~/agentforce-adlc-salesforce
+cd ~/agentforce-adlc-salesforce
+python3 tools/install.py --target cursor
+
+# Alternative one-command upstream install:
+curl -sSL https://raw.githubusercontent.com/SalesforceAIResearch/agentforce-adlc/main/tools/install.sh | bash
+
+# 3. Project/local overlay
+git clone https://github.com/YOUR_ORG/YOUR_ADLC_ARTIFACT_REPO.git ~/YOUR_ADLC_ARTIFACT_REPO
+cd ~/YOUR_ADLC_ARTIFACT_REPO
+python3 tools/bootstrap_it_adlc.py --dry-run
+python3 tools/bootstrap_it_adlc.py --status
+python3 tools/bootstrap_it_adlc.py --install-additive
+```
+
 ## Legend
 
 | Symbol | Meaning |
 |---|---|
-| 🔵 | **From repo** — came from [agentforce-adlc](https://github.com/almandsky/agentforce-adlc). Do not modify unless necessary. |
+| 🔵 | **Salesforce upstream standard** — comes from Salesforce ADLC upstream. Do not modify directly. |
 | 🟢 | **Custom (new)** — created by us. Fully owned. |
 | 🟡 | **From repo + our additions** — original content untouched, we added new sections. |
 | ⚪ | **Salesforce project scaffolding** — standard SFDX structure, auto-generated. |
@@ -17,16 +70,15 @@ These are global — available across all projects.
 
 ```
 ~/.cursor/skills/
-├── 🔵 adlc-author/SKILL.md          # Generate .agent files from requirements
-├── 🔵 adlc-deploy/SKILL.md          # Deploy, publish, activate agent bundles
-├── 🟡 adlc-discover/SKILL.md        # Check targets in org + [ADDED: Section 0 SOQL resolution]
-├── 🟢 adlc-drive/SKILL.md           # Goal-driven orchestrator (NEW — created by us)
-├── 🔵 adlc-feedback/SKILL.md        # Collect feedback on ADLC skills
-├── 🟡 adlc-optimize/SKILL.md        # Analyze + improve agents + [ADDED: Section 3.UI Tooling API]
-├── 🔵 adlc-run/SKILL.md             # Execute individual actions via REST
-├── 🔵 adlc-scaffold/SKILL.md        # Generate Flow/Apex stubs
-├── 🟡 adlc-test/SKILL.md            # Test agents + [ADDED: CSV export, HTML unescape, contextVars format]
-└── 🔵 agentforce-testing-analysis/   # Analyze Testing Center CSV exports
+├── 🔵 developing-agentforce/SKILL.md # Author, discover, scaffold, deploy, publish, feedback
+├── 🔵 testing-agentforce/SKILL.md    # Preview, Testing Center, action execution
+├── 🔵 observing-agentforce/SKILL.md  # Trace/session analysis, reproduce, optimize
+├── 🟢 adlc-drive/SKILL.md           # Goal-driven orchestrator (custom wrapper)
+├── 🟢 adlc-execute/SKILL.md         # Plan/execute/evaluate orchestrator (custom wrapper)
+├── 🟢 adlc-ticket/SKILL.md          # Ticket readiness and ticket authoring helper
+├── 🔵 agentforce-testing-analysis/   # Analyze Testing Center CSV exports
+└── historical adlc-* standard skills may still be installed for compatibility;
+    do not treat them as current orchestration entry points.
 ```
 
 ## Project (agentforce-project/)
@@ -35,58 +87,50 @@ These are global — available across all projects.
 agentforce-project/
 │
 ├── 🟢 adlc/                                  # Eval framework (ALL custom)
-│   ├── 🟢 prompt-engineering-playbook.md       # Living doc — principles, rule levels, patterns
-│   ├── 🟢 drive-architecture.md                # Drive delegation map + sub-skill requirements
-│   ├── 🟢 ticket-template.md                   # Generic ticket template
-│   ├── 🟢 ticket-template-generalfaq.md        # Pre-filled for GeneralFAQ
+│   ├── 🟢 playbooks/prompt-engineering-playbook.md       # Living doc — principles, rule levels, patterns
+│   ├── 🟢 playbooks/agentforce-architecture-playbook.md  # Root-cause routing and dependency mapping
+│   ├── 🟢 docs/core-process-overlay.md         # Local ADLC exceptions, handoff state, acceptance state
+│   ├── 🟢 docs/drive-architecture.md           # Drive/execute delegation map + sub-skill requirements
+│   ├── 🟢 docs/PROJECT-MAP.md                  # This map
+│   ├── 🟢 docs/PROJECT-MAP.html                # Interactive companion map
+│   ├── 🟢 docs/artifact-repo-workflow.md       # Shared artifact repo routing and closeout package
+│   ├── 🟢 docs/developer-onboarding.md         # Bootstrap/status and workstation readiness
+│   ├── 🟢 ticket-guides/ticket-template.md     # Generic ticket template
+│   ├── 🟢 ticket-guides/ticket-template-generalfaq.md # Pre-filled for GeneralFAQ
 │   │
 │   ├── 🟢 scripts/                             # Shared utilities
 │   │   └── generate_report.py                   # Regression report: scorecard, strategy, formatting,
 │   │                                            #   opening behavior, length buckets, multi-turn,
-│   │                                            #   consistency, response comparison appendix.
+│   │                                            #   consistency, tool-calling/quality sections,
+│   │                                            #   and response comparison appendix.
 │   │                                            #   Outputs HTML + optional JSON (--json-output).
 │   │
-│   └── 🟢 indeed-service-agent/                # Agent-level eval data
-│       ├── baselines/
-│       │   └── v21/                             # Production baseline
-│       │       ├── instruction-invoice.txt      # 7,422 words (original)
-│       │       ├── raw-outputs.csv              # 850 rows, 8 runs per utterance
-│       │       ├── eval-report.html
-│       │       └── metadata.json
-│       └── tickets/
-│           └── PROJ-345-compact-invoice-instructions/
-│               ├── goal.md
-│               ├── config.json
-│               ├── CHANGELOG.md
-│               ├── STATUS.md
-│               ├── specs/
-│               │   ├── smoke-5.yaml
-│               │   └── full-102.yaml
-│               └── attempts/
-│                   ├── 01-v22-full-rewrite/     # Failed
-│                   ├── 02-v22c-surgical-28pct/  # Full eval done
-│                   ├── 03-v22d-surgical-37pct/  # 20-test only
-│                   ├── 04-v22c-fixed-explain/   # ← DEPLOYED to devesa3
-│                   ├── 05-v22c-fix-nomatch/     # Failed
-│                   ├── 06-v22c-fix-nomatch-v2/  # Failed (data artifact)
-│                   └── 07-v22c-restore-philosophy/ # Failed (data artifact)
+│   └── 🟢 agents/                               # Agent/org scoped ADLC artifacts
+│       └── <agent-dev-name>__<org-alias>/
+│           ├── meta.json
+│           ├── baselines/
+│           │   └── <topic>/
+│           │       └── utterances.txt
+│           └── tickets/
+│               └── <ticket-key-or-NOTICKET-NN-short-description>/
+│                   ├── goal.md
+│                   ├── hitl.jsonl
+│                   ├── discovery.json
+│                   ├── config.json
+│                   ├── status.md
+│                   ├── dependency-map.md
+│                   ├── prompt-mental-model.md
+│                   ├── originals/
+│                   ├── specs/
+│                   └── attempts/
 │
 ├── ⚪ force-app/                               # Salesforce DX project
 │   └── main/default/
-│       ├── aiEvaluationDefinitions/             # Testing Center specs (deployed to org)
-│       └── bots/                                # Agent metadata (retrieved from org)
+│       ├── aiAuthoringBundles/                  # Agent Script authoring bundle source
+│       └── genAiPlannerBundles/                 # Retrieved/generated planner metadata
 │
-├── 🟢 scripts/                                 # Ad-hoc analysis scripts
-│   └── compare_strategies.py                    # Strategy shift analysis (PROJ-345)
-│
-├── 🟢 report/                                  # Pre-existing reports
-│   ├── deviation-analysis-how-do-i-post-a-job.md
-│   └── report-ESA-FAQ-SingleTurn-v28-*.md/html
-│
-├── 🟢 tickets/                                 # Non-eval ticket work
-│   └── ESCHAT-946-url-redaction/
-│
-├── 🟢 .skills -> ~/.cursor/skills              # Symlink for browsing skills in IDE
+├── 🟢 tools/
+│   └── bootstrap_it_adlc.py                     # Conservative status/dry-run/additive install helper
 │
 ├── ⚪ sfdx-project.json                        # SFDX config
 ├── ⚪ package.json                              # Node config
@@ -109,10 +153,18 @@ JIRA ticket
     │
     ▼
 adlc-drive (orchestrator)
-    ├── reads: prompt-engineering-playbook.md
-    ├── calls: adlc-discover    → resolve agent/topic IDs
-    ├── calls: adlc-optimize    → read/write instructions (Tooling API or .agent)
-    ├── calls: adlc-test        → run Testing Center, export CSV
+    ├── reads: playbooks/agentforce-architecture-playbook.md
+    ├── reads: docs/core-process-overlay.md
+    ├── reads: docs/acceptance-eval-hitl-governance.md
+    ├── reads: playbooks/prompt-engineering-playbook.md
+    ├── owns: Phases 1-3 only, then stops at the Phase 3 approval handoff
+    ├── calls: developing-agentforce → resolve metadata, author/scaffold/deploy as needed
+    ├── calls: observing-agentforce  → trace/optimize/read-write instruction workflows
+    ├── calls: testing-agentforce    → preview, Testing Center, export/action testing
     ├── calls: generate_report.py → regression comparison + HTML
-    └── writes to: adlc/{agent}/tickets/{ticket-key}/
+    ├── creates: discovery.json + config.json as durable handoff state
+    ├── Phase 3c: builds fresh baseline/test specs from canonical utterances
+    ├── Phase 3d: analyzes baseline and proposes acceptance criteria
+    ├── hands off to: adlc-execute after Phase 3 approval for Phases 4-7
+    └── writes to: adlc/agents/{agent}__{org}/tickets/{ticket-key}/
 ```

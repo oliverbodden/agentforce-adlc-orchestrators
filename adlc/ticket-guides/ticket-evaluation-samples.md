@@ -5,7 +5,7 @@
 ---
 
 
-## ✅ ESCHAT-1192: ADLC - Implement UXCD Voice & Tone Guidelines for ESA Agents
+## ✅ PROJ-1192: ADLC - Implement UX/content Voice & Tone Guidelines for service agents
 **Status:** Pending Triage | **Scope:** IN_SCOPE | **Score:** 5/5 | **Verdict:** Ready
 
 | Criteria | Score | Assessment |
@@ -22,11 +22,11 @@
 
 **Description preview:** ## **Context**
 
-During the ESA Chat Review on March 24, 2026, [mention] & [mention] proposed evaluating a sample of ESA post-Feb 23 conversations to a...
+During the service-agent review on March 24, 2026, [mention] & [mention] proposed evaluating a sample of Service Agent post-Feb 23 conversations to a...
 
 ---
 
-## 🟡 ESCHAT-987: Revamp account moderation to support signals, service strategy, a
+## 🟡 PROJ-987: Revamp account moderation to support signals, service strategy, a
 **Status:** Closed | **Scope:** IN_SCOPE | **Score:** 3/5 | **Verdict:** Ready with gaps
 
 | Criteria | Score | Assessment |
@@ -39,17 +39,17 @@ During the ESA Chat Review on March 24, 2026, [mention] & [mention] proposed eva
 
 **Description preview:** Moderation new prompt:
 
-Update the prompt to support the new structure of 
+Update the prompt to support the new structure of
 
-1\. Identify user problem 
+1\. Identify user problem
 
-2\. Map signals to data/knowledge 
+2\. Map signals to data/knowledge
 
 3\. select...
 
 ---
 
-## ✅ ESCHAT-1089: Update Invoice Topic Instructions to Consider Average Job Sponsor
+## ✅ PROJ-1089: Update Invoice Topic Instructions to Consider Average Job Sponsor
 **Status:** Backlog | **Scope:** IN_SCOPE | **Score:** 4/5 | **Verdict:** Ready
 
 | Criteria | Score | Assessment |
@@ -60,12 +60,12 @@ Update the prompt to support the new structure of
 | Baseline reference? | ✅ | Baseline referenced |
 | Before/after examples? | ❌ | No before/after examples |
 
-**Description preview:** **Business Context**  
-Employers regularly ask about sponsorship costs on their invoices and the ESA AI Agent currently lacks instructions to leverage...
+**Description preview:** **Business Context**
+Employers regularly ask about sponsorship costs on their invoices and the service AI agent currently lacks instructions to leverage...
 
 ---
 
-## 🟡 ESCHAT-946: Add instructions so ESA does not repeat back URLs given by the us
+## 🟡 PROJ-946: Add instructions so Service Agent does not repeat back URLs given by the us
 **Status:** Backlog | **Scope:** IN_SCOPE | **Score:** 3.5/5 | **Verdict:** Ready with gaps
 
 | Criteria | Score | Assessment |
@@ -82,7 +82,7 @@ If a user has a question regarding their own company website, it is not in our l
 
 ---
 
-## ✅ ESCHAT-901: Handle Contradictory Scenarios in Billing/Invoices Prompt Templat
+## ✅ PROJ-901: Handle Contradictory Scenarios in Billing/Invoices Prompt Templat
 **Status:** To Do | **Scope:** IN_SCOPE | **Score:** 4.5/5 | **Verdict:** Ready
 
 | Criteria | Score | Assessment |
@@ -95,11 +95,11 @@ If a user has a question regarding their own company website, it is not in our l
 
 **Description preview:** **Business Context**
 
-As part of the redesign of the Billing/Invoices prompt template, ESA must accurately reconcile customer statements with API-prov...
+As part of the redesign of the Billing/Invoices prompt template, The service agent must accurately reconcile customer statements with API-prov...
 
 ---
 
-## 🟠 ESCHAT-871: Include guidelines to make bold formatting more consistent
+## 🟠 PROJ-871: Include guidelines to make bold formatting more consistent
 **Status:** Closed | **Scope:** IN_SCOPE | **Score:** 2.5/5 | **Verdict:** Needs improvement
 
 | Criteria | Score | Assessment |
@@ -112,13 +112,13 @@ As part of the redesign of the Billing/Invoices prompt template, ESA must accura
 
 **To fix:** Add: Acceptance criteria?, Before/after examples?
 
-**Description preview:** **Context**: Currently ESA - for General FAQ - decides the formatting of the output randomly. This creates an inconsistent experience.
+**Description preview:** **Context**: Currently Service Agent - for General FAQ - decides the formatting of the output randomly. This creates an inconsistent experience.
 
 **User Story**...
 
 ---
 
-## 🔍 ESCHAT-1194: [SPIKE] Investigate Data & System Access Requirements for AI Agen
+## 🔍 PROJ-1194: [SPIKE] Investigate Data & System Access Requirements for AI Agen
 **Status:** Pending Triage | **Scope:** SPIKE | **Score:** 1.5/5 | **Verdict:** SPIKE — Ready
 
 | Criteria | Score | Assessment |
@@ -135,7 +135,7 @@ Analysis of 30 employer support voice calls under the "Job Setting" sub-type (Ma
 
 ---
 
-## 🔍 ESCHAT-964: SPIKE: LLM Foundational Model comparison
+## 🔍 PROJ-964: SPIKE: LLM Foundational Model comparison
 **Status:** To Do | **Scope:** SPIKE | **Score:** 4/5 | **Verdict:** SPIKE — Ready
 
 | Criteria | Score | Assessment |
@@ -154,7 +154,7 @@ Analysis of 30 employer support voice calls under the "Job Setting" sub-type (Ma
 
 ---
 
-## ⛔ ESCHAT-1115: Update Named Credentials for MuleSoft PermissionsAPI Calls
+## ⛔ PROJ-1115: Update Named Credentials for external integration PermissionsAPI Calls
 **Status:** To Do | **Scope:** OUT_OF_SCOPE | **Score:** 3.5/5 | **Verdict:** Out of scope
 
 | Criteria | Score | Assessment |
@@ -167,12 +167,12 @@ Analysis of 30 employer support voice calls under the "Job Setting" sub-type (Ma
 
 **Why out of scope:** This is infrastructure work (Apex, credentials, Data Cloud), not instruction editing. Drive cannot execute this.
 
-**Description preview:** **Business Context**  
+**Description preview:** **Business Context**
 On February 25, 2026, a production issue was identified in which legacy named credential configurations were causing outbound A...
 
 ---
 
-## ⛔ ESCHAT-1118: If messaging session has Scout ID, retrieve agentforce session ID
+## ⛔ PROJ-1118: If messaging session has Scout ID, retrieve agentforce session ID
 **Status:** In Progress | **Scope:** OUT_OF_SCOPE | **Score:** 3/5 | **Verdict:** Out of scope
 
 | Criteria | Score | Assessment |
@@ -189,7 +189,7 @@ On February 25, 2026, a production issue was identified in which legacy named cr
 
 ---
 
-## ❌ ESCHAT-1117: Ensure “Representative” Consistency
+## ❌ PROJ-1117: Ensure “Representative” Consistency
 **Status:** Pending Triage | **Scope:** UNCLEAR | **Score:** 0.5/5 | **Verdict:** Not ready
 
 | Criteria | Score | Assessment |
@@ -206,7 +206,7 @@ On February 25, 2026, a production issue was identified in which legacy named cr
 
 ---
 
-## ❌ ESCHAT-1083: Incorporate Official Content Guidelines
+## ❌ PROJ-1083: Incorporate Official Content Guidelines
 **Status:** Deferred | **Scope:** IN_SCOPE | **Score:** 0/5 | **Verdict:** Not ready
 
 | Criteria | Score | Assessment |
@@ -219,11 +219,11 @@ On February 25, 2026, a production issue was identified in which legacy named cr
 
 **To fix:** Add: What should change?, Which agent/topic?, Acceptance criteria?, Baseline reference?, Before/after examples?
 
-**Description preview:** 
+**Description preview:**
 
 ---
 
-## ❌ ESCHAT-826: Ensure consistent phrasing when autoescalating
+## ❌ PROJ-826: Ensure consistent phrasing when autoescalating
 **Status:** Closed | **Scope:** IN_SCOPE | **Score:** 0.5/5 | **Verdict:** Not ready
 
 | Criteria | Score | Assessment |
@@ -240,7 +240,7 @@ On February 25, 2026, a production issue was identified in which legacy named cr
 
 ---
 
-## ✅ ESCHAT-920: Iterative Responses when 3+ Steps
+## ✅ PROJ-920: Iterative Responses when 3+ Steps
 **Status:** Closed | **Scope:** IN_SCOPE | **Score:** 4.5/5 | **Verdict:** Ready
 
 | Criteria | Score | Assessment |
@@ -253,11 +253,11 @@ On February 25, 2026, a production issue was identified in which legacy named cr
 
 **Description preview:** ### **Business Context**
 
-ESA references Knowledge articles through the FAQ sub-agent to answer employer inquiries. However, we have observed that som...
+The service agent references Knowledge articles through the FAQ sub-agent to answer employer inquiries. However, we have observed that som...
 
 ---
 
-## 🟠 ESCHAT-930: ALWAYS Assume *Normal* Sponsored Jobs
+## 🟠 PROJ-930: ALWAYS Assume *Normal* Sponsored Jobs
 **Status:** Deferred | **Scope:** IN_SCOPE | **Score:** 2/5 | **Verdict:** Needs improvement
 
 | Criteria | Score | Assessment |
@@ -270,7 +270,7 @@ ESA references Knowledge articles through the FAQ sub-agent to answer employer i
 
 **To fix:** Add: Acceptance criteria?, Baseline reference?, Before/after examples?
 
-**Description preview:** At Indeed, the words “sponsor”, “ads”, “campaigns” can refer to:
+**Description preview:** In this example, the words “sponsor”, “ads”, “campaigns” can refer to:
 
 * [Sponsored Jobs](https://indeedinc.my.site.com/employerSupport1/ka0Qi000000EuWzIAK...
 
@@ -280,18 +280,18 @@ ESA references Knowledge articles through the FAQ sub-agent to answer employer i
 
 | Ticket | Score | Verdict | Key gap |
 |---|---|---|---|
-| ESCHAT-1192 | 5/5 | Ready | None |
-| ESCHAT-987 | 3/5 | Ready with gaps | acceptance |
-| ESCHAT-1089 | 4/5 | Ready | examples |
-| ESCHAT-946 | 3.5/5 | Ready with gaps | baseline |
-| ESCHAT-901 | 4.5/5 | Ready | None |
-| ESCHAT-871 | 2.5/5 | Needs improvement | acceptance |
-| ESCHAT-1194 | 1.5/5 | SPIKE — Ready | acceptance |
-| ESCHAT-964 | 4/5 | SPIKE — Ready | agent topic |
-| ESCHAT-1115 | 3.5/5 | Out of scope | examples |
-| ESCHAT-1118 | 3/5 | Out of scope | acceptance |
-| ESCHAT-1117 | 0.5/5 | Not ready | what changes |
-| ESCHAT-1083 | 0/5 | Not ready | what changes |
-| ESCHAT-826 | 0.5/5 | Not ready | what changes |
-| ESCHAT-920 | 4.5/5 | Ready | None |
-| ESCHAT-930 | 2/5 | Needs improvement | acceptance |
+| PROJ-1192 | 5/5 | Ready | None |
+| PROJ-987 | 3/5 | Ready with gaps | acceptance |
+| PROJ-1089 | 4/5 | Ready | examples |
+| PROJ-946 | 3.5/5 | Ready with gaps | baseline |
+| PROJ-901 | 4.5/5 | Ready | None |
+| PROJ-871 | 2.5/5 | Needs improvement | acceptance |
+| PROJ-1194 | 1.5/5 | SPIKE — Ready | acceptance |
+| PROJ-964 | 4/5 | SPIKE — Ready | agent topic |
+| PROJ-1115 | 3.5/5 | Out of scope | examples |
+| PROJ-1118 | 3/5 | Out of scope | acceptance |
+| PROJ-1117 | 0.5/5 | Not ready | what changes |
+| PROJ-1083 | 0/5 | Not ready | what changes |
+| PROJ-826 | 0.5/5 | Not ready | what changes |
+| PROJ-920 | 4.5/5 | Ready | None |
+| PROJ-930 | 2/5 | Needs improvement | acceptance |

@@ -148,7 +148,7 @@
   <div class="tag">v1.0</div>
 </nav>
 <div style="max-width:1100px;margin:0 auto;padding:0.5rem 2rem 0;">
-  <a class="back-link" href="https://github.com/oliverbodden/agentforce-adlc-orchestrators">← Back to repo</a>
+  <a class="back-link" href="https://github.com/YOUR_ORG/YOUR_ADLC_ARTIFACT_REPO">← Artifact repo target</a>
 </div>
 
 <main>
@@ -191,7 +191,7 @@
     </div>
     <div class="lc-body">
       <p style="font-size:0.85rem;color:var(--gray-600);margin-bottom:0.5rem;">Reviews production session traces, CSAT data, business goals, and user feedback to identify what's working and what needs improvement. Produces prioritized findings that feed into ticket creation — or flags the need for a new agent (exits to Creation).</p>
-      <div style="font-size:0.8rem;"><strong>Skill:</strong> <code>adlc-analysis</code> <span style="color:var(--gray-500);">— coordinates adlc-optimize (observation), testing-analysis, and external data review</span></div>
+      <div style="font-size:0.8rem;"><strong>Skill:</strong> <code>adlc-analysis</code> <span style="color:var(--gray-500);">— future orchestrator concept; would coordinate observing-agentforce, agentforce-testing-analysis, and external data review</span></div>
     </div>
   </div>
 
@@ -215,8 +215,8 @@
       <span style="font-size:0.7rem;padding:2px 8px;border-radius:999px;background:#f0fdf4;color:#166534;font-weight:600;">Ready</span>
     </div>
     <div class="lc-body">
-      <p style="font-size:0.85rem;color:var(--gray-600);margin-bottom:0.5rem;">Takes a ticket or goal, discovers the current agent state, plans the approach, executes instruction changes iteratively with testing at each step, and presents verified results. The core optimization engine — used by both existing agents and new agents coming out of Creation.</p>
-      <div style="font-size:0.8rem;"><strong>Skill:</strong> <code>adlc-drive</code> <span style="color:var(--gray-500);">— orchestrator that delegates to adlc-discover, adlc-optimize, adlc-test, and the playbook</span></div>
+      <p style="font-size:0.85rem;color:var(--gray-600);margin-bottom:0.5rem;">Takes a ticket or goal through Goal, Refine, and Discover, then stops at the Phase 3 approval checkpoint. Planning, execution, final evaluation, and handoff are owned by <code>adlc-execute</code>.</p>
+      <div style="font-size:0.8rem;"><strong>Skill:</strong> <code>adlc-drive</code> <span style="color:var(--gray-500);">— phases 1-3 orchestrator that delegates metadata, observe, and test work to Salesforce standard skills</span></div>
     </div>
   </div>
 
@@ -241,7 +241,7 @@
     </div>
     <div class="lc-body">
       <p style="font-size:0.85rem;color:var(--gray-600);margin-bottom:0.5rem;">Executes the deployment with risk controls — QA regression eval (8x runs), baseline promotion, proctor/feature flag ramp strategy, rollback plan, and post-deploy monitoring.</p>
-      <div style="font-size:0.8rem;"><strong>Skill:</strong> <code>adlc-release</code> <span style="color:var(--gray-500);">— coordinates adlc-deploy, adlc-test (QA regression), and baseline promotion</span></div>
+      <div style="font-size:0.8rem;"><strong>Skill:</strong> <code>adlc-release</code> <span style="color:var(--gray-500);">— coordinates developing-agentforce, testing-agentforce (QA regression), and baseline promotion</span></div>
     </div>
   </div>
 
@@ -285,21 +285,17 @@
     <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><code>adlc-create</code></td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Orchestrator</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Creation (entry)</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><span style="color:#991b1b;font-weight:600;">Not started</span></td></tr>
     <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><code>adlc-analysis</code></td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Orchestrator</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Analysis</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><span style="color:#991b1b;font-weight:600;">Not started</span></td></tr>
     <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><code>adlc-ticket</code></td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Orchestrator</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">HITL: Prioritization</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><span style="color:#166534;font-weight:600;">✅ Ready</span></td></tr>
-    <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><code>adlc-drive</code></td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Orchestrator</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Drive</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><span style="color:#166534;font-weight:600;">✅ Ready</span></td></tr>
+    <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><code>adlc-drive</code></td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Orchestrator</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Phases 1-3: Goal, Refine, Discover</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><span style="color:#166534;font-weight:600;">✅ Ready</span></td></tr>
+    <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><code>adlc-execute</code></td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Orchestrator</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Phases 4-7: Plan, Execute, Present, Hand Off</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><span style="color:#166534;font-weight:600;">✅ Ready</span></td></tr>
     <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><code>adlc-uat</code></td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Orchestrator</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">HITL: Product Review</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><span style="color:#991b1b;font-weight:600;">Not started</span></td></tr>
     <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><code>adlc-release</code></td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Orchestrator</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Release</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><span style="color:#991b1b;font-weight:600;">Not started</span></td></tr>
     <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><code>adlc-devops</code></td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Orchestrator</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">HITL: DevOps Review</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><span style="color:#991b1b;font-weight:600;">Not started</span></td></tr>
     <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><code>adlc-deprecate</code></td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Orchestrator</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Deprecation (exit)</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><span style="color:#991b1b;font-weight:600;">Not started</span></td></tr>
-    <tr style="background:#f9fafb;"><td colspan="4" style="padding:0.3rem 0.75rem;font-weight:600;font-size:0.78rem;color:var(--gray-500);letter-spacing:0.05em;">SUB-SKILLS (building blocks)</td></tr>
-    <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><code>adlc-author</code></td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Executor</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Generates .agent script files</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><span style="color:#166534;font-weight:600;">✅ Ready</span></td></tr>
-    <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><code>adlc-discover</code></td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Executor</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Resolves agent metadata from org</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><span style="color:#166534;font-weight:600;">✅ Ready</span></td></tr>
-    <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><code>adlc-optimize</code></td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Executor</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Reads/writes instructions via Tooling API</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><span style="color:#166534;font-weight:600;">✅ Ready</span></td></tr>
-    <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><code>adlc-test</code></td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Executor</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Runs smoke + bulk eval tests</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><span style="color:#166534;font-weight:600;">✅ Ready</span></td></tr>
-    <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><code>adlc-scaffold</code></td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Executor</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Generates Flow XML + Apex stubs</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><span style="color:#166534;font-weight:600;">✅ Ready</span></td></tr>
-    <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><code>adlc-deploy</code></td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Executor</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Deploys agent bundles to org</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><span style="color:#166534;font-weight:600;">✅ Ready</span></td></tr>
-    <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><code>adlc-run</code></td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Executor</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Executes actions via REST API</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><span style="color:#166534;font-weight:600;">✅ Ready</span></td></tr>
-    <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><code>adlc-feedback</code></td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Utility</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Submits skill feedback</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><span style="color:#166534;font-weight:600;">✅ Ready</span></td></tr>
-    <tr><td style="padding:0.4rem 0.75rem;"><code>testing-analysis</code></td><td style="padding:0.4rem 0.75rem;">Utility</td><td style="padding:0.4rem 0.75rem;">Triages Testing Center CSV exports</td><td style="padding:0.4rem 0.75rem;"><span style="color:#166534;font-weight:600;">✅ Ready</span></td></tr>
+    <tr style="background:#f9fafb;"><td colspan="4" style="padding:0.3rem 0.75rem;font-weight:600;font-size:0.78rem;color:var(--gray-500);letter-spacing:0.05em;">SALESFORCE STANDARD SKILLS (building blocks)</td></tr>
+    <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><code>developing-agentforce</code></td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Executor</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Author, discover, scaffold, deploy, publish</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><span style="color:#166534;font-weight:600;">✅ Ready</span></td></tr>
+    <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><code>observing-agentforce</code></td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Executor</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Trace/session analysis, reproduce, optimize</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><span style="color:#166534;font-weight:600;">✅ Ready</span></td></tr>
+    <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><code>testing-agentforce</code></td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Executor</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Preview, Testing Center, action execution</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><span style="color:#166534;font-weight:600;">✅ Ready</span></td></tr>
+    <tr><td style="padding:0.4rem 0.75rem;"><code>agentforce-testing-analysis</code></td><td style="padding:0.4rem 0.75rem;">Utility</td><td style="padding:0.4rem 0.75rem;">Triages Testing Center CSV exports</td><td style="padding:0.4rem 0.75rem;"><span style="color:#166534;font-weight:600;">✅ Ready</span></td></tr>
   </table>
 </div>
 </section>
@@ -312,20 +308,21 @@
 <div style="background:white;border:1px solid var(--gray-200);border-radius:0.75rem;padding:1.25rem;margin:0.75rem 0;">
   <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem;">
     <svg width="20" height="20" viewBox="0 0 16 16" fill="var(--gray-700)"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
-    <a href="https://github.com/oliverbodden/agentforce-adlc-orchestrators" style="font-size:1.1rem;font-weight:600;color:var(--accent);text-decoration:none;">oliverbodden/agentforce-adlc-orchestrators</a>
+    <a href="https://github.com/YOUR_ORG/YOUR_ADLC_ARTIFACT_REPO" style="font-size:1.1rem;font-weight:600;color:var(--accent);text-decoration:none;">YOUR_ORG/YOUR_ADLC_ARTIFACT_REPO</a>
   </div>
-  <p style="font-size:0.85rem;color:var(--gray-600);margin-bottom:0.5rem;">Custom orchestration layer built on top of <a href="https://github.com/almandsky/agentforce-adlc" style="color:var(--repo);">almandsky/agentforce-adlc</a></p>
+  <p style="font-size:0.85rem;color:var(--gray-600);margin-bottom:0.5rem;">Custom orchestration layer aligned to Salesforce upstream <a href="https://github.com/SalesforceAIResearch/agentforce-adlc" style="color:var(--repo);">SalesforceAIResearch/agentforce-adlc</a>, with local overlays layered additively.</p>
 </div>
 
 <h2>What This Adds</h2>
 <div style="background:white;border:1px solid var(--gray-200);border-radius:0.75rem;padding:1.25rem;margin:0.75rem 0;">
   <table style="width:100%;font-size:0.85rem;">
     <tr><th style="text-align:left;padding:0.4rem 0.75rem;background:var(--gray-100);border-bottom:2px solid var(--gray-200);">Component</th><th style="text-align:left;padding:0.4rem 0.75rem;background:var(--gray-100);border-bottom:2px solid var(--gray-200);">What it does</th></tr>
-    <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><strong>adlc-drive</strong></td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Goal-driven orchestrator — takes a JIRA ticket or goal, plans changes, executes iteratively, evaluates, presents results</td></tr>
+    <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><strong>adlc-drive</strong></td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Goal-driven orchestrator for Phases 1-3: ticket intake, refinement, discovery, fresh baseline, and handoff state</td></tr>
+    <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><strong>adlc-execute</strong></td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Plan/execute/evaluate/handoff orchestrator for Phases 4-7 after Drive approval</td></tr>
     <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><strong>adlc-ticket</strong></td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Create or evaluate tickets for drive — standalone or called by drive to assess readiness</td></tr>
     <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><strong>Eval framework</strong></td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Versioned scoring, baselines, ticket-scoped attempts, topic-agnostic regression comparison</td></tr>
     <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><strong>Playbook</strong></td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Prompt engineering principles with rule levels (HARD/STRONG/SOFT) and tie-breaker guidance</td></tr>
-    <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><strong>Patches</strong></td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Additions to 3 base skills: SOQL resolution (discover), Tooling API (optimize), CSV export (test)</td></tr>
+    <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><strong>Overlay docs</strong></td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Additive local guidance for UI-built exceptions, source-of-truth gates, acceptance, HITL, and artifact routing</td></tr>
     <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><strong>JIRA integration</strong></td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Read-only access via official Atlassian MCP server (OAuth SSO)</td></tr>
     <tr><td style="padding:0.4rem 0.75rem;"><strong>HITL decision log</strong></td><td style="padding:0.4rem 0.75rem;">JSONL log of every human-AI interaction at checkpoints — per-ticket audit trail + central index for pattern analysis</td></tr>
   </table>
@@ -348,23 +345,53 @@
 <div style="background:white;border:1px solid var(--gray-200);border-radius:0.75rem;padding:1.25rem;margin:0.75rem 0;">
 
   <div style="margin-bottom:1.25rem;">
-    <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--gray-500);margin-bottom:0.5rem;">Step 1 — Clone the repo</div>
+    <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--gray-500);margin-bottom:0.5rem;">Step 1 — Install and verify Salesforce prerequisites</div>
     <div style="background:var(--gray-900);color:#e5e7eb;padding:0.75rem 1rem;border-radius:0.4rem;font-family:'SF Mono','Fira Code',monospace;font-size:0.82rem;overflow-x:auto;">
-      git clone https://github.com/oliverbodden/agentforce-adlc-orchestrators.git<br>
-      cd agentforce-adlc-orchestrators
+      node --version<br>
+      npm --version<br>
+      npm install --global @salesforce/cli<br>
+      sf --version<br>
+      sf agent --help<br>
+      sf project --help<br>
+      sf data --help<br>
+      sf apex --help<br>
+      sf api --help<br>
+      sf org --help<br>
+      sf org list
     </div>
   </div>
 
   <div style="margin-bottom:1.25rem;">
-    <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--gray-500);margin-bottom:0.5rem;">Step 2 — Run the installer</div>
+    <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--gray-500);margin-bottom:0.5rem;">Step 2 — Install or verify Salesforce upstream ADLC skills</div>
+    <p style="font-size:0.85rem;margin-bottom:0.4rem;">Install the standard baseline from Salesforce upstream first. Required skills: <code>developing-agentforce</code>, <code>testing-agentforce</code>, and <code>observing-agentforce</code>.</p>
     <div style="background:var(--gray-900);color:#e5e7eb;padding:0.75rem 1rem;border-radius:0.4rem;font-family:'SF Mono','Fira Code',monospace;font-size:0.82rem;">
-      ./install.sh
+      git clone https://github.com/SalesforceAIResearch/agentforce-adlc.git ~/agentforce-adlc-salesforce<br>
+      cd ~/agentforce-adlc-salesforce<br>
+      python3 tools/install.py --target cursor
     </div>
-    <p style="font-size:0.8rem;color:var(--gray-500);margin-top:0.4rem;">This installs the base skills (from <a href="https://github.com/almandsky/agentforce-adlc" style="color:var(--repo);">agentforce-adlc</a>), custom skills, patches, and eval framework.</p>
+    <p style="font-size:0.8rem;color:var(--gray-500);margin-top:0.4rem;">Alternative: <code>curl -sSL https://raw.githubusercontent.com/SalesforceAIResearch/agentforce-adlc/main/tools/install.sh | bash</code>. Do not modify or vendor those skill directories in this overlay repo.</p>
   </div>
 
   <div style="margin-bottom:1.25rem;">
-    <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--gray-500);margin-bottom:0.5rem;">Step 3 — Configure Atlassian MCP (JIRA access)</div>
+    <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--gray-500);margin-bottom:0.5rem;">Step 3 — Clone Project/local overlay repo</div>
+    <div style="background:var(--gray-900);color:#e5e7eb;padding:0.75rem 1rem;border-radius:0.4rem;font-family:'SF Mono','Fira Code',monospace;font-size:0.82rem;">
+      git clone https://github.com/YOUR_ORG/YOUR_ADLC_ARTIFACT_REPO.git<br>
+      cd YOUR_ADLC_ARTIFACT_REPO
+    </div>
+  </div>
+
+  <div style="margin-bottom:1.25rem;">
+    <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--gray-500);margin-bottom:0.5rem;">Step 4 — Verify/apply local overlay additively</div>
+    <div style="background:var(--gray-900);color:#e5e7eb;padding:0.75rem 1rem;border-radius:0.4rem;font-family:'SF Mono','Fira Code',monospace;font-size:0.82rem;">
+      python3 tools/bootstrap_it_adlc.py --dry-run<br>
+      python3 tools/bootstrap_it_adlc.py --status<br>
+      python3 tools/bootstrap_it_adlc.py --install-additive
+    </div>
+    <p style="font-size:0.8rem;color:var(--gray-500);margin-top:0.4rem;">The helper is conservative. It does not delete legacy skills, overwrite local wrapper skills, or vendor Salesforce upstream skill source into this repo.</p>
+  </div>
+
+  <div style="margin-bottom:1.25rem;">
+    <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--gray-500);margin-bottom:0.5rem;">Step 5 — Configure Atlassian MCP (JIRA access)</div>
     <p style="font-size:0.85rem;margin-bottom:0.4rem;">Add to <code>~/.cursor/mcp.json</code>:</p>
     <div style="background:var(--gray-900);color:#e5e7eb;padding:0.75rem 1rem;border-radius:0.4rem;font-family:'SF Mono','Fira Code',monospace;font-size:0.82rem;">
       {<br>
@@ -379,11 +406,11 @@
   </div>
 
   <div>
-    <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--gray-500);margin-bottom:0.5rem;">Step 4 — Restart Cursor</div>
+    <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--gray-500);margin-bottom:0.5rem;">Step 6 — Restart Cursor</div>
     <p style="font-size:0.85rem;">Restart Cursor to load the new skills and MCP server. Then try:</p>
     <div style="background:var(--gray-900);color:#e5e7eb;padding:0.75rem 1rem;border-radius:0.4rem;font-family:'SF Mono','Fira Code',monospace;font-size:0.82rem;margin-top:0.4rem;">
-      adlc-ticket ESCHAT-1234 &nbsp;&nbsp;&nbsp;<span style="color:var(--gray-500);"># evaluate a ticket</span><br>
-      adlc-drive ESCHAT-1234 &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--gray-500);"># execute a ticket</span>
+      adlc-ticket PROJ-1234 &nbsp;&nbsp;&nbsp;<span style="color:var(--gray-500);"># evaluate a ticket</span><br>
+      adlc-drive PROJ-1234 &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--gray-500);"># execute a ticket</span>
     </div>
   </div>
 
@@ -393,13 +420,13 @@
 <div style="background:white;border:1px solid var(--gray-200);border-radius:0.75rem;padding:1.25rem;margin:0.75rem 0;font-size:0.85rem;">
   <table style="width:100%;">
     <tr><th style="text-align:left;padding:0.4rem 0.75rem;background:var(--gray-100);border-bottom:2px solid var(--gray-200);">Step</th><th style="text-align:left;padding:0.4rem 0.75rem;background:var(--gray-100);border-bottom:2px solid var(--gray-200);">What</th><th style="text-align:left;padding:0.4rem 0.75rem;background:var(--gray-100);border-bottom:2px solid var(--gray-200);">Where</th></tr>
-    <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">1</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Install base skills from <code>agentforce-adlc</code></td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><code>~/.cursor/skills/adlc-*</code></td></tr>
-    <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">2</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Install custom skills (drive, ticket)</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><code>~/.cursor/skills/adlc-drive/</code>, <code>adlc-ticket/</code></td></tr>
-    <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">3</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Apply patches to 3 base skills (additive only)</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">discover: SOQL resolution, optimize: Tooling API, test: CSV export</td></tr>
-    <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">4</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Set up eval framework</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><code>adlc/</code> in your project</td></tr>
-    <tr><td style="padding:0.4rem 0.75rem;">5</td><td style="padding:0.4rem 0.75rem;">Copy project documentation</td><td style="padding:0.4rem 0.75rem;"><code>PROJECT-MAP.html</code>, <code>PROJECT-MAP.md</code></td></tr>
+    <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">1</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Verifies Salesforce CLI command surfaces</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><code>sf agent</code>, <code>sf project</code>, <code>sf data</code>, <code>sf apex</code>, <code>sf api</code>, <code>sf org</code></td></tr>
+    <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">2</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Verifies consolidated Salesforce skills</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><code>developing-agentforce</code>, <code>testing-agentforce</code>, <code>observing-agentforce</code></td></tr>
+    <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">3</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Verifies local wrappers and overlay docs</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><code>adlc-drive</code>, <code>adlc-execute</code>, <code>adlc-ticket</code>, <code>adlc/docs/</code></td></tr>
+    <tr><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">4</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);">Copies missing consolidated skills only when approved</td><td style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--gray-100);"><code>~/.cursor/skills/</code></td></tr>
+    <tr><td style="padding:0.4rem 0.75rem;">5</td><td style="padding:0.4rem 0.75rem;">Writes optional JSON status/install reports</td><td style="padding:0.4rem 0.75rem;"><code>adlc/versioning/bootstrap-*.json</code></td></tr>
   </table>
-  <p style="margin-top:0.75rem;color:var(--gray-500);font-size:0.8rem;">Safe to re-run — patches check for existing content before applying. Existing files are preserved.</p>
+  <p style="margin-top:0.75rem;color:var(--gray-500);font-size:0.8rem;">Safe to re-run. Existing skill folders are preserved; legacy cleanup is deferred until explicitly approved.</p>
 </div>
 </section>
 
@@ -407,36 +434,31 @@
 <h1>Repo Structure</h1>
 <p class="subtitle">Click folders to expand.</p>
 
-<h3>Skills — From Repo (unchanged)</h3>
-<p style="font-size:0.8rem;color:var(--gray-500);margin-bottom:0.5rem;">Installed from <a href="https://github.com/almandsky/agentforce-adlc" style="color:var(--repo);">agentforce-adlc</a>. Do not modify.</p>
+<h3>Skills — Salesforce Standard (consolidated)</h3>
+<p style="font-size:0.8rem;color:var(--gray-500);margin-bottom:0.5rem;">Salesforce upstream standard skills come from <a href="https://github.com/SalesforceAIResearch/agentforce-adlc" style="color:var(--repo);">SalesforceAIResearch/agentforce-adlc</a>. Do not modify standard skill content directly.</p>
 <div class="tree"><ul>
-  <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">adlc-author/</span> <span class="fdesc">Generate .agent files from requirements</span></span></li>
-  <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">adlc-deploy/</span> <span class="fdesc">Deploy, publish, activate</span></span></li>
-  <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">adlc-feedback/</span> <span class="fdesc">Collect feedback</span></span></li>
-  <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">adlc-run/</span> <span class="fdesc">Execute actions via REST</span></span></li>
-  <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">adlc-scaffold/</span> <span class="fdesc">Generate Flow/Apex stubs</span></span></li>
+  <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">developing-agentforce/</span> <span class="fdesc">Author, discover, scaffold, deploy, publish</span></span></li>
+  <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">testing-agentforce/</span> <span class="fdesc">Preview, Testing Center, action execution</span></span></li>
+  <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">observing-agentforce/</span> <span class="fdesc">Trace/session analysis, reproduce, optimize</span></span></li>
   <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">agentforce-testing-analysis/</span> <span class="fdesc">CSV test analysis</span></span></li>
-</ul></div>
-
-<h3>Skills — From Repo + Our Additions</h3>
-<p style="font-size:0.8rem;color:var(--gray-500);margin-bottom:0.5rem;">Original content untouched. We added new sections.</p>
-<div class="tree"><ul>
-  <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">adlc-discover/</span> <span class="fdesc">+ Section 0: SOQL-based agent/topic resolution</span></span></li>
-  <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">adlc-optimize/</span> <span class="fdesc">+ Section 3.UI: Tooling API for UI-built agents</span></span></li>
-  <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">adlc-test/</span> <span class="fdesc">+ CSV export, HTML unescape, contextVariables format</span></span></li>
 </ul></div>
 
 <h3>Skills — Custom (created by us)</h3>
 <div class="tree"><ul>
-  <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">adlc-drive/</span> <span class="fdesc">Goal-driven orchestrator — reads playbook, delegates to sub-skills</span></span></li>
+  <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">adlc-drive/</span> <span class="fdesc">Phases 1-3: goal, refine, discover, handoff state</span></span></li>
+  <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">adlc-execute/</span> <span class="fdesc">Phases 4-7: plan, execute, evaluate, hand off</span></span></li>
   <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">adlc-ticket/</span> <span class="fdesc">Create/evaluate tickets for drive — standalone or called by drive</span></span></li>
 </ul></div>
 
 <h3>Project — Eval Framework (all custom)</h3>
 <div class="tree"><ul>
   <li class="folder open"><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">adlc/</span></span><ul>
-    <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">prompt-engineering-playbook.md</span> <span class="fdesc">Principles + rule levels</span></span></li>
-    <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">drive-architecture.md</span> <span class="fdesc">Delegation map</span></span></li>
+    <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">playbooks/prompt-engineering-playbook.md</span> <span class="fdesc">Principles + rule levels</span></span></li>
+    <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">playbooks/agentforce-architecture-playbook.md</span> <span class="fdesc">Root-cause routing and dependency mapping</span></span></li>
+    <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">docs/drive-architecture.md</span> <span class="fdesc">Drive/execute delegation map</span></span></li>
+    <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">docs/core-process-overlay.md</span> <span class="fdesc">Local exceptions, handoff state, acceptance state</span></span></li>
+    <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">docs/artifact-repo-workflow.md</span> <span class="fdesc">Shared artifact repo routing</span></span></li>
+    <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">docs/developer-onboarding.md</span> <span class="fdesc">Bootstrap/status setup guidance</span></span></li>
     <li class="folder"><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">ticket-guides/</span> <span class="fdesc">Everything related to adlc-ticket</span></span><ul>
       <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">ticket-authoring-prompt.md</span> <span class="fdesc">How to write drive-ready tickets</span></span></li>
       <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">ticket-evaluation-samples.md</span> <span class="fdesc">15 real tickets evaluated (training material)</span></span></li>
@@ -447,15 +469,16 @@
     <li class="folder"><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">scripts/</span></span><ul>
       <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">generate_report.py</span> <span class="fdesc">Regression report: scorecard, strategy, formatting, multi-turn, appendix. HTML + JSON output.</span></span></li>
     </ul></li>
-    <li class="folder"><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">indeed-service-agent/</span></span><ul>
-      <li class="folder"><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">baselines/v21/</span> <span class="fdesc">Production baseline</span></span><ul>
-        <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">instruction-invoice.txt</span> <span class="fdesc">7,422 words</span></span></li>
-        <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">raw-outputs.csv</span> <span class="fdesc">850 rows</span></span></li>
-      </ul></li>
-      <li class="folder"><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">tickets/PROJ-345-compact-invoice/</span></span><ul>
-        <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">goal.md / config.json / STATUS.md</span></span></li>
-        <li class="folder"><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">attempts/</span> <span class="fdesc">7 attempts, #04 deployed</span></span><ul>
-          <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">04-v22c-fixed-explain/</span> <span class="fdesc">✅ Winner</span></span></li>
+    <li class="folder"><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">agents/</span></span><ul>
+      <li class="folder"><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">&lt;agent-dev-name&gt;__&lt;org-alias&gt;/</span></span><ul>
+        <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">meta.json</span></span></li>
+        <li class="folder"><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">baselines/&lt;topic&gt;/</span></span><ul>
+          <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">utterances.txt</span></span></li>
+        </ul></li>
+        <li class="folder"><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">tickets/&lt;ticket-key&gt;-&lt;short-description&gt;/</span></span><ul>
+          <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">goal.md / hitl.jsonl / discovery.json / config.json / status.md</span></span></li>
+          <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">dependency-map.md / prompt-mental-model.md</span></span></li>
+          <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">originals/ / specs/ / attempts/</span></span></li>
         </ul></li>
       </ul></li>
     </ul></li>
@@ -465,8 +488,8 @@
 <h3>Project — Salesforce DX (auto-generated)</h3>
 <div class="tree"><ul>
   <li class="folder"><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">force-app/</span> <span class="fdesc">Salesforce DX</span></span><ul>
-    <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">aiEvaluationDefinitions/</span> <span class="fdesc">Testing Center specs (deployed to org)</span></span></li>
-    <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">bots/</span> <span class="fdesc">Agent metadata (retrieved from org)</span></span></li>
+    <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">aiAuthoringBundles/</span> <span class="fdesc">Agent Script authoring bundle source</span></span></li>
+    <li><span class="node node-neutral"><span class="node-dot dot-neutral"></span><span class="fname">genAiPlannerBundles/</span> <span class="fdesc">Retrieved/generated planner metadata</span></span></li>
   </ul></li>
 </ul></div>
 </section>
@@ -501,7 +524,7 @@
         <div class="step-body"><span class="tag-skill tag-drive">drive</span> — NO questions, NO org queries. Just show what you understood.</div>
         <div class="details">Present: goal in own words, ticket readiness, what you know vs what you need to find out, assumptions. <b>No user interaction</b> — this is the agent showing its homework. Questions come in Phase 2.<br><br>
           <b>Do NOT:</b> query the org, infer agent/version from project files, use fixed checklists.<br><br>
-          <span class="files"><span>→ Writes: adlc/{agent}/tickets/{key}/goal.md</span></span></div>
+          <span class="files"><span>→ Writes: adlc/agents/{agent}__{org}/tickets/{key}/goal.md</span></span></div>
       </div>
     </div>
   </div>
@@ -512,8 +535,8 @@
       <div class="sim-step"><div class="dot" style="background:var(--accent)"></div>
         <div class="step-title" onclick="this.parentElement.classList.toggle('expanded')">2a. Read architecture + formulate questions</div>
         <div class="step-body"><span class="tag-skill tag-playbook">playbook</span> <span class="tag-skill tag-drive">drive</span> — informed by system architecture</div>
-        <div class="details">Reads the architecture section of <code>prompt-engineering-playbook.md</code> to understand how topics, actions, templates, and data flow work. Then formulates questions based on the ticket + architecture knowledge. No fixed question list — reasons from context.<br><br>
-          At minimum asks: which agent, which version, which org, edit strategy. But adds architecture-informed questions like "do actions feed data into the templates we're changing?"</div>
+        <div class="details">Reads <code>adlc/playbooks/agentforce-architecture-playbook.md</code> and <code>adlc/docs/core-process-overlay.md</code>, then uses the prompt playbook as prompt-craft context. Questions are driven by the ticket and architecture, not a fixed list.<br><br>
+          At minimum confirms agent, version, org, topic, and edit strategy; also asks architecture-informed questions such as whether actions feed data into the response templates being changed.</div>
       </div>
       <div class="sim-step"><div class="dot" style="background:var(--accent)"></div>
         <div class="step-title" onclick="this.parentElement.classList.toggle('expanded')">2b. Discuss scope + SPIKE gate</div>
@@ -533,24 +556,29 @@
     <div class="phase-steps">
       <div class="sim-step"><div class="dot" style="background:var(--modified)"></div>
         <div class="step-title" onclick="this.parentElement.classList.toggle('expanded')">3a. Resolve agent/topic metadata</div>
-        <div class="step-body"><span class="tag-skill tag-discover">adlc-discover</span> — SOQL queries using agent name confirmed in Phase 2</div>
-        <div class="details">First org query. Uses agent name and topics confirmed by user. If surprises found (unexpected records, version mismatch), HITL before continuing.<br><br>
-          <span class="files"><span>→ Stores: agent_api_name, plugin_definition_id, instruction_def_ids</span></span></div>
+        <div class="step-body"><span class="tag-skill tag-discover">developing-agentforce</span> — SOQL queries using agent name confirmed in Phase 2</div>
+        <div class="details">First org query. Uses agent name and topics confirmed by user. Resolves the canonical agent folder, checks source of truth, and scans prior HITL after canonical metadata is known. If surprises are found, HITL before continuing.<br><br>
+          <span class="files"><span>→ Stores: agent_api_name, agent_dev_name, plugin_definition_ids, instruction_def_ids, source_of_truth, canonical_ticket_folder, discovery.json</span></span></div>
       </div>
       <div class="sim-step"><div class="dot" style="background:var(--modified)"></div>
-        <div class="step-title" onclick="this.parentElement.classList.toggle('expanded')">3b. Pull + analyze instructions</div>
-        <div class="step-body"><span class="tag-skill tag-optimize">adlc-optimize</span> + <span class="tag-skill tag-playbook">playbook checklist</span></div>
-        <div class="details">Pull instruction text via Tooling API. Then analyze using the playbook's Instruction Analysis Checklist: structure, actions referenced, templates, content rules, terminology, formatting, field references, escalation logic, guardrails, reasoning scaffolding, conflicts with ticket, insertion points.</div>
+        <div class="step-title" onclick="this.parentElement.classList.toggle('expanded')">3b. Pull current state + map dependencies</div>
+        <div class="step-body"><span class="tag-skill tag-optimize">observing-agentforce</span> + <span class="tag-skill tag-playbook">playbook checklist</span></div>
+        <div class="details">Pull instruction text from the verified source of truth: authoring bundle by default, or the local UI-built Tooling API exception path when approved. Save originals first, then document the prompt mental model and dependency map: instructions, routing, actions, variables, data dependencies, permissions, environment gaps, testability, conflicts, and insertion points.</div>
       </div>
       <div class="sim-step"><div class="dot" style="background:var(--modified)"></div>
-        <div class="step-title" onclick="this.parentElement.classList.toggle('expanded')">3c-d. Baseline utterances + test spec</div>
-        <div class="step-body"><span class="tag-skill tag-test">adlc-test</span> — from baselines/ only, always run fresh, multi-turn aware</div>
-        <div class="details">Utterances from <code>baselines/{topic}/utterances.txt</code> ONLY. Never reuse old output CSVs. Combine with ticket attachments and derived utterances. Coverage check. Min 5 multi-turn. Max ~50 per ticket.</div>
+        <div class="step-title" onclick="this.parentElement.classList.toggle('expanded')">3c. Baseline utterances + test specs</div>
+        <div class="step-body"><span class="tag-skill tag-test">testing-agentforce</span> — from baselines/ only, always run fresh, multi-turn aware</div>
+        <div class="details">Utterances from <code>baselines/{topic}/utterances.txt</code> ONLY. Never reuse old output CSVs. Combine baseline utterances with ticket attachments and derived utterances. Run a fresh baseline CSV, record the Testing Center suite name when used, and keep regression/capability specs separate. Coverage check. Min 5 multi-turn. Max ~50 per ticket.</div>
+      </div>
+      <div class="sim-step"><div class="dot" style="background:var(--modified)"></div>
+        <div class="step-title" onclick="this.parentElement.classList.toggle('expanded')">3d. Analyze baseline + propose acceptance</div>
+        <div class="step-body"><span class="tag-skill tag-drive">drive</span> <span class="tag-skill tag-script">generate_report.py</span> — baseline profile and config.json</div>
+        <div class="details">Analyze the fresh baseline, identify relevant metrics, and create <code>config.json</code> with proposed acceptance criteria. Criteria remain proposed until the Phase 3 checkpoint is approved.</div>
       </div>
       <div class="sim-step"><div class="dot" style="background:var(--accent)"></div>
         <div class="step-title" onclick="this.parentElement.classList.toggle('expanded')">⛔ Checkpoint: discovery findings</div>
         <div class="step-body"><span class="tag-skill tag-drive">drive</span> <span class="tag-skill tag-user">user</span> — instruction analysis, conflicts, criteria</div>
-        <div class="details">Present: instruction summary per topic, conflicts found, insertion points, baseline utterance counts, eval criteria (unchanged/modified/new), acceptance thresholds, exit ramps if any. Wait for approval.</div>
+        <div class="details">Present: instruction analysis, prompt mental model, dependency map, testability classifications, test specs, baseline metrics, eval criteria split, proposed acceptance thresholds, assumptions, and exit ramps. Wait for approval, then hand off to adlc-execute.</div>
       </div>
     </div>
   </div>
@@ -559,9 +587,9 @@
     <div class="phase-header" onclick="this.parentElement.classList.toggle('open')"><span class="phase-num" style="background:var(--accent)">4</span> Plan — Triage and get approval</div>
     <div class="phase-steps">
       <div class="sim-step"><div class="dot" style="background:var(--accent)"></div>
-        <div class="step-title" onclick="this.parentElement.classList.toggle('expanded')">4a-c. Triage, test matrix, present plan</div>
-        <div class="step-body"><span class="tag-skill tag-drive">drive</span> <span class="tag-skill tag-user">user</span> — blast radius scoring, plan approval</div>
-        <div class="details">Scores blast radius (0-5). Classifies: SHIP IT / JUDGMENT CALL / PROCTOR / DESIGN REVIEW. Sets test matrix. Presents plan, gets approval.<br><br><span class="files"><span>→ Writes: CHANGELOG.md</span></span></div>
+        <div class="step-title" onclick="this.parentElement.classList.toggle('expanded')">4-pre through 4c. Architecture review, strategy, plan</div>
+        <div class="step-body"><span class="tag-skill tag-drive">adlc-execute</span> <span class="tag-skill tag-user">user</span> — blast radius scoring, plan approval</div>
+        <div class="details">Reads handoff artifacts, confirms work type/source of truth/sub-skills/iteration model, runs Solution Strategy Review, scores blast radius, sets test matrix, and presents the plan for approval.<br><br><span class="files"><span>→ Reads: discovery.json, config.json, prompt mental model, dependency map</span></span></div>
       </div>
     </div>
   </div>
@@ -571,28 +599,28 @@
     <div class="phase-steps">
       <div class="sim-step active"><div class="dot" style="background:var(--custom)"></div>
         <div class="step-title" onclick="this.parentElement.classList.toggle('expanded')">5.1. Edit instruction</div>
-        <div class="step-body"><span class="tag-skill tag-drive">drive</span> <span class="tag-skill tag-playbook">playbook</span> — the creative work</div>
-        <div class="details">Consults <code>prompt-engineering-playbook.md</code> for editing principles. Makes targeted edit based on goal. One change per iteration.<br><br><span class="files"><span>→ Writes: attempts/NN-name/instruction.txt</span></span></div>
+        <div class="step-body"><span class="tag-skill tag-drive">adlc-execute</span> <span class="tag-skill tag-playbook">playbook</span> — the creative work</div>
+        <div class="details">Consults <code>playbooks/prompt-engineering-playbook.md</code> for editing principles. Makes targeted edit based on goal. One change per iteration.<br><br><span class="files"><span>→ Writes: attempts/NN-name/instruction.txt</span></span></div>
       </div>
       <div class="sim-step active"><div class="dot" style="background:var(--modified)"></div>
         <div class="step-title" onclick="this.parentElement.classList.toggle('expanded')">5.2. Deploy instruction to org</div>
-        <div class="step-body"><span class="tag-skill tag-optimize">adlc-optimize</span> — Tooling API PATCH + auto-backup</div>
-        <div class="details">Reads <code>adlc-optimize/SKILL.md</code>. Backs up current instruction, then deploys the new one.<br><br><span class="files"><span>→ API: PATCH /tooling/sobjects/GenAiPluginInstructionDef/{id}</span></span></div>
+        <div class="step-body"><span class="tag-skill tag-optimize">observing-agentforce</span> — Tooling API PATCH + auto-backup</div>
+        <div class="details">Reads <code>observing-agentforce/SKILL.md</code> and the local overlay. Backs up current instruction, then updates through the verified source of truth.<br><br><span class="files"><span>→ API only for approved UI-built exception: PATCH /tooling/sobjects/GenAiPluginInstructionDef/{id}</span></span></div>
       </div>
       <div class="sim-step active"><div class="dot" style="background:var(--modified)"></div>
         <div class="step-title" onclick="this.parentElement.classList.toggle('expanded')">5.3. Run smoke test (4x)</div>
-        <div class="step-body"><span class="tag-skill tag-test">adlc-test</span> Mode B — 5 utterances, 4 runs each, 3/4 pass = OK</div>
+        <div class="step-body"><span class="tag-skill tag-test">testing-agentforce</span> — 5 utterances, 4 runs each, 3/4 pass = OK</div>
         <div class="details">Creates small YAML spec, runs Testing Center 4 times, exports CSV. Checks pass rate (3/4 = 75% OK for dev).<br><br><span class="files"><span>→ Saves: attempts/NN/smoke-results.csv</span></span></div>
       </div>
       <div class="sim-step active"><div class="dot" style="background:var(--accent)"></div>
         <div class="step-title" onclick="this.parentElement.classList.toggle('expanded')">5.4-5. Evaluate → Bulk eval</div>
-        <div class="step-body"><span class="tag-skill tag-drive">drive</span> <span class="tag-skill tag-test">adlc-test</span> <span class="tag-skill tag-script">generate_report.py</span></div>
-        <div class="details">If smoke passes → run full eval (all utterances, 4x). Compare with <code>generate_report.py</code>. If acceptance met → Phase 6. If not → iterate back to 5.1.<br><br><span class="files"><span>→ Saves: raw-outputs.csv, eval-report.html</span></span></div>
+        <div class="step-body"><span class="tag-skill tag-drive">adlc-execute</span> <span class="tag-skill tag-test">testing-agentforce</span> <span class="tag-skill tag-script">generate_report.py</span></div>
+        <div class="details">If smoke passes → run full eval. Compare with <code>generate_report.py</code>. If current-stage blocking criteria pass → Phase 6. If not → iterate back to 5.1.<br><br><span class="files"><span>→ Saves: raw-outputs.csv, eval-report.html, eval-report.json</span></span></div>
       </div>
       <div class="sim-step"><div class="dot" style="background:var(--accent)"></div>
         <div class="step-title" onclick="this.parentElement.classList.toggle('expanded')">5.6-8. Acceptance check → iterate or stop</div>
-        <div class="step-body"><span class="tag-skill tag-drive">drive</span> <span class="tag-skill tag-user">user</span> — pull user in if ambiguous</div>
-        <div class="details">If all criteria met → exit loop. If regression → diagnose, iterate. If ambiguous → present data to user. If max iterations → stop, present partial results.<br><br><span class="files"><span>→ Updates: .adlc-drive-state.json</span></span></div>
+        <div class="step-body"><span class="tag-skill tag-drive">adlc-execute</span> <span class="tag-skill tag-user">user</span> — pull user in if ambiguous</div>
+        <div class="details">If current-stage blocking criteria are met → exit loop. If regression → diagnose, iterate. If ambiguous → present data to user. If max iterations → stop, present partial results.<br><br><span class="files"><span>→ Updates: .adlc-drive-state.json scratchpad; durable state stays in ticket artifacts</span></span></div>
       </div>
     </div>
   </div>
@@ -602,8 +630,8 @@
     <div class="phase-steps">
       <div class="sim-step"><div class="dot" style="background:var(--custom)"></div>
         <div class="step-title" onclick="this.parentElement.classList.toggle('expanded')">6. Report + playbook update + summary</div>
-        <div class="step-body"><span class="tag-skill tag-drive">drive</span> <span class="tag-skill tag-playbook">playbook</span> <span class="tag-skill tag-user">user</span></div>
-        <div class="details">Proposes playbook updates if new patterns discovered. Generates HTML eval report. Updates CHANGELOG.md, STATUS.md. Presents recommendation.<br><br><span class="files"><span>→ Writes: eval-report.html, CHANGELOG.md, STATUS.md</span></span></div>
+        <div class="step-body"><span class="tag-skill tag-drive">adlc-execute</span> <span class="tag-skill tag-playbook">playbook</span> <span class="tag-skill tag-user">user</span></div>
+        <div class="details">Proposes playbook updates if new patterns discovered. Generates HTML/JSON eval report. Updates status.md and per-criterion config.json results. Presents GO/NO-GO/CONDITIONAL recommendation.<br><br><span class="files"><span>→ Writes: eval-report.html, eval-report.json, status.md, config.json result fields</span></span></div>
       </div>
     </div>
   </div>
@@ -613,14 +641,14 @@
     <div class="phase-steps">
       <div class="sim-step"><div class="dot" style="background:var(--custom)"></div>
         <div class="step-title" onclick="this.parentElement.classList.toggle('expanded')">7a. Promote to baseline (if deploying to prod)</div>
-        <div class="step-body"><span class="tag-skill tag-drive">drive</span> <span class="tag-skill tag-test">adlc-test</span> <span class="tag-skill tag-user">user</span></div>
+        <div class="step-body"><span class="tag-skill tag-drive">adlc-execute</span> <span class="tag-skill tag-test">testing-agentforce</span> <span class="tag-skill tag-user">user</span></div>
         <div class="details">
           The winning attempt becomes the new baseline. <b>Only way baselines are created.</b><br><br>
           1. Confirm with user: "Attempt NN passed. Promote to baseline v[N+1]?"<br>
           2. If QA-level eval (8x runs) doesn't exist yet, run one before promoting<br>
           3. Copy winning attempt artifacts to baseline:<br><br>
           <span class="files">
-            <span>→ adlc/{agent}/baselines/v{N+1}/</span>
+            <span>→ adlc/agents/{agent}__{org}/baselines/v{N+1}/</span>
             <span>&nbsp;&nbsp;instruction-{topic}.txt ← from attempts/NN/</span>
             <span>&nbsp;&nbsp;raw-outputs.csv ← QA 8x run (NOT dev 4x)</span>
             <span>&nbsp;&nbsp;metadata.json ← version, date, ticket, scoring version</span>
@@ -631,13 +659,13 @@
       </div>
       <div class="sim-step"><div class="dot" style="background:var(--gray-500)"></div>
         <div class="step-title" onclick="this.parentElement.classList.toggle('expanded')">7b. Rollback (if not deploying yet)</div>
-        <div class="step-body"><span class="tag-skill tag-optimize">adlc-optimize</span> — restore baseline instruction to org</div>
-        <div class="details">Roll back org to previous baseline instruction. Leave winning attempt in ticket folder — ready for promotion later. Update STATUS.md with candidate attempt number.</div>
+        <div class="step-body"><span class="tag-skill tag-optimize">observing-agentforce</span> — restore baseline instruction to org</div>
+        <div class="details">Roll back org to previous baseline instruction. Leave winning attempt in ticket folder — ready for promotion later. Update status.md with candidate attempt number.</div>
       </div>
       <div class="sim-step"><div class="dot" style="background:var(--accent)"></div>
         <div class="step-title" onclick="this.parentElement.classList.toggle('expanded')">7c. Clean exit</div>
-        <div class="step-body"><span class="tag-skill tag-drive">drive</span> — remind deploy, note proctor/design review</div>
-        <div class="details">Remind user to invoke <code>adlc-deploy</code> separately. Note proctor flag strategy if recommended. Note design review items if tagged. Clean up state file.</div>
+        <div class="step-body"><span class="tag-skill tag-drive">adlc-execute</span> — remind deploy, note proctor/design review</div>
+        <div class="details">Remind user to use <code>developing-agentforce</code> for deployment/publish/activation. Note proctor flag strategy if recommended. Note design review items if tagged. Clean up the local scratchpad state file after durable ticket artifacts are current.</div>
       </div>
     </div>
   </div>

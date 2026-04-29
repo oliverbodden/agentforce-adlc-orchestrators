@@ -1,96 +1,96 @@
 # Internal Ticket Rewrites
 
-> These are INTERNAL rewrites of existing ESCHAT tickets to test how well adlc-drive would handle them if properly structured. Not submitted to JIRA.
+> These are INTERNAL rewrites of existing PROJECT tickets to test how well adlc-drive would handle them if properly structured. Not submitted to JIRA.
 
 ---
 
-## ESCHAT-1178: JP ESA Locale Configuration
+## PROJ-1178: Regional service agent Locale Configuration
 **Original problem:** Barely any structure. Mentions people, asks for Apex changes, but no clear agent/topic scope or acceptance.
 
 ### Rewritten:
 
-**Title:** ADLC - Configure JP ESA Locale and Communication Interfaces
+**Title:** ADLC - Configure Regional service agent Locale and Communication Interfaces
 
-**Context:** JP ESA needs to send requests with `communicationLocale = "ja"` and support both `IndeedServiceChatbot` and `DradisIndeedMessage` communication interfaces for correct policy guidance.
+**Context:** Regional service agent needs to send requests with `communicationLocale = "ja"` and support both `PrimaryServiceChatbot` and `FallbackMessageChannel` communication interfaces for correct policy guidance.
 
 **Requirements:**
 1. Update Apex integration to request both communication interfaces in a single `jobPostStatuses` call
-2. Set `communicationLocale = "ja"` for JP ESA requests
-3. For each returned messaging tag, prefer `IndeedServiceChatbot`; fall back to `DradisIndeedMessage` if absent
+2. Set `communicationLocale = "ja"` for Regional service agent requests
+3. For each returned messaging tag, prefer `PrimaryServiceChatbot`; fall back to `FallbackMessageChannel` if absent
 
-**Agent:** JP ESA (API name: TBD — needs discovery)
+**Agent:** Regional service agent (API name: TBD — needs discovery)
 **Org:** TBD
 **Acceptance:**
-- JP ESA returns Japanese-locale policy guidance in responses
-- Fallback logic works when `IndeedServiceChatbot` message is absent
-- No regression on existing JP ESA functionality
+- Regional service agent returns Japanese-locale policy guidance in responses
+- Fallback logic works when `PrimaryServiceChatbot` message is absent
+- No regression on existing Regional service agent functionality
 
-**adlc-drive assessment:** This is Apex/Flow work, not instruction editing. Drive would flag this as out of scope for instruction optimization and suggest using `adlc-scaffold` or manual Apex development instead.
+**adlc-drive assessment:** This is Apex/Flow work, not instruction editing. Drive would flag this as out of scope for instruction optimization and suggest using `developing-agentforce` or manual Apex development instead.
 
 ---
 
-## ESCHAT-1151: Permissions API Investigation
+## PROJ-1151: Permissions API Investigation
 **Original problem:** Investigation ticket with data but no structure for drive.
 
 ### Rewritten:
 
 **Title:** [SPIKE] Investigate Permissions API behavior for hidden accounts and secondary users
 
-**Context:** The Permissions API returns unexpected data for hidden accounts (noreply-XYZ@hidden.indeed.com) and secondary users, causing ESA to fail when looking up account data.
+**Context:** The Permissions API returns unexpected data for hidden accounts (hidden-user@example.invalid) and secondary users, causing the service agent to fail when looking up account data.
 
 **Questions:**
 1. What does the Permissions API return for hidden accounts vs primary users?
-2. How should ESA handle secondary users who are the actual operators?
+2. How should Service Agent handle secondary users who are the actual operators?
 3. What's the volume of sessions affected by these permission mismatches?
 
-**Agent:** Indeed Service Agent (`Agentforce_Service_Agent`)
+**Agent:** Example Service Agent (`Example_Service_Agent`)
 **Time-box:** 3 days
 **Output:** Findings document with recommendations for instruction/action changes
 
-**adlc-drive assessment:** SPIKE — drive would output an investigation plan using `adlc-optimize` Phase 1 (session trace analysis) to quantify the impact, then produce a findings document.
+**adlc-drive assessment:** SPIKE — drive would output an investigation plan using `observing-agentforce` session trace analysis to quantify the impact, then produce a findings document.
 
 ---
 
-## ESCHAT-1149: ESA Data Access Failures
+## PROJ-1149: Service Agent Data Access Failures
 **Original problem:** Investigation with a data table but no requirements or acceptance.
 
 ### Rewritten:
 
-**Title:** [SPIKE] Root cause analysis of ESA data access failures (Permission/Credential errors)
+**Title:** [SPIKE] Root cause analysis of Service Agent data access failures (Permission/Credential errors)
 
-**Context:** ESA fails to access data in some sessions due to Permission/Credential errors between Salesforce, MuleSoft, and OneGraph.
+**Context:** The service agent fails to access data in some sessions due to Permission/Credential errors between Salesforce, external integration, and graph service.
 
 **Questions:**
 1. What's the volume of affected sessions?
-2. Root cause: token acquisition failure, MuleSoft error, OneGraph issue, or other?
+2. Root cause: token acquisition failure, external integration error, graph service issue, or other?
 3. Which topics are most affected?
 4. Can we add error handling instructions to gracefully handle these failures?
 
-**Agent:** Indeed Service Agent (`Agentforce_Service_Agent`)
+**Agent:** Example Service Agent (`Example_Service_Agent`)
 **Time-box:** 5 days
 **Output:** Root cause breakdown with volume data + recommendation (instruction change vs infrastructure fix)
 
-**adlc-drive assessment:** SPIKE — drive would pull STDM session data via `adlc-optimize` to quantify and categorize failures, then recommend whether the fix is instruction-level (add error handling guidance) or infrastructure-level (fix credentials).
+**adlc-drive assessment:** SPIKE — drive would pull STDM session data via `observing-agentforce` to quantify and categorize failures, then recommend whether the fix is instruction-level (add error handling guidance) or infrastructure-level (fix credentials).
 
 ---
 
-## ESCHAT-1140: Section-Aware Chunking with Overlap
+## PROJ-1140: Section-Aware Chunking with Overlap
 **Original problem:** POC/analysis ticket with business context but no agent scope or acceptance.
 
 ### Rewritten:
 
 **Title:** [SPIKE] Evaluate section-aware chunking with overlap for RAG retrieval improvement
 
-**Context:** ESA's RAG doesn't consistently retrieve full contextual sections from knowledge articles. This results in partial answers and missed guidance. A prior SPIKE (section-aware chunking without overlap) was completed.
+**Context:** Service Agent's RAG doesn't consistently retrieve full contextual sections from knowledge articles. This results in partial answers and missed guidance. A prior SPIKE (section-aware chunking without overlap) was completed.
 
 **Questions:**
 1. Does adding overlap between chunks improve retrieval completeness?
-2. What's the optimal overlap size for ESA's knowledge articles?
+2. What's the optimal overlap size for Service Agent's knowledge articles?
 3. How does this affect latency and token consumption?
 4. Does response quality improve measurably vs current chunking?
 
-**Agent:** Indeed Service Agent — GeneralFAQ topic (primary RAG consumer)
-**Org:** devesa3
+**Agent:** Example Service Agent — GeneralFAQ topic (primary RAG consumer)
+**Org:** sandbox-alias
 **Time-box:** 5 days
 **Output:** Comparative analysis (current vs overlap chunking) with eval results
 
@@ -98,21 +98,21 @@
 
 ---
 
-## ESCHAT-1117: Ensure "Representative" Consistency
-**Original problem:** One sentence, no structure. Now redundant with ESCHAT-1192.
+## PROJ-1117: Ensure "Representative" Consistency
+**Original problem:** One sentence, no structure. Now redundant with PROJ-1192.
 
 ### Rewritten:
 
-**Title:** ADLC - Standardize "representative" terminology across all ESA topics
+**Title:** ADLC - Standardize "representative" terminology across all Service Agent topics
 
-**Context:** ESA inconsistently uses "specialist", "agent", and "representative" when referring to human support. Should always be "a representative."
+**Context:** Service Agent inconsistently uses "specialist", "agent", and "representative" when referring to human support. Should always be "a representative."
 
 **Requirements:**
 1. Audit all topic instructions for instances of "specialist", "agent", "our service representative"
 2. Replace all with "a representative"
 3. Include in global instructions to prevent future drift
 
-**Agent:** Indeed Service Agent (`Agentforce_Service_Agent`)
+**Agent:** Example Service Agent (`Example_Service_Agent`)
 **Topics:** All — global instruction + each topic
 **Acceptance:**
 - Zero instances of "specialist" or "agent" (when referring to human support) in any response
@@ -120,16 +120,16 @@
 
 **Baseline:** Current eval CSVs — grep for terminology usage
 
-**adlc-drive assessment:** Simple instruction fix. Drive would audit all instruction records, make surgical replacements, and verify via eval. Low risk. **NOTE: Now covered by ESCHAT-1192 — recommend closing as duplicate.**
+**adlc-drive assessment:** Simple instruction fix. Drive would audit all instruction records, make surgical replacements, and verify via eval. Low risk. **NOTE: Now covered by PROJ-1192 — recommend closing as duplicate.**
 
 ---
 
-## ESCHAT-1083: Incorporate Official Content Guidelines
+## PROJ-1083: Incorporate Official Content Guidelines
 **Original problem:** Empty description.
 
 ### Rewritten:
 
-**Title:** ADLC - Implement official content guidelines across ESA agents
+**Title:** ADLC - Implement official content guidelines across service agents
 
 **Context:** [NEEDS INPUT] What are the official content guidelines? Link to doc or paste guidelines here.
 
@@ -140,14 +140,14 @@
 
 ---
 
-## ESCHAT-1082: Show/Hide Toggle for Additional Details
+## PROJ-1082: Show/Hide Toggle for Additional Details
 **Original problem:** Just a screenshot and one sentence about progressive disclosure.
 
 ### Rewritten:
 
-**Title:** ADLC - Implement progressive disclosure (show/hide) in ESA responses
+**Title:** ADLC - Implement progressive disclosure (show/hide) in service agent responses
 
-**Context:** Long ESA responses could benefit from progressive disclosure — showing a summary first with an option to expand for details.
+**Context:** Long service agent responses could benefit from progressive disclosure — showing a summary first with an option to expand for details.
 
 **Requirements:**
 [NEEDS INVESTIGATION]
@@ -159,14 +159,14 @@
 
 ---
 
-## ESCHAT-1165: Knowledge Article Syncing in QA
+## PROJ-1165: Knowledge Article Syncing in QA
 **Original problem:** Process/infrastructure question, not an agent change.
 
 ### Rewritten:
 
 **Title:** Establish process for knowledge article syncing between production and QA
 
-**Context:** Content team needs to edit knowledge articles in QA and test ESA impact. ESA team needs ability to test with production-only articles. Other teams face similar needs.
+**Context:** Content team needs to edit knowledge articles in QA and test service agent impact. service agent team needs ability to test with production-only articles. Other teams face similar needs.
 
 **Requirements:**
 1. Define sync process: one-way (prod→QA) or two-way
@@ -177,14 +177,14 @@
 
 ---
 
-## ESCHAT-1124: Invoice Response Formatting
+## PROJ-1124: Invoice Response Formatting
 **Original problem:** Has specific before/after examples but no acceptance criteria or agent reference.
 
 ### Rewritten:
 
 **Title:** ADLC - Update Invoice response formatting (bold values, link style)
 
-**Context:** Invoice Inquiries responses need formatting cleanup per UXCD review.
+**Context:** Invoice Inquiries responses need formatting cleanup per UX/content review.
 
 **Requirements:**
 1. Bold VALUES not labels: `Due Date: **[dueDate]**` not `**Due Date:** [dueDate]`
@@ -192,20 +192,20 @@
 3. Remove "here" from download links — use descriptive text
 4. Add currency formatting: always 2 decimals with commas
 
-**Agent:** Indeed Service Agent (`Agentforce_Service_Agent`)
+**Agent:** Example Service Agent (`Example_Service_Agent`)
 **Topic:** Invoice Inquiries (`Invoice_Inquiries_16j770ab13ee312`)
 **Acceptance:**
 - Bold applied to values in >90% of responses
 - No "here" link text in any response
 - Currency always formatted with 2 decimals
 
-**Baseline:** `adlc/indeed-service-agent/baselines/v21/`
+**Baseline:** `adlc/agents/example-service-agent__org-unknown/baselines/general-faq/`
 
-**adlc-drive assessment:** Good candidate. Surgical instruction edit — modify the template formatting rules in the Invoice instruction. Low risk. **NOTE: Some of these may now be covered by ESCHAT-1192 — check for overlap.**
+**adlc-drive assessment:** Good candidate. Surgical instruction edit — modify the template formatting rules in the Invoice instruction. Low risk. **NOTE: Some of these may now be covered by PROJ-1192 — check for overlap.**
 
 ---
 
-## ESCHAT-1115: Update Named Credentials for MuleSoft
+## PROJ-1115: Update Named Credentials for external integration
 **Original problem:** Infrastructure ticket about credential configuration, not agent instructions.
 
 ### Rewritten:
@@ -216,7 +216,7 @@ No rewrite needed — this is not an adlc-drive ticket.
 
 ---
 
-## ESCHAT-1114: Recreate Knowledge Data Streams in DEVESA3
+## PROJ-1114: Recreate Knowledge Data Streams in DEVService Agent3
 **Original problem:** Infrastructure ticket about Data Cloud data streams.
 
 ### Rewritten:
@@ -231,7 +231,7 @@ No rewrite needed — this is not an adlc-drive ticket.
 
 | Gap | Tickets affected | Fix needed |
 |---|---|---|
-| **Drive needs to detect out-of-scope tickets** — infrastructure, Apex, Data Cloud config are not instruction edits | ESCHAT-1178, 1115, 1114, 1165 | Drive Phase 1 should classify: "Is this an instruction/prompt change, or infrastructure?" and flag non-instruction work early |
-| **Empty/vague tickets need SPIKE conversion** | ESCHAT-1083, 1082 | Drive should detect near-empty tickets and suggest converting to SPIKE |
-| **Duplicate detection** | ESCHAT-1117 (covered by 1192) | Drive should search for related tickets before starting |
-| **Formatting-only tickets overlap with tone tickets** | ESCHAT-1124 partially covered by 1192 | Drive should flag potential overlap with in-progress tickets |
+| **Drive needs to detect out-of-scope tickets** — infrastructure, Apex, Data Cloud config are not instruction edits | PROJ-1178, 1115, 1114, 1165 | Drive Phase 1 should classify: "Is this an instruction/prompt change, or infrastructure?" and flag non-instruction work early |
+| **Empty/vague tickets need SPIKE conversion** | PROJ-1083, 1082 | Drive should detect near-empty tickets and suggest converting to SPIKE |
+| **Duplicate detection** | PROJ-1117 (covered by 1192) | Drive should search for related tickets before starting |
+| **Formatting-only tickets overlap with tone tickets** | PROJ-1124 partially covered by 1192 | Drive should flag potential overlap with in-progress tickets |

@@ -57,7 +57,7 @@ breaks classification. Surgical compaction preserves reasoning scaffolding.
 - [x] Ready to deploy (invoke `adlc-deploy`)
 
 ### Artifacts
-- Instruction: adlc/indeed-service-agent/tickets/ESCHAT-1234/attempts/03/instruction.txt
-- Test suite: ESCHAT-1234-invoice-compaction
-- Eval report: adlc/indeed-service-agent/tickets/ESCHAT-1234/attempts/03/eval-report.html
+- Instruction: adlc/example-service-agent/tickets/PROJ-1234/attempts/03/instruction.txt
+- Test suite: PROJ-1234-invoice-compaction
+- Eval report: adlc/example-service-agent/tickets/PROJ-1234/attempts/03/eval-report.html
 ```

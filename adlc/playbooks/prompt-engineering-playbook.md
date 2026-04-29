@@ -1,12 +1,37 @@
 # Prompt Engineering Playbook
 
-Living document. Updated as we learn from each ticket. The agent consults this during Phase 5 (Execute) of `adlc-drive`. Humans consult it when reviewing or writing instructions manually.
+Living document. Updated as we learn from each ticket. The agent consults this when writing, reviewing, or changing Agentforce instructions. Humans consult it when reviewing or writing instructions manually.
+
+This playbook is for prompt and instruction strategy, craft, implementation, and review. For Agentforce runtime architecture, topic/subagent routing, action/data dependencies, non-prompt root-cause selection, and testability classification, read `adlc/playbooks/agentforce-architecture-playbook.md` first.
+
+Do not assume a ticket is an instruction problem. Use the architecture playbook to classify the failure surface before applying prompt guidance here. Once the likely fix is prompt-facing, this playbook owns how to inspect the current prompt, choose the prompt surface, decide targeted edit versus restructure, and validate the prompt change.
 
 ---
 
-## Architecture: How Agentforce Works
+## Quick Routing Index
 
-Understand this first. The rules below only make sense with this mental model.
+Use this index first. The playbook is intentionally detailed, but most runs need only the section that matches the current failure mode.
+
+| Situation | Read |
+|---|---|
+| Planning a prompt-facing change | `Prompt Strategy` |
+| Need to decide targeted edit vs restructure | `Prompt Strategy` → `Targeted Edit Vs Restructure Gate` |
+| Prompt edits failed repeatedly | `Diagnostics` → `Diagnostic Logs For Repeated Prompt Failures` |
+| Diagnostic logs do not explain the failure | `Diagnostics` → `Prompt Reduction For Failure Isolation` |
+| Agent ignores a clear instruction | `Diagnostics` → `Diagnose Before Editing` |
+| Agentforce hides internal logs | `Diagnostics` → `Agentforce Diagnostic Trace Pattern` |
+| Prompt is too long or redundant | `Editing Patterns` → `Editing Instructions` |
+| Output format/template is inconsistent | `Editing Patterns` → `Template Adherence` |
+| Need test/eval strategy | `Validation And Evaluation` |
+| Need platform/runtime context | `Reference: How Agentforce Works` |
+
+Operational rule: `adlc-execute` owns the trigger; this playbook owns the recipe. When execution says to use diagnostics or prompt reduction, come here for the detailed technique.
+
+---
+
+## Reference: How Agentforce Works
+
+Historical architecture summary retained for context. The authoritative local architecture reference is now `adlc/playbooks/agentforce-architecture-playbook.md`. If this section conflicts with that file or current Salesforce docs, use the architecture playbook and update this summary later.
 
 ### The Runtime Flow
 
@@ -72,11 +97,13 @@ All of these are injected into the same prompt. Contradictions between any of th
 | Trusted layer loop | Response changes after generation, adds latency | Trace shows multiple grounding steps |
 | Prompt template statelessness | Sub-prompt has no conversation context | Template gives generic answer — check if context was passed via input fields |
 
-### Instruction Analysis Checklist
+### Prompt Mental Model Checklist
 
 When you pull an instruction in Phase 3, extract and document:
 
+- [ ] **Prompt purpose:** What job is this prompt trying to do?
 - [ ] **Structure:** What sections/phases does it have? (e.g., UNDERSTAND → GATHER → BUILD)
+- [ ] **Control flow:** Where does it classify intent, ask clarification, call tools, handle tool output, and compose the final response?
 - [ ] **Actions referenced:** Which actions does it call? What data do they return?
 - [ ] **Templates:** What response templates are prescribed? (exact openers, closings, formats)
 - [ ] **Content rules:** What MUST/NEVER directives exist? (e.g., "MUST include 'Here's what I found'")
@@ -88,6 +115,7 @@ When you pull an instruction in Phase 3, extract and document:
 - [ ] **Reasoning scaffolding:** Store: blocks, checkpoints, consistency checks — mark these as load-bearing
 - [ ] **Conflicts with ticket:** Which of the above conflicts with what the ticket asks to change?
 - [ ] **Insertion points:** Where can new content be added without breaking existing logic?
+- [ ] **Structure assessment:** Is this `targeted-edit-safe`, `messy-but-workable`, or `restructure-recommended`?
 
 Present this analysis at the Phase 3 checkpoint. Do not proceed to Phase 4 without it.
 
@@ -95,9 +123,135 @@ Present this analysis at the Phase 3 checkpoint. Do not proceed to Phase 4 witho
 
 ## How to Use This Playbook
 
-- **During drive Phase 5:** Before editing an instruction, review the relevant principles below.
+- **Before planning:** Read `adlc/playbooks/agentforce-architecture-playbook.md` and confirm the failure belongs in instructions.
+- **During instruction edits:** Use the Prompt Implementation Strategy section to decide how to change the prompt, then review the relevant principles below.
 - **Tie-breakers:** When a ticket's requirements conflict with a playbook principle, see the Rule Levels section.
 - **Evolving:** After each ticket, drive should propose updates to this playbook in Phase 6 if new patterns were discovered. The user approves before changes are made.
+
+---
+
+## Prompt Strategy
+
+Use this section after architecture discovery shows the likely fix is prompt-facing, or when instructions are one viable strategy that must be compared against other surfaces. The architecture playbook decides whether this is really an instruction problem; this playbook decides how to implement instruction changes well.
+
+Phase timing:
+
+- **Phase 2 / Refine:** Use only enough prompt awareness to ask good questions. Do not design exact wording yet.
+- **Phase 3 / Discover:** Read the full affected prompt after originals are saved. Build the prompt mental model and structure assessment before baseline/test design.
+- **Phase 4 / Plan:** Use the mental model to choose targeted edit versus restructure, prompt surface, prompt goal, options, risks, and validation path.
+- **Phase 5 / Execute + Iterative Evaluate:** Implement the approved strategy one logical prompt change at a time and evaluate each iteration.
+- **Phase 6 / Present Final Evaluation:** Propose playbook updates only after evidence shows a reusable pattern.
+
+### 1. Question The Ticket Before Editing
+
+Do not treat the ticket's requested implementation as automatically correct. Separate:
+
+- **Business goal:** What user-facing behavior needs to change?
+- **Requested method:** Did the ticket ask for topic instructions, global instructions, action descriptions, prompt templates, eval changes, or a new topic/action?
+- **Evidence:** Does live prompt/tool/test evidence support that method?
+- **Acceptance definition:** Does the ticket change what "good" means?
+
+If the requested method is weaker than another prompt-facing method, present the trade-off before editing. If the best method is not prompt-facing, exit through the architecture playbook and HITL.
+
+### 2. Build A Prompt Mental Model
+
+Before writing new text, explain the current prompt to yourself. This belongs in Phase 3 after originals are saved and before Phase 4 planning:
+
+- What is the prompt's main job?
+- Which sections are load-bearing?
+- Which steps control understanding, tool calls, response composition, and final checks?
+- Which action/tool outputs does the prompt rely on?
+- Which rules are global style rules versus task-specific logic?
+- Which instructions are likely obsolete, duplicated, or contradicted?
+- Where is the prompt already trying to solve the ticket's goal?
+
+Do not edit until you can point to the current lines that govern the behavior or explain why no governing line exists.
+
+### 3. Choose The Prompt Surface
+
+For prompt-facing fixes, choose the narrowest surface that can reliably change behavior:
+
+| Surface | Use when |
+|---|---|
+| Global instruction | The rule applies consistently across topics and should not be duplicated. |
+| Topic instruction | The behavior belongs only to one topic's reasoning or response style. |
+| Action description | The model is choosing the wrong tool or missing when to call it. |
+| Input field description | The model passes the wrong value, format, context, or search query to a tool. |
+| Output field description | The model misunderstands or underuses returned data. |
+| Prompt template | The generated tool response itself needs structure, tone, or context changes. |
+| Eval criteria | The definition of "good" changed and must be scored separately. |
+
+If two prompt surfaces are viable, produce 2-3 strategies with expected benefits, risks, and validation paths. Eval results decide when the choice is not obvious.
+
+### 4. Pick The Edit Strategy
+
+Match the edit to the observed prompt problem:
+
+| Prompt problem | Preferred strategy |
+|---|---|
+| Missing rule | Add one concise rule near the relevant decision point. |
+| Ambiguous rule | Rewrite the existing rule; do not add a duplicate override. |
+| Contradictory rules | Remove or reconcile the conflict instead of adding a louder third rule. |
+| Rule buried too late | Move or summarize the rule near the top-level decision point. |
+| Tool query is poor | Improve the query-building instruction or input field description. |
+| Tool output is good but final response is poor | Adjust BUILD/output rules, not GATHER/tool rules. |
+| Prompt is too long | Compact redundancy while preserving load-bearing scaffolding. |
+| Ticket asks for style/format | Add measurable output rules plus examples only where needed. |
+| Current prompt is structurally unsound | Propose a limited restructure and gate it with fuller eval coverage. |
+
+### 5. Targeted Edit Vs Restructure Gate
+
+Default to a targeted edit. Prompt restructure increases blast radius and should not be used just because the prompt could be cleaner.
+
+Use a targeted edit when:
+
+- The existing prompt has a coherent control flow.
+- The desired behavior has a clear insertion point.
+- Existing rules mostly agree with the ticket goal.
+- The change can be validated with focused smoke tests plus regression coverage.
+
+Use `messy-but-workable` when:
+
+- The prompt has duplication or awkward structure, but a narrow insertion point is still safe.
+- The ticket can be solved without changing the prompt's overall control flow.
+- Restructure would consume scope without clear validation benefit.
+
+Recommend restructure only when:
+
+- Current instructions directly contradict each other in a way that blocks the goal.
+- The prompt lacks a reliable control flow for understanding, gathering, and building responses.
+- The targeted edit would require scattered overrides in multiple sections.
+- Prior approved targeted iterations failed and evidence suggests structure is the blocker.
+- The current structure makes evaluation unreliable because the model cannot consistently follow the intended decision path.
+
+If restructure is recommended, HITL is required before implementation. The Phase 4 plan must explain why targeted edits are insufficient, what structure is proposed, which behavior might regress, and what broader eval coverage will protect against that risk.
+
+### 6. Define The Prompt Goal
+
+For each change, write a one-sentence prompt goal before editing:
+
+```text
+Make <specific model decision or output behavior> happen in <specific context> without weakening <existing behavior to preserve>.
+```
+
+Examples:
+
+- Make `General FAQ` responses use natural contractions in normal explanatory text without changing escalation wording or quoted knowledge article titles.
+- Make list responses use colon-introduced, capitalized, punctuation-free list items without forcing lists when prose is better.
+- Reduce redundant instruction text while preserving `Store:` fields, tool-call requirements, and final quality checks.
+
+### 7. Validate The Strategy Before Implementation
+
+Prompt strategy is not complete until it names:
+
+- The exact prompt surface to edit.
+- The expected behavior change.
+- Existing behavior that must not regress.
+- Test cases that prove the change.
+- Eval criteria that are unchanged, modified, or new.
+- Any product/HITL approval needed because "good" changed.
+
+If a prompt edit cannot be validated in the available environment, do not treat it as complete.
 
 ---
 
@@ -119,7 +273,11 @@ When a conflict arises between a ticket requirement and a playbook principle:
 
 ---
 
-## Diagnose Before Editing
+## Diagnostics
+
+Use this section when the right prompt edit is not obvious, when a clear rule is not being followed, or when repeated iterations fail without explaining why.
+
+### Diagnose Before Editing
 
 **[STRONG] Classify why something isn't working before deciding how to fix it.**
 
@@ -140,11 +298,110 @@ When a behavior is wrong, the fix depends on the root cause — not the symptom.
 3. **Line exists, covers this case, but could be read two ways** → ambiguous. Reword it.
 4. **Line exists, is clear, and still not followed** → compliance failure. Adding more text won't help. Investigate: is another instruction contradicting it? Is it buried too deep? Is the context window too full?
 
-This applies to both Agentforce agent instructions (Phase 5 edits) and to the ADLC skills themselves (postmortem improvements). Discovered in ESCHAT-1192.
+This applies to both Agentforce agent instructions (Phase 5 edits) and to the ADLC skills themselves (postmortem improvements). Discovered in PROJ-1192.
 
 ---
 
-## Instruction Structure
+### Diagnostic Logs For Repeated Prompt Failures
+
+**[STRONG] If prompt edits keep failing and you cannot see why, diagnose the decision path before adding more instructions.**
+
+Use diagnostic logs when the agent repeatedly misses a prompt requirement and normal traces, tool outputs, and eval results do not reveal the failing layer. The goal is to identify whether the issue is classification, routing, tool choice, tool input, tool-output interpretation, retrieval, strategy selection, template selection, response construction, or final compliance.
+
+Diagnostic logs must be hypothesis-driven:
+
+1. State the hypothesis for what is causing the failure.
+2. Identify the internal decision variables that would confirm or refute it.
+3. Add diagnostic fields for those variables.
+4. Run focused tests.
+5. Use the logs to confirm/refute the hypothesis.
+6. If the logs do not explain the failure, revise the hypothesis and update the diagnostic template.
+
+Do not assume every prompt uses `UNDERSTAND / GATHER / BUILD`. First build the prompt mental model, then mirror that prompt's own decision architecture. A routing prompt might log `CLASSIFY / ROUTE / HANDOFF`; a RAG prompt might log `QUERY / RETRIEVE / RANK / ANSWER`; a tool prompt might log `INTENT / TOOL / INPUTS / OUTPUTS / RESPONSE`.
+
+The diagnostic template should be custom, structured, and named after the prompt's real control variables. If the prompt has `RequestType`, `ServiceStrategy`, `KnowledgeData_Usable`, `Goal addressed`, or `Closing line`, log those exact variables. Avoid generic "explain your reasoning" traces because they are noisy and less actionable.
+
+Example hypothesis-to-log mapping:
+
+| Hypothesis | Useful diagnostic fields |
+|---|---|
+| Wrong routing/classification | Candidate intents/topics considered, selected intent/topic, rejected candidates and why, trigger words, continuity state |
+| Wrong tool choice or skipped tool | Tool candidates considered, selected tool, skipped tools and why, tool eligibility gate, required inputs available |
+| Bad tool input | Raw user request, generalized query, stripped user-specific details, final tool input, input self-check |
+| Tool data misread | Raw key fields, usability decision, data summary, goal addressed, user claim addressed |
+| Bad response construction | Selected strategy/template, facts used, facts withheld, abstraction/compression level, redundancy check, closing line |
+| Trusted layer / output suppression | Draft output contract, final output contract, forbidden terms, whether diagnostic trace appeared, which insertion points were active |
+
+#### Agentforce Diagnostic Trace Pattern
+
+Agentforce may hide or suppress internal reasoning through its trusted output layer. If internal-only logs are not visible enough to debug the failure, a temporary diagnostic trace may need to be framed as explicit user-facing transparency content. This is a development-only diagnostic override and should be approved by the user.
+
+A single line usually is not enough. To expose logs reliably, reinforce the diagnostic trace in all key prompt layers:
+
+- top-level diagnostic/transparency requirement
+- response format after function calls
+- strategy/mode templates
+- output rules
+- diagnostic template section
+- final no-exceptions reminder
+
+The trace should tell the agent to report the exact variables the prompt uses, in the same names and order where possible. The point is not to reveal generic chain-of-thought; the point is to reveal the prompt's operational state.
+
+When productionizing, remove or internalize the trace from every insertion point. Missing one insertion point can keep logs leaking. Compare the clean version against the diagnostic version because exposed traces can change behavior by forcing the model to commit to decisions before drafting the user-facing response.
+
+Temporary diagnostic logs are not automatically an acceptance failure during development. They become a production blocker only when the run is ready for final user-facing acceptance and product has not approved exposed transparency output.
+
+---
+
+### Prompt Reduction For Failure Isolation
+
+**[STRONG] When diagnostic logs do not identify the failing layer, reduce the prompt with fast focused tests before broad regression.**
+
+Prompt reduction is a diagnostic technique for isolating the true failure layer. Temporarily remove, neutralize, or simplify one prompt section at a time and run focused canaries to see whether the target behavior starts working. The goal is not to produce the final prompt; the goal is to find the causal layer.
+
+Use prompt reduction after diagnostic logs are active, not as a blind first move. Keep the diagnostic trace on during reduction so each removal can be tied to a change in classification, routing, tool choice, strategy selection, or response construction. Without logs, reduction can show that behavior changed, but not why.
+
+Use prompt reduction when:
+
+- Repeated prompt edits fail and diagnostic logs do not fully explain why.
+- The logs show the agent chooses the right path, but final output is still wrong.
+- A tool-output pass-through rule, prompt template, global instruction, topic instruction, trusted layer, or final output rule may be overriding the desired behavior.
+- The target behavior works only when a prompt section is removed or simplified.
+
+Reduction loop:
+
+1. State the hypothesis, such as "the final output contract is overriding list formatting."
+2. Pick one prompt layer or section to neutralize.
+3. Save a reversible diagnostic attempt.
+4. Run small preview/unit-style canaries, not a full Testing Center regression.
+5. Compare behavior and diagnostic variables against the previous attempt.
+6. Restore the removed section if it is not causal, or keep reducing around the causal area if behavior changes.
+7. Convert the finding into a targeted final edit, then retest normally.
+
+Good reduction targets:
+
+| Suspected blocker | Reduction experiment |
+|---|---|
+| Final output contract overrides style | Temporarily neutralize only the final output contract or final compliance checklist |
+| Tool output pass-through blocks formatting | Temporarily replace "pass through unchanged" with "preserve facts but format per output rules" |
+| Prompt template controls final answer | Temporarily simplify or bypass template-specific wording where safe |
+| Global and topic rules conflict | Temporarily neutralize one layer and test the same canary |
+| Diagnostic scaffold changes behavior | Test with diagnostic trace active, then internalized, then removed |
+| Trusted layer suppresses output | Add a diagnostic field for draft-vs-final output contract and test whether suppression is consistent |
+
+Guardrails:
+
+- One section/layer per reduction attempt.
+- Always save the exact reduced prompt and the restore point.
+- Use focused canaries first; broad regression comes after a candidate fix exists.
+- Do not remove safety, escalation, privacy, or authorization behavior without HITL.
+- Do not leave a reduced prompt as the final answer unless it is converted into a deliberate, reviewed prompt edit.
+
+---
+
+## Editing Patterns
+
+### Instruction Structure
 
 **[STRONG] Follow Understand → Gather → Build as the universal instruction pattern.**
 This three-phase flow works across topic types. The AI should adapt it to each topic's needs. If a topic doesn't fit this pattern naturally, HITL — discuss with the user and iterate.
@@ -163,7 +420,7 @@ When the same guideline applies to multiple topics (e.g., tone, terminology), cr
 
 ---
 
-## Editing Instructions
+### Editing Instructions
 
 **[HARD] Always backup before editing.**
 No version history exists in the Tooling API. Every edit must be preceded by saving the current instruction.
@@ -198,7 +455,7 @@ Adding more text doesn't always help. The LLM may over-interpret verbose instruc
 
 ---
 
-## Template Adherence
+### Template Adherence
 
 **[STRONG] Prescribed templates should be enforced through repetition and validation checkpoints.**
 If the instruction prescribes specific phrases, formatting, or closing lines, these need:
@@ -211,7 +468,9 @@ Phrases like "Here's what I found" or "Did this help?" are topic-specific. The p
 
 ---
 
-## Testing & Evaluation
+## Validation And Evaluation
+
+### Testing & Evaluation
 
 **[HARD] Establish a baseline before making changes.**
 Never evaluate a change without knowing what the current behavior is. If the user provides a baseline CSV, use it. Otherwise, run one.
@@ -249,7 +508,7 @@ Different routable IDs = different data = different behavior. Comparisons are on
 
 ---
 
-## Multi-Topic and Regression
+### Multi-Topic and Regression
 
 **[STRONG] Changes to one topic can affect other topics.**
 Modifying a topic's description can reroute utterances away from other topics. Test adjacent topics when making routing-related changes.
@@ -277,7 +536,7 @@ The ticket defines which phase applies. Not every ticket needs full cross-topic 
 
 ---
 
-## HTML & Testing Center Gotchas
+### HTML & Testing Center Gotchas
 
 **[Reference] Technical issues that affect eval accuracy.**
 
@@ -288,7 +547,7 @@ The ticket defines which phase applies. Not every ticket needs full cross-topic 
 
 ---
 
-## Eval Structure
+### Eval Structure
 
 **[Reference] How evals are organized in this project.**
 

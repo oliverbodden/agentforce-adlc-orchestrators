@@ -15,7 +15,7 @@ Create well-structured tickets or evaluate existing ones for `adlc-drive` readin
 **Standalone:** User wants help writing or improving a ticket.
 ```
 adlc-ticket "I need to update the tone for our FAQ agent"
-adlc-ticket ESCHAT-1117
+adlc-ticket PROJ-1117
 ```
 
 **Called by drive:** Drive Phase 1 needs to know if a ticket is ready.
@@ -195,7 +195,7 @@ When user provides a JIRA key:
 6. **Present assessment:**
 
 ```
-Ticket: ESCHAT-XXXX
+Ticket: PROJ-XXXX
 Score: N/5
 
 ✅ Present:

@@ -23,7 +23,7 @@ Drive owns the *what* and *why*; it delegates the *how* to other ADLC skills.
 Before running this skill in an Agentforce project, read the local overlay docs if they exist:
 
 - `adlc/playbooks/agentforce-architecture-playbook.md` — architecture, root-cause taxonomy, dependency mapping, strategy freshness.
-- `adlc/docs/core-process-overlay.md` — Indeed ADLC overlay boundaries, Discover dependency map, testing model, eval separation.
+- `adlc/docs/core-process-overlay.md` — project ADLC overlay boundaries, Discover dependency map, testing model, eval separation.
 - `adlc/docs/acceptance-eval-hitl-governance.md` — HITL categories, acceptance governance, testability reporting, monthly improvement signals.
 
 If these docs are missing, continue with this skill but note the gap in HITL. Do not modify Salesforce upstream standard skill files directly; local behavior belongs in wrappers, overlays, project playbooks, or approved additive patches.
@@ -100,7 +100,7 @@ Do **not** create the final agent-scoped ticket folder during Phase 1. At this p
 - Use the agent's `DeveloperName` (from `BotDefinition`), not the kebab-cased display label. This guarantees uniqueness within an org.
 - Append `__{org-alias}` (double underscore separator) to disambiguate agents with the same developer name across different orgs.
 - If the agent folder doesn't exist yet, create it and write a `meta.json` at the agent-folder root with: `agent_dev_name`, `agent_label`, `bot_definition_id`, `org_alias`, `org_id`, `org_instance_url`, `created`, and any session notes.
-- Legacy folders (e.g. `adlc/indeed-service-agent/`) predate this convention. Prefer migrating them to `adlc/agents/{agent-dev-name}__{org-alias}/` after confirming the canonical developer name and org alias.
+- Legacy folders (e.g. `adlc/example-service-agent/`) predate this convention. Prefer migrating them to `adlc/agents/{agent-dev-name}__{org-alias}/` after confirming the canonical developer name and org alias.
 
 **Work item folder naming (`{ticket-key}-{short-description}` or `NOTICKET-NN-{short-description}`):**
 - Ticketed work: use the real key (e.g. `HELP-1234-fix-escalation`).

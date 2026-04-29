@@ -1,4 +1,4 @@
-# ESCHAT Ticket Authoring Guide for adlc-drive
+# PROJECT Ticket Authoring Guide for adlc-drive
 
 > Use this guide when creating JIRA tickets that will be executed by the `adlc-drive` skill. Following this structure ensures the AI agent can pick up your ticket and execute it autonomously with minimal back-and-forth.
 
@@ -6,13 +6,21 @@
 
 ## Quick Check: Will adlc-drive understand your ticket?
 
-Before submitting, verify your ticket answers these 5 questions:
+Before submitting, verify your ticket answers these questions:
 
 1. ☐ **What should change?** — Specific behavior, not vague goals
 2. ☐ **Which agent and topic(s)?** — Named explicitly
 3. ☐ **What does "done" look like?** — Measurable acceptance criteria
 4. ☐ **What exists today?** — Baseline reference or link to current behavior
 5. ☐ **Are there examples?** — Before/after, failing conversations, data samples
+6. ☐ **Is the scope staged or split?** — Say whether style polish, broad restructures, global instructions, or eval changes should be separate stages/tickets
+
+Also include any known dependencies or testability limits:
+
+- Required context variables, routable IDs, user/account/contact data, permissions, tokens, connected systems, or retriever/RAG sources
+- Whether the behavior is fully testable in lower env, requires prod-like data, requires external systems, or is not lower-env testable
+- Product acceptance needs for representative scenarios, tone, escalation, refusal, safety, auth, PII, or payment behavior
+- Known instruction source of truth if available: `.agent` authoring bundle, UI-built Tooling API records, or unknown
 
 If you can't answer all 5, your ticket may need a **SPIKE** first.
 
@@ -32,6 +40,8 @@ If you can't answer all 5, your ticket may need a **SPIKE** first.
 - ❌ "Agent sounds better" (not measurable)
 - ✅ "Contractions appear in >80% of responses. No individual eval metric regresses >10%."
 
+`adlc-drive` will translate approved acceptance into `config.json` during Phase 3d. If precision matters, include explicit thresholds such as minimum pass rate, max regression delta, target word count, or required scenario count.
+
 ### Strongly Recommended Sections
 
 **Agent & Topic** — Which agent (name + API name if known), which topic(s), which org/environment.
@@ -42,25 +52,31 @@ If you can't answer all 5, your ticket may need a **SPIKE** first.
 
 **Approach** — If you have a preference for how to implement (e.g., "global instructions first" or "per-topic"), state it. Otherwise, the AI will generate plan options.
 
+**Staging / Split Guidance** — If the ticket combines broad prompt restructuring with output-style polish, global instruction changes, or eval criteria changes, state whether to split into separate tickets or stage the work.
+
 ### Optional Sections
 
 **Implementation Details** — Pre-written instruction text, exact phrases to add/remove. Saves the AI from guessing.
 
 **Testing Notes** — Specific utterances to test, routable ID requirements, multi-turn scenarios.
 
-**Learnings** — Reference prior tickets that inform this work (e.g., "apply practices from ESCHAT-1183").
+**Dependencies / Testability** — Context variables, data setup, permissions, tokens, external systems, RAG sources, and whether the scenarios are lower-env testable.
+
+**Product Acceptance Notes** — Representative scenarios or reviewer expectations for business correctness, tone, escalation/refusal behavior, and safety-sensitive flows.
+
+**Learnings** — Reference prior tickets that inform this work (e.g., "apply practices from PROJ-1183").
 
 ---
 
 ## Good vs Bad Examples
 
-### ✅ Good Ticket (ESCHAT-1192 pattern)
+### ✅ Good Ticket (PROJ-1192 pattern)
 
 ```
-Title: ADLC - Implement UXCD Voice & Tone Guidelines for ESA Agents
+Title: ADLC - Implement UX/content Voice & Tone Guidelines for service agents
 
 ## Context
-During the ESA Chat Review on March 24, the UXCD team identified 
+During the service-agent review on March 24, the UX/content team identified
 inconsistencies in tone across agents. Most are quick fixes.
 
 ## Requirements
@@ -84,7 +100,7 @@ inconsistencies in tone across agents. Most are quick fixes.
 
 ## Baseline
 - Baseline CSV: attached
-- Prior eval: adlc/indeed-service-agent/baselines/v21/
+- Prior eval: adlc/agents/example-service-agent__org-unknown/baselines/general-faq/
 ```
 
 **Why it works:** Specific changes per topic, measurable acceptance, baseline referenced, before/after implied.
@@ -94,11 +110,11 @@ inconsistencies in tone across agents. Most are quick fixes.
 ```
 Title: Ensure "Representative" Consistency
 
-We need to make sure we are being consistent with the use 
+We need to make sure we are being consistent with the use
 of representative. Check all agents.
 ```
 
-**Why it fails:** No specific agent named, no requirements section, no acceptance criteria, no examples of current inconsistency, no baseline. Drive would have to ask 5+ questions before starting.
+**Why it fails:** No specific agent named, no requirements section, no acceptance criteria, no examples of current inconsistency, no baseline. Drive would have to ask several questions before starting.
 
 ### ❌ Bad Ticket (empty)
 
@@ -144,17 +160,33 @@ When changes span multiple topics, specify:
 - Which are **topic-specific**
 - Suggested execution order (or let the AI decide)
 
+If the work spans multiple response surfaces or prompt layers, prefer separate tickets unless the shared eval path and risk are clearly the same. If you keep one ticket, define stages so current-stage acceptance can pass without treating future-stage work as failure.
+
+### Prompt Modification Breadth
+
+Broad prompt substrate changes and output-style changes have different risk profiles. Call this out explicitly:
+
+```
+Scope plan: Stage 1 compacts/restructures the prompt while preserving current behavior. Stage 2 handles list formatting and contraction polish after Stage 1 passes.
+```
+
+This helps `adlc-drive` confirm split/staged execution during Phase 2.
+
 ### Tickets That Change Eval Criteria
 
 If your requirement changes what "good" looks like (e.g., removing a phrase that evals currently check for), call it out:
 
 ```
-⚠️ Eval impact: This ticket changes the baseline metric for 
-"Here's what I found" — currently scored as positive, should 
+⚠️ Eval impact: This ticket changes the baseline metric for
+"Here's what I found" — currently scored as positive, should
 be scored as absent after implementation.
 ```
 
 This prevents the AI from flagging a false regression.
+
+### Diagnostic Mode
+
+Temporary diagnostic traces are allowed only for repeated prompt failures that cannot be diagnosed from normal traces, tool outputs, or eval data. If likely, state it as a caveat. `adlc-drive` / `adlc-execute` must get HITL approval before adding exposed user-facing diagnostic traces, record diagnostic mode in `discovery.json`, and remove/internalize traces or get product approval before final `GO`.
 
 ---
 
@@ -168,5 +200,7 @@ This prevents the AI from flagging a false regression.
 - [ ] Baseline referenced or "needs baseline" noted
 - [ ] At least one before/after example (or link to Figma/doc with examples)
 - [ ] If multi-topic: global vs topic-specific changes clearly separated
+- [ ] If broad prompt work plus style/output polish: split or staged execution preference stated
 - [ ] If SPIKE: questions and time-box specified
 - [ ] If eval criteria change: flagged explicitly
+- [ ] If diagnostic traces may be needed: caveat stated and HITL expected

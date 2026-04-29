@@ -25,7 +25,7 @@ Before planning or executing, also read the local overlay docs if they exist:
 - `adlc/docs/core-process-overlay.md`
 - `adlc/docs/acceptance-eval-hitl-governance.md`
 
-These docs define Indeed-specific architecture diagnosis, Solution Strategy Review, testing separation, acceptance governance, HITL improvement signals, and artifact closeout. If they conflict with this skill, pause for HITL and follow the approved local overlay unless the user approves an exception.
+These docs define project-specific architecture diagnosis, Solution Strategy Review, testing separation, acceptance governance, HITL improvement signals, and artifact closeout. If they conflict with this skill, pause for HITL and follow the approved local overlay unless the user approves an exception.
 
 ---
 
@@ -199,7 +199,7 @@ FOR each iteration (max N from Phase 4b):
      - Ask user: continue with more iterations, adjust criteria, or abandon?
 ```
 
-Salesforce skills are the source of truth for standard HOW. Execute decides WHAT and WHEN. Local overlay docs are the source of truth for Indeed-specific exceptions such as UI-built Tooling API instruction edits and artifact/reporting conventions. When a step says to read a Salesforce skill or local overlay, read it, find the relevant section, execute, then return here.
+Salesforce skills are the source of truth for standard HOW. Execute decides WHAT and WHEN. Local overlay docs are the source of truth for project-specific exceptions such as UI-built Tooling API instruction edits and artifact/reporting conventions. When a step says to read a Salesforce skill or local overlay, read it, find the relevant section, execute, then return here.
 
 **Checkpointing:**
 
@@ -350,7 +350,7 @@ If yes, propose additions/removals to the baseline utterance list (`adlc/agents/
 - Confirm the user has reviewed the Phase 6 summary
 - If `diagnostic_mode.used=true`, confirm `removal_verified=true` or record explicit product approval for exposed transparency before production handoff
 - Validate the artifact package: `goal.md`, `hitl.jsonl`, `discovery.json`, `config.json`, originals, specs, attempts, eval report JSON/HTML or a logged reason why unavailable, and `status.md` / final recommendation notes
-- Route artifacts to the shared ADLC artifact repo, not the production agent repo, unless written governance says they are the same repo. Expected repo: `https://code.corp.indeed.com/telecom/it-adlc`
+- Route artifacts to the shared ADLC artifact repo, not the production agent repo, unless written governance says they are the same repo. Expected repo: `https://github.com/YOUR_ORG/YOUR_ADLC_ARTIFACT_REPO`
 - Before guiding a push or PR, verify the current git remote. If it is not the shared ADLC artifact repo, stop and guide the user to clone/open the artifact repo separately.
 - Each run writes to a unique ticket folder. Existing ticket folders are append-only unless the user explicitly confirms they are resuming that exact run.
 - Do not overwrite rollup files manually unless the workflow explicitly assigns this run that role.

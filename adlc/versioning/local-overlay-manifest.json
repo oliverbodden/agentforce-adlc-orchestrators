@@ -1,0 +1,129 @@
+{
+  "manifest_version": "0.2",
+  "recorded_date": "2026-04-25",
+  "status": "post-phase-3-bootstrap-reconciled",
+  "principle": "Salesforce standard skill content must not be modified or deleted directly. Local behavior must be layered additively through overlays, wrappers, project playbooks, or install steps.",
+  "sources": {
+    "salesforce_upstream": {
+      "repo_url": "https://github.com/SalesforceAIResearch/agentforce-adlc",
+      "local_clone": "/Users/obguzman/agentforce-adlc-salesforce",
+      "commit": "4fa57e376d7b6f372ba4a765fce475df5924bbfa",
+      "version": "0.1.0"
+    },
+    "legacy_local_orchestrator": {
+      "repo_url": "https://github.com/oliverbodden/agentforce-adlc-orchestrators.git",
+      "local_clone": "/Users/obguzman/agentforce-adlc-custom",
+      "commit": "8975c818a2ead7c488fed389019e6320f6cfae5c"
+    },
+    "current_workspace": {
+      "path": "/Users/obguzman/agentforce-project",
+      "git_repo": false
+    },
+    "installed_cursor_skills": {
+      "path": "/Users/obguzman/.cursor/skills",
+      "consolidated_salesforce_skills_installed": [
+        "developing-agentforce",
+        "testing-agentforce",
+        "observing-agentforce"
+      ],
+      "local_wrapper_skills_installed": [
+        "adlc-drive",
+        "adlc-execute",
+        "adlc-ticket"
+      ],
+      "legacy_adlc_standard_skills_status": "may remain installed for compatibility; cleanup is deferred until alias/delegation behavior is approved"
+    },
+    "corporate_artifact_repo": {
+      "repo_url": "https://github.com/YOUR_ORG/YOUR_ADLC_ARTIFACT_REPO",
+      "local_clone": null,
+      "note": "Not cloned in the current workspace during Phase 3/bootstrap reconciliation. Artifact push/PR workflow must be run from a verified clone of this repo."
+    },
+    "salesforce_cli_reference": {
+      "local_version": "@salesforce/cli/2.130.9",
+      "required_command_surfaces_observed": [
+        "sf agent",
+        "sf project",
+        "sf data",
+        "sf apex",
+        "sf api",
+        "sf org"
+      ],
+      "observed_core_plugins": {
+        "agent": "1.32.16",
+        "api": "1.3.14",
+        "apex": "3.9.17",
+        "data": "4.0.85",
+        "deploy-retrieve": "3.24.23",
+        "org": "5.9.79"
+      },
+      "note": "Bootstrap/status must verify command availability, not just that sf exists."
+    }
+  },
+  "local_custom_components": [
+    {
+      "name": "adlc-drive",
+      "type": "custom-wrapper-orchestrator",
+      "current_location": "/Users/obguzman/.cursor/skills/adlc-drive/SKILL.md",
+      "legacy_source": "/Users/obguzman/agentforce-adlc-custom/skills/adlc-drive/SKILL.md",
+      "proposed_target": "local overlay wrapper coordinating Salesforce consolidated skills",
+      "extends": [
+        "developing-agentforce",
+        "testing-agentforce",
+        "observing-agentforce"
+      ]
+    },
+    {
+      "name": "adlc-execute",
+      "type": "custom-wrapper-orchestrator",
+      "current_location": "/Users/obguzman/.cursor/skills/adlc-execute/SKILL.md",
+      "legacy_source": "/Users/obguzman/agentforce-adlc-custom/skills/adlc-execute/SKILL.md",
+      "proposed_target": "local overlay wrapper for plan/execute/eval/handoff phases",
+      "extends": [
+        "developing-agentforce",
+        "testing-agentforce",
+        "observing-agentforce"
+      ]
+    },
+    {
+      "name": "adlc-ticket",
+      "type": "custom-ticket-readiness-skill",
+      "current_location": "/Users/obguzman/.cursor/skills/adlc-ticket/SKILL.md",
+      "legacy_source": "/Users/obguzman/agentforce-adlc-custom/skills/adlc-ticket/SKILL.md",
+      "proposed_target": "local wrapper/process skill for ticket readiness and ADLC intake",
+      "extends": []
+    },
+    {
+      "name": "adlc-discover-section0",
+      "type": "legacy-additive-patch",
+      "legacy_source": "/Users/obguzman/agentforce-adlc-custom/skills/patches/adlc-discover-section0.md",
+      "current_marker": "Agent/Topic Resolution (UI-built agents)",
+      "proposed_target": "evaluate whether this belongs in developing-agentforce or local architecture/discovery playbook"
+    },
+    {
+      "name": "adlc-optimize-section3ui",
+      "type": "legacy-additive-patch",
+      "legacy_source": "/Users/obguzman/agentforce-adlc-custom/skills/patches/adlc-optimize-section3ui.md",
+      "current_marker": "3.UI: Tooling API Path (UI-built agents)",
+      "proposed_target": "evaluate against observing-agentforce; possible conflict with upstream .agent-file source-of-truth guidance"
+    },
+    {
+      "name": "adlc-test-csv-export",
+      "type": "legacy-additive-patch",
+      "legacy_source": "/Users/obguzman/agentforce-adlc-custom/skills/patches/adlc-test-csv-export.md",
+      "current_marker": "Phase 3: Export and Analyze Results",
+      "proposed_target": "evaluate whether this belongs in testing-agentforce or local eval/reporting playbook"
+    },
+    {
+      "name": "project-adlc-framework",
+      "type": "custom-project-framework",
+      "current_location": "/Users/obguzman/agentforce-project/adlc",
+      "legacy_source": "/Users/obguzman/agentforce-adlc-custom/adlc",
+      "proposed_target": "local project playbooks, docs, report scripts, ticket guides, versioning, and artifact conventions"
+    }
+  ],
+  "open_decisions": [
+    "Whether legacy additive patches should become patch files against upstream, local project playbook guidance, or wrapper behavior.",
+    "Whether YOUR_ORG/YOUR_ADLC_ARTIFACT_REPO is both overlay source and artifact store, or artifact store only.",
+    "How to install overlays for Cursor while Salesforce upstream primarily documents Claude plugin and file-copy install."
+  ]
+}

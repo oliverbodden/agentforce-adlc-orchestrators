@@ -30,6 +30,7 @@ __pycache__/
 # Agent state (runtime, not committed)
 .adlc-drive-state.json
 adlc/agents/
+adlc/versioning/bootstrap-*.json
 
 # Raw eval data (large CSVs — keep in baselines, not at root)
 *.csv
