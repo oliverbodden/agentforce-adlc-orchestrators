@@ -1,4 +1,4 @@
-# ESCHAT Ticket Authoring Guide for adlc-drive
+# PROJECT Ticket Authoring Guide for adlc-drive
 
 > Use this guide when creating JIRA tickets that will be executed by the `adlc-drive` skill. Following this structure ensures the AI agent can pick up your ticket and execute it autonomously with minimal back-and-forth.
 
@@ -64,19 +64,19 @@ If you can't answer all 5, your ticket may need a **SPIKE** first.
 
 **Product Acceptance Notes** — Representative scenarios or reviewer expectations for business correctness, tone, escalation/refusal behavior, and safety-sensitive flows.
 
-**Learnings** — Reference prior tickets that inform this work (e.g., "apply practices from ESCHAT-1183").
+**Learnings** — Reference prior tickets that inform this work (e.g., "apply practices from PROJ-1183").
 
 ---
 
 ## Good vs Bad Examples
 
-### ✅ Good Ticket (ESCHAT-1192 pattern)
+### ✅ Good Ticket (PROJ-1192 pattern)
 
 ```
-Title: ADLC - Implement UXCD Voice & Tone Guidelines for ESA Agents
+Title: ADLC - Implement UX/content Voice & Tone Guidelines for service agents
 
 ## Context
-During the ESA Chat Review on March 24, the UXCD team identified 
+During the service-agent review on March 24, the UX/content team identified
 inconsistencies in tone across agents. Most are quick fixes.
 
 ## Requirements
@@ -100,7 +100,7 @@ inconsistencies in tone across agents. Most are quick fixes.
 
 ## Baseline
 - Baseline CSV: attached
-- Prior eval: adlc/agents/indeed-service-agent__org-unknown/baselines/general-faq/
+- Prior eval: adlc/agents/example-service-agent__org-unknown/baselines/general-faq/
 ```
 
 **Why it works:** Specific changes per topic, measurable acceptance, baseline referenced, before/after implied.

@@ -298,7 +298,7 @@ When a behavior is wrong, the fix depends on the root cause — not the symptom.
 3. **Line exists, covers this case, but could be read two ways** → ambiguous. Reword it.
 4. **Line exists, is clear, and still not followed** → compliance failure. Adding more text won't help. Investigate: is another instruction contradicting it? Is it buried too deep? Is the context window too full?
 
-This applies to both Agentforce agent instructions (Phase 5 edits) and to the ADLC skills themselves (postmortem improvements). Discovered in ESCHAT-1192.
+This applies to both Agentforce agent instructions (Phase 5 edits) and to the ADLC skills themselves (postmortem improvements). Discovered in PROJ-1192.
 
 ---
 
@@ -555,7 +555,7 @@ The ticket defines which phase applies. Not every ticket needs full cross-topic 
 - **Baselines are agent-level.** Only winning attempts promote to baseline.
 - **Separate raw outputs from scored results.** Raw CSVs are expensive to regenerate. Scored reports are cheap.
 - **Two-layer reporting model:**
-  - **Layer 1 — Script:** `adlc/scripts/generate_report.py` computes all metrics from CSV data: scorecard (wins/regressions/ties), strategy distribution, formatting compliance, opening behavior, response length buckets, multi-turn awareness, redundancy, consistency, and a filtered response comparison appendix. Outputs HTML report + optional JSON sidecar (`--json-output`).
+  - **Layer 1 — Script:** `adlc/scripts/generate_report.py` follows `adlc/playbooks/eval-report-playbook.md` and computes deterministic evidence from baseline/candidate CSV data. Outputs HTML report + optional JSON sidecar (`--json-output`).
   - **Layer 2 — AI (Phase 6):** Reads the JSON output, cross-references against the ticket's acceptance criteria from `config.json`, and produces the executive summary, GO/NO-GO recommendation, tool call accuracy analysis, and template adherence checks. Topic-specific intelligence lives here, not in the script.
 
 ---

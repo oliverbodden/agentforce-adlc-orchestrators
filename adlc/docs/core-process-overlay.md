@@ -1,6 +1,6 @@
 # ADLC Core Process Overlay
 
-Local Indeed overlay for ticket-driven Agentforce improvement. This document describes process requirements that sit above Salesforce upstream skills. It does not replace or modify Salesforce standard skills.
+Local project overlay for ticket-driven Agentforce improvement. This document describes process requirements that sit above Salesforce upstream skills. It does not replace or modify Salesforce standard skills.
 
 Use this overlay when coordinating work through local `adlc-drive`, `adlc-execute`, `adlc-ticket`, or future wrapper/orchestrator workflows.
 
@@ -14,7 +14,7 @@ Salesforce upstream provides standard implementation capabilities:
 - `testing-agentforce`: preview tests, Testing Center batch tests, action execution.
 - `observing-agentforce`: STDM/session trace analysis, reproduce, optimize.
 
-Indeed local overlay provides process controls:
+Project local overlay provides process controls:
 
 - Ticket readiness and scope refinement.
 - HITL decisions and audit trail.
@@ -22,7 +22,6 @@ Indeed local overlay provides process controls:
 - Solution Strategy Review.
 - Baseline and eval artifact conventions.
 - Product acceptance and technical review.
-- Corporate artifact repo submission.
 - Monthly skill-improvement review.
 
 Rule: standard Salesforce skill content is not modified or deleted directly. Add local behavior through wrapper skills, overlay docs, patch files with markers, or bootstrap install steps.
@@ -33,7 +32,7 @@ Rule: standard Salesforce skill content is not modified or deleted directly. Add
 
 Salesforce upstream skills treat `.agent` authoring bundles as the preferred source of truth and warn against direct edits to generated/internal agent metadata. That is the default for pro-code agents and any agent with a reliable authoring-bundle path.
 
-Indeed still has UI-built agents where the live editable instruction surface exists only in org metadata such as `GenAiPluginInstructionDef`. For those agents, local ADLC may use a narrow Tooling API exception path, but only under these conditions:
+Your organization may still have UI-built agents where the live editable instruction surface exists only in org metadata such as `GenAiPluginInstructionDef`. For those agents, local ADLC may use a narrow Tooling API exception path, but only under these conditions:
 
 - Phase 3 discovery confirms the affected agent/topic has no usable `.agent` authoring bundle path.
 - The work is limited to existing instruction text or read-only discovery. Do not use this exception to create new topics, actions, flows, Apex, routing surfaces, or prompt-template behavior.
@@ -69,12 +68,11 @@ Use the existing wrapper skill phase numbers, with human-facing aliases that mak
 | Local phase                       | Purpose                                                                                                                                                | Upstream capability used                                                              |
 | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------- |
 | `1. Goal / Understand`            | Understand request, readiness, business goal, initial scope, and known agent/org/version claims                                                        | Local wrapper plus optional JIRA MCP                                                  |
-| `2. Refine`                       | Confirm scope, assumptions, org/agent/version, context needs, and SPIKE gate before machine discovery                                                  | Local wrapper                                                                         |
+| `2. Refine`                       | Confirm scope, assumptions, org/agent/topic, edit strategy, context needs, and SPIKE gate before machine discovery                                      | Local wrapper                                                                         |
 | `3. Discover`                     | Resolve live agent structure, save originals, build dependency map, build full prompt mental model, design tests, and generate fresh baseline evidence | `developing-agentforce`, `observing-agentforce`, `testing-agentforce`, Salesforce CLI |
 | `4. Plan`                         | Choose architecture/root-cause surface, prompt strategy, options, risks, test matrix, iteration budget, and rollback                                   | Local wrapper using architecture and prompt playbooks                                 |
-| `5. Execute + Iterative Evaluate` | Make one logical approved change per iteration, smoke test, evaluate, and autonomously fix diagnosable in-scope failures                               | Upstream skill based on strategy plus `testing-agentforce`                            |
-| `6. Present Final Evaluation`     | Produce final regression, ticket-goal, feature, scenario, product, and technical/process evidence with recommendation                                  | Local wrapper plus eval report and governance overlay                                 |
-| `7. Approval + Hand Off`          | Record GO / NO-GO / CONDITIONAL approval, artifact package, HITL summary, baseline promotion guidance, and repo routing                                | Local wrapper                                                                         |
+| `5. Execute + Iterative Evaluate` | Make one logical approved change per iteration, unit test, smoke test, evaluate, and autonomously fix diagnosable in-scope failures                   | Upstream skill based on strategy plus `testing-agentforce`                            |
+| `6. Present Final Evaluation + Closeout` | Produce final evidence and recommendation; after approval, record artifact package, HITL summary, and baseline promotion guidance                 | Local wrapper plus eval report and governance overlay                                 |
 
 
 ---
@@ -203,10 +201,9 @@ If a team says "500 scenarios," clarify whether they mean 500 utterances, 500 st
 Phase placement:
 
 - Phase 3 creates fresh baseline evidence and approved test specs.
-- Phase 5 runs smoke tests and evaluates each iteration; diagnosable in-scope failures loop back into execution without HITL.
-- Phase 5 runs broader evals only after smoke tests pass.
-- Phase 6 presents final evaluation and recommendation.
-- Phase 7 records approval and handles artifact/baseline/repo handoff.
+- Phase 5 runs focused unit tests and smoke tests each iteration; diagnosable in-scope failures loop back into execution without HITL.
+- Phase 5 runs broader evals only after unit and smoke tests pass.
+- Phase 6 presents final evaluation and recommendation, then handles approval closeout.
 
 HITL is not required for every failed test or ordinary regression. HITL is required when results are ambiguous, the fix changes scope or strategy, product behavior or eval criteria must change, a hard gate is reached, or the approved max iterations are exhausted.
 
@@ -261,7 +258,7 @@ Local reporting conventions:
 
 - Save raw CSV/JSON outputs under the ticket attempt or baseline folder.
 - Use `adlc/scripts/generate_report.py` for comparable baseline-vs-new reports when available.
-- Keep Salesforce Testing Center mechanics in `testing-agentforce`; keep Indeed report interpretation, HTML unescape policy, and artifact layout in this overlay and the project report scripts.
+- Keep Salesforce Testing Center mechanics in `testing-agentforce`; keep project report interpretation, HTML unescape policy, and artifact layout in this overlay and the project report scripts.
 
 ---
 
@@ -430,12 +427,11 @@ Minimum closeout expectations:
 
 ## Artifact And Onboarding Guidance
 
-- Artifact repo workflow: `adlc/docs/artifact-repo-workflow.md`
 - Developer onboarding/setup: `adlc/docs/developer-onboarding.md`
 
-Closeout must verify the artifact repo remote before guiding a push or PR. The expected shared repo is `https://code.corp.indeed.com/telecom/it-adlc`.
+Closeout artifacts live under `adlc/agents/<agent>__<org>/tickets/<ticket>/`.
 
-Onboarding must verify Salesforce CLI command surfaces, installed upstream baseline, local overlay docs, and artifact repo routing before declaring a workstation ready.
+Onboarding must verify Salesforce CLI command surfaces, installed upstream baseline, and local overlay docs before declaring a workstation ready.
 
 ---
 
@@ -444,7 +440,6 @@ Onboarding must verify Salesforce CLI command surfaces, installed upstream basel
 - Architecture/root-cause decisions: `adlc/playbooks/agentforce-architecture-playbook.md`
 - Prompt/instruction craft: `adlc/playbooks/prompt-engineering-playbook.md`
 - Acceptance/eval/HITL governance: `adlc/docs/acceptance-eval-hitl-governance.md`
-- Artifact repo workflow: `adlc/docs/artifact-repo-workflow.md`
 - Developer onboarding/setup: `adlc/docs/developer-onboarding.md`
 - Upstream/provenance status: `adlc/versioning/`
 - Process/delegation map: `adlc/docs/drive-architecture.md`

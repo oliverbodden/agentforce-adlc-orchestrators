@@ -1,8 +1,8 @@
 # Agentforce Architecture Playbook
 
-Living architecture reference for Indeed ADLC work. This document explains how to reason about Agentforce systems before deciding whether a ticket should be solved with instructions, topic routing, actions, data/RAG, Flow/Apex/API work, testing changes, or product clarification.
+Living architecture reference for project ADLC work. This document explains how to reason about Agentforce systems before deciding whether a ticket should be solved with instructions, topic routing, actions, data/RAG, Flow/Apex/API work, testing changes, or product clarification.
 
-This playbook is local operational guidance for runtime architecture and root-cause surface selection. Salesforce upstream docs remain the standard reference for platform behavior, but local ADLC decisions must also account for live org evidence, traces, Testing Center behavior, and Indeed artifact rules.
+This playbook is local operational guidance for runtime architecture and root-cause surface selection. Salesforce upstream docs remain the standard reference for platform behavior, but local ADLC decisions must also account for live org evidence, traces, Testing Center behavior, and project artifact rules.
 
 ---
 
@@ -209,5 +209,5 @@ If the best surface is prompt-facing, hand the implementation strategy to `adlc/
 
 - Use this file for architecture, dependency mapping, runtime/root-cause surface selection, and non-prompt root cause analysis.
 - Use `adlc/playbooks/prompt-engineering-playbook.md` for prompt implementation strategy, instruction writing, prompt structure, insertion points, targeted-edit versus restructure decisions, and prompt-specific testing principles.
-- Use `adlc/docs/core-process-overlay.md` for local ADLC process overlays that coordinate Salesforce upstream skills with Indeed ticket/HITL/eval workflows.
-- Use Salesforce upstream skills as standard implementation capabilities. Layer Indeed workflow additively.
+- Use `adlc/docs/core-process-overlay.md` for local ADLC process overlays that coordinate Salesforce upstream skills with project ticket/HITL/eval workflows.
+- Use Salesforce upstream skills as standard implementation capabilities. Layer project workflow additively.

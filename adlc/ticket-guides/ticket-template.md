@@ -1,6 +1,6 @@
 # JIRA Ticket Template: Topic Instruction Optimization
 
-> Copy this into a new ESCHAT ticket. Fill in the bracketed fields.
+> Copy this into a new PROJECT ticket. Fill in the bracketed fields.
 
 ---
 
@@ -111,5 +111,5 @@ This ticket uses `adlc-drive` to orchestrate the optimization:
 - Any temporary diagnostic traces removed/internalized or explicitly product-approved to remain
 - Instruction deployed to target org
 - Baseline promoted if shipping to prod
-- Eval artifacts saved locally and submitted to the shared ADLC artifact repo when closing out: `https://code.corp.indeed.com/telecom/it-adlc`
+- Eval artifacts saved under `adlc/agents/<agent>__<org>/tickets/<ticket>/`
 

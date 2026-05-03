@@ -1,20 +1,88 @@
-# Local Salesforce/session state
-.sfdx/
+# This file is used for Git repositories to specify intentionally untracked files that Git should ignore.
+# If you are not using git, you can delete this file. For more information see: https://git-scm.com/docs/gitignore
+# For useful gitignore templates see: https://github.com/github/gitignore
+
+# Salesforce cache
 .sf/
+.sfdx/
+.localdevserver/
+deploy-options.json
 
-# Production agent source should not be mixed into the ADLC overlay repo
-force-app/
+# LWC VSCode autocomplete
+**/lwc/jsconfig.json
 
-# Generated bootstrap/status evidence; keep source scripts, not local run outputs
-adlc/versioning/bootstrap-*.json
+# LWC Jest coverage reports
+coverage/
 
-# Salesforce upstream skills are installed from upstream, not vendored here
-skills/developing-agentforce/
-skills/testing-agentforce/
-skills/observing-agentforce/
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# Local resumability scratchpad
+# Dependency directories
+node_modules/
+
+# ApexPMD cache
+.pmdCache
+
+# Eslint cache
+.eslintcache
+
+# MacOS system files
+.DS_Store
+
+# Windows system files
+Thumbs.db
+ehthumbs.db
+[Dd]esktop.ini
+$RECYCLE.BIN/
+
+# Local environment variables
+.env
+
+# ADLC scratch — temporary/diagnostic files, not shipped
+adlc/scratch/
+
+# Python Salesforce Functions
+**/__pycache__/
+**/.venv/
+**/venv/
+
+# SSH keys — never commit private keys to any repo
+oliver
+oliver.pub
+*.pem
+id_*
+*_rsa
+*_ed25519
+*.key
+
+# Personal symlinks — point to user-specific paths, won't work elsewhere
+.skills
+
+# ADLC drive resumability scratchpad — local-only, not durable state
 .adlc-drive-state.json
 
-# OS/editor noise
-.DS_Store
+# ADLC bootstrap install evidence and migration scratch — local-only
+adlc/versioning/bootstrap-*.json
+adlc/versioning/*-status-*.json
+adlc/versioning/local-overlay-manifest.json
+adlc/versioning/upstream-*.json
+adlc/versioning/upstream-*.md
+adlc/versioning/PLAN_EXECUTION_STATUS.md
+adlc/versioning/skill-regression-initial.md
+adlc/versioning/target-structure-review.md
+adlc/versioning/bootstrap-migration-checkpoint.md
+adlc/versioning/phase*-reference-check.md
+# Keep the adlc/versioning/.gitkeep so the directory exists for future writes
+!adlc/versioning/.gitkeep
+
+# Vendored upstream Salesforce skills — runtime-fetched, not committed.
+# Only README.md and .gitkeep stay tracked. SOURCE.md is rewritten by
+# bootstrap on every fetch and is local-only.
+adlc/skills/upstream/*/
+adlc/skills/upstream/SOURCE.md
+!adlc/skills/upstream/README.md
+!adlc/skills/upstream/.gitkeep

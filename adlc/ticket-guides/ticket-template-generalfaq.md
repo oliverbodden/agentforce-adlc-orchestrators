@@ -1,6 +1,6 @@
 # JIRA Ticket: GeneralFAQ — Compact topic instructions to ~60% without quality regression
 
-> Copy into a new ESCHAT ticket.
+> Copy into a new PROJECT ticket.
 
 ---
 
@@ -8,16 +8,16 @@
 
 **Type:** Story
 
-**Labels:** `prompt-optimization`, `indeed-service-agent`, `general-faq`
+**Labels:** `prompt-optimization`, `example-service-agent`, `general-faq`
 
 ---
 
 ## Context
 
-The `GeneralFAQ` topic instruction for Indeed Service Agent is currently ~2,194 words (across 2 instruction records). This is a RAG-based topic that answers customer questions using internal knowledge articles. It does not call account-specific APIs and does not require a routable ID for testing.
+The `GeneralFAQ` topic instruction for Example Service Agent is currently ~2,194 words (across 2 instruction records). This is a RAG-based topic that answers customer questions using internal knowledge articles. It does not call account-specific APIs and does not require a routable ID for testing.
 
-**Agent:** Indeed Service Agent (`Agentforce_Service_Agent`)
-**Org:** devesa3 (my-sandbox)
+**Agent:** Example Service Agent (`Example_Service_Agent`)
+**Org:** sandbox-alias (my-sandbox)
 **Topic:** `GeneralFAQ` (`GeneralFAQ_16jcf8c53e60308`, ID: `179Em000000BGsiIAG`)
 **Instruction source of truth:** unknown until `adlc-drive` verifies current org metadata; if no usable authoring bundle exists, use the local UI-built Tooling API exception path.
 **Instruction records:**
@@ -58,7 +58,7 @@ Suggested criteria to convert into `config.json`:
 
 ## Eval Baseline
 
-- **Baseline CSV:** Attached — `ESA - FAQ Redesign - 3 Step Approach - QA 2.24.1`
+- **Baseline CSV:** Attached — `Example FAQ Redesign Baseline`
 - **Prior eval report (optional):** Attached — `Eval Analysis: 2.19.1 vs 2.15.1 vs 2.9.1` (for context — URL consistency was improved in a later version)
 - **Baseline location:** `adlc/agents/[agent-dev-name]__[org-alias]/baselines/general-faq/` (to be created by adlc-drive)
 
@@ -70,7 +70,7 @@ Suggested criteria to convert into `config.json`:
 - **No routable ID needed** — no account-specific API calls
 - **Key quality metrics for FAQ:** answer accuracy, knowledge retrieval relevance, URL correctness, response completeness, tone adherence
 - **Not applicable from Invoice:** IDENTIFY/EXPLAIN strategies, invoice matching, auto-selection, escalation rules
-- **The regression script (`generate_report.py`) is topic-agnostic** — it discovers metrics from data (strategy distribution, formatting, length, consistency). FAQ-specific criteria (answer accuracy, URL correctness) are handled by the AI in Phase 6 using the JSON sidecar output.
+- **The eval report script (`generate_report.py`) is generic** — it computes deterministic metrics from baseline/candidate CSV data. FAQ-specific criteria (answer accuracy, URL correctness) are handled by the AI in Phase 6 using the JSON sidecar output.
 - **Diagnostic mode caveat:** temporary user-facing diagnostic traces may be used only with HITL approval and must be removed/internalized, or explicitly product-approved to remain, before final `GO`.
 
 ## Approach
@@ -101,8 +101,8 @@ Uses `adlc-drive` skill with surgical compaction (per learnings from PROJ-345 In
 - `discovery.json` records source of truth, canonical folder, instruction IDs, baseline CSV, config path, suite name, and diagnostic mode if used
 - `config.json` records approved acceptance criteria, thresholds, stages, and Phase 6 results
 - Eval results within current-stage acceptance criteria
-- FAQ-specific criteria evaluated by Phase 6 analysis using the topic-agnostic JSON sidecar and representative examples
+- FAQ-specific criteria evaluated by Phase 6 analysis using the JSON sidecar and representative examples
 - Any temporary diagnostic traces removed/internalized or explicitly product-approved to remain
 - Instruction deployed to target org
-- Eval artifacts saved locally and submitted to the shared ADLC artifact repo when closing out: `https://code.corp.indeed.com/telecom/it-adlc`
+- Eval artifacts saved under `adlc/agents/<agent>__<org>/tickets/<ticket>/`
 

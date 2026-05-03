@@ -1,6 +1,6 @@
 # Acceptance, Eval, And HITL Governance
 
-Local Indeed governance for Agentforce ADLC runs. This document defines how final recommendations, product acceptance, technical review, eval reports, HITL logs, and monthly skill-improvement signals should work.
+Local project governance for Agentforce ADLC runs. This document defines how final recommendations, product acceptance, technical review, eval reports, HITL logs, and monthly skill-improvement signals should work.
 
 This is an overlay document. It does not modify Salesforce upstream standard skills.
 
@@ -246,7 +246,7 @@ Skill-improvement fields are required when `improvement_signal` is `true`:
 
 ## Monthly Skill-Improvement Review
 
-Monthly AI review should operate on raw, machine-readable artifacts from the corporate ADLC repo, not chat memory.
+Monthly AI review should operate on raw, machine-readable artifacts under `adlc/agents/<agent>__<org>/tickets/`, not chat memory.
 
 Recommended inputs:
 

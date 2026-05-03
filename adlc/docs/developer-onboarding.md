@@ -1,6 +1,6 @@
 # ADLC Developer Onboarding
 
-Setup guidance for developers using the Indeed Agentforce ADLC overlay.
+Setup guidance for developers using the Agentforce ADLC overlay.
 
 Goal: every developer should have the same known-good local state before running ticket-driven ADLC work.
 
@@ -10,7 +10,7 @@ Goal: every developer should have the same known-good local state before running
 
 A ready workstation has:
 
-- Git access to the corporate ADLC repo.
+- Git access to the default repo (this repo). Remotes for canonical + mirror configurable via `tools/bootstrap_it_adlc.py --configure-remotes`.
 - Salesforce CLI on `PATH`.
 - Required Salesforce CLI command surfaces available:
   - `sf agent`
@@ -20,11 +20,13 @@ A ready workstation has:
   - `sf api`
   - `sf org`
 - Authenticated Salesforce org aliases needed for the work.
-- Salesforce upstream ADLC skills installed at the approved baseline.
-- Indeed/local overlay installed additively.
-- Cursor or Claude skill target directory available.
-- Artifact repo remote pointing to `https://code.corp.indeed.com/telecom/it-adlc`.
-- Local setup/status report captured for troubleshooting.
+- All 6 skills installed at `~/.cursor/skills/`, sourced from this repo's `adlc/skills/`:
+  - **Custom (committed):** `adlc-drive`, `adlc-execute`, `adlc-ticket`.
+  - **Vendored upstream (gitignored content, fetched by bootstrap):** `developing-agentforce`, `testing-agentforce`, `observing-agentforce`. Live in `adlc/skills/upstream/`.
+- Cursor or Claude skill target directory available (`~/.cursor/skills/`).
+- Local setup/status report captured for troubleshooting (optional, written to `adlc/versioning/`).
+
+ADLC artifacts (HITL logs, ticket evidence) live under `adlc/agents/<agent>__<org>/tickets/`.
 
 Current local reference captured during overlay/bootstrap setup:
 
@@ -44,15 +46,14 @@ The exact minimum Salesforce CLI/plugin policy is still pending approval. Until 
 
 ## Install Order
 
-Install order matters. The local overlay assumes Salesforce prerequisites and Salesforce upstream skills already exist. Do not install or update local wrapper skills first and then backfill Salesforce skills around them.
+Single source for skills (`adlc/skills/`), single bootstrap command. Bootstrap auto-vendors upstream skills on first install.
 
 Required order:
 
 1. **Salesforce prerequisites** — Install Salesforce CLI, verify required command surfaces, and authenticate required org aliases.
-2. **Salesforce upstream ADLC baseline** — Install or verify the standard consolidated Salesforce skills from `https://github.com/SalesforceAIResearch/agentforce-adlc`.
-3. **Indeed/local ADLC overlay** — Install or verify local wrapper skills, overlay docs, playbooks, bootstrap/status tooling, and artifact repo routing from `https://code.corp.indeed.com/telecom/it-adlc`.
+2. **Bootstrap** — Clone this repo and run `tools/bootstrap_it_adlc.py --install-additive`. This auto-vendors upstream Salesforce skills into `adlc/skills/upstream/` (cloning a cache at `~/agentforce-adlc-salesforce/` if needed), then installs all 6 skills (3 custom + 3 upstream) into `~/.cursor/skills/`.
 
-The GitLab repo should contain local overlay source, docs, playbooks, bootstrap/status helpers, and artifact conventions. It should not vendor copied Salesforce upstream skill directories.
+The default repo contains: custom skill source (committed), upstream skill scaffolding (vendored content gitignored), docs, playbooks, bootstrap/status helpers, ticket guides, artifact conventions, and an empty Agentforce-focused SFDX scaffold (`force-app/`).
 
 ---
 
@@ -74,29 +75,31 @@ sf api --help
 sf org --help
 sf org list
 
-# 2. Install or verify Salesforce upstream ADLC baseline
-git clone https://github.com/SalesforceAIResearch/agentforce-adlc.git ~/agentforce-adlc-salesforce
-cd ~/agentforce-adlc-salesforce
-python3 tools/install.py --target cursor
-# Alternative one-command upstream install:
-# curl -sSL https://raw.githubusercontent.com/SalesforceAIResearch/agentforce-adlc/main/tools/install.sh | bash
-# Required installed skills: developing-agentforce, testing-agentforce, observing-agentforce.
+# 2. Clone this repo
+git clone <your-default-repo-url> agentforce-project
+cd agentforce-project
 
-# 3. Clone the Indeed/local overlay repo
-git clone https://code.corp.indeed.com/telecom/it-adlc.git
-cd it-adlc
+# 3. Dry-run: see what's installed and what's missing
+python3 tools/bootstrap_it_adlc.py --status
 
-# 4. Dry-run: show what local overlay/bootstrap would install or verify
-python3 tools/bootstrap_it_adlc.py --dry-run
-
-# 5. Add missing consolidated Salesforce skills only if upstream is present locally
+# 4. Install: auto-vendors upstream skills + copies all 6 skills into ~/.cursor/skills/
 python3 tools/bootstrap_it_adlc.py --install-additive
+
+# 5. (Optional) Configure git remotes interactively
+python3 tools/bootstrap_it_adlc.py --configure-remotes
 
 # 6. Verify final machine state
 python3 tools/bootstrap_it_adlc.py --status
 ```
 
-The bootstrap helper exists at `tools/bootstrap_it_adlc.py`. It currently targets Cursor skills only; there is no `--target` flag. Running it with no mode flag is equivalent to a dry run. The helper is additive: it must not overwrite local wrapper skills, delete legacy skills, or vendor Salesforce upstream skill content into the GitLab repo.
+To bump pinned upstream skill versions later:
+
+```text
+python3 tools/bootstrap_it_adlc.py --update-upstream-skills  # git pull cache + re-vendor
+python3 tools/bootstrap_it_adlc.py --install-additive        # re-install (skips existing in ~/.cursor/skills/)
+```
+
+The bootstrap helper exists at `tools/bootstrap_it_adlc.py`. It currently targets Cursor skills only; there is no `--target` flag. Running it with no mode flag is equivalent to a dry run.
 
 Current local status helper:
 
@@ -106,9 +109,12 @@ python3 tools/bootstrap_it_adlc.py --status
 python3 tools/bootstrap_it_adlc.py --status --json
 python3 tools/bootstrap_it_adlc.py --dry-run --write-report adlc/versioning/bootstrap-status-YYYY-MM-DD.json
 python3 tools/bootstrap_it_adlc.py --install-additive --write-report adlc/versioning/bootstrap-install-YYYY-MM-DD.json
+python3 tools/bootstrap_it_adlc.py --update-upstream-skills
+python3 tools/bootstrap_it_adlc.py --configure-remotes
+python3 tools/bootstrap_it_adlc.py --configure-remotes --canonical-url <URL> --mirror-url <URL>
 ```
 
-This helper is intentionally conservative. Dry-run/status do not change files. `--install-additive` only copies missing consolidated Salesforce skills and refuses to overwrite existing destination folders; it does not delete legacy `adlc-*` skills.
+This helper is intentionally conservative. Dry-run/status do not change files. `--install-additive` copies missing skills (custom + vendored upstream) and refuses to overwrite existing destination folders; it does not delete legacy `adlc-*` skills. `--update-upstream-skills` does replace existing vendored copies in `adlc/skills/upstream/<skill>/` (that's the point of bumping a pin), but never touches `~/.cursor/skills/`. `--configure-remotes` will not overwrite an existing remote — it reports it instead.
 
 ---
 
@@ -133,7 +139,7 @@ git remote -v
 git branch --show-current
 ```
 
-Skill checks:
+Skill checks (3 custom + 3 upstream):
 
 ```text
 ~/.cursor/skills/adlc-drive/SKILL.md
@@ -144,13 +150,22 @@ Skill checks:
 ~/.cursor/skills/observing-agentforce/SKILL.md
 ```
 
+Custom skills source-of-truth (vendored in this repo):
+
+```text
+adlc/skills/adlc-drive/SKILL.md
+adlc/skills/adlc-execute/SKILL.md
+adlc/skills/adlc-ticket/SKILL.md
+```
+
 Project overlay checks:
 
 ```text
 adlc/playbooks/agentforce-architecture-playbook.md
+adlc/playbooks/prompt-engineering-playbook.md
+adlc/playbooks/eval-report-playbook.md
 adlc/docs/core-process-overlay.md
 adlc/docs/acceptance-eval-hitl-governance.md
-adlc/docs/artifact-repo-workflow.md
 ```
 
 ---
@@ -158,13 +173,12 @@ adlc/docs/artifact-repo-workflow.md
 ## Bootstrap Safety Rules
 
 - Default mode must be non-destructive.
-- Existing standard Salesforce skill files must not be overwritten unless the user explicitly invokes a reset mode.
+- Existing skill files in `~/.cursor/skills/` must not be overwritten unless the user explicitly invokes a reset mode.
 - Existing local ticket artifacts must never be deleted by onboarding.
-- Install Salesforce prerequisites first, Salesforce standard skills second, and Indeed/local overlays third.
-- Keep Salesforce upstream skill directories out of the local overlay repo; install them into the user's skill directory from the Salesforce upstream source.
-- Record upstream commit/version and local overlay version.
+- Install Salesforce prerequisites first, then run a single bootstrap command for everything else.
+- Vendored upstream skill content under `adlc/skills/upstream/` is gitignored (only `README.md` and `.gitkeep` are committed). Bootstrap auto-fetches from `~/agentforce-adlc-salesforce/` cache and rewrites `SOURCE.md` with the pinned commit on every fetch.
+- Record upstream pinned commit + fetch timestamp in `adlc/skills/upstream/SOURCE.md`.
 - Report skipped steps, conflicts, and version mismatches.
-- If the current working repo is a production agent repo, do not place shared HITL artifacts there.
 
 ---
 
@@ -182,10 +196,17 @@ The status command produces a report with:
   },
   "salesforce_upstream": {
     "repo": "https://github.com/SalesforceAIResearch/agentforce-adlc",
-    "local_clone": "/Users/<user>/agentforce-adlc-salesforce",
-    "remote": "https://github.com/SalesforceAIResearch/agentforce-adlc.git",
-    "commit": "<observed-commit>",
-    "skills_available": {
+    "cache_clone": "/Users/<user>/agentforce-adlc-salesforce",
+    "cache_present": true,
+    "cache_remote": "https://github.com/SalesforceAIResearch/agentforce-adlc.git",
+    "cache_commit": "<observed-commit>",
+    "cache_skills_available": {
+      "developing-agentforce": true,
+      "testing-agentforce": true,
+      "observing-agentforce": true
+    },
+    "vendored_dir": "/path/to/agentforce-project/adlc/skills/upstream",
+    "vendored_skills_available": {
       "developing-agentforce": true,
       "testing-agentforce": true,
       "observing-agentforce": true
@@ -194,12 +215,13 @@ The status command produces a report with:
   "cursor_install": {
     "skills_dir": "/Users/<user>/.cursor/skills",
     "consolidated_skills": {},
-    "local_wrappers": {},
+    "local_custom_skills": {},
+    "local_custom_skills_source": "/path/to/agentforce-project/adlc/skills",
+    "custom_skills_available_in_repo": {},
     "legacy_standard_skills": {}
   },
   "local_overlay": {
     "docs": {},
-    "artifact_repo": "https://code.corp.indeed.com/telecom/it-adlc",
     "current_workspace_remote": "<detected-origin-or-null>"
   },
   "planned_actions": [],
@@ -209,4 +231,4 @@ The status command produces a report with:
 }
 ```
 
-Do not declare `ready` if Salesforce CLI command surfaces, local overlay docs, or artifact repo routing are missing.
+Do not declare `ready` if Salesforce CLI command surfaces or local overlay docs are missing.
