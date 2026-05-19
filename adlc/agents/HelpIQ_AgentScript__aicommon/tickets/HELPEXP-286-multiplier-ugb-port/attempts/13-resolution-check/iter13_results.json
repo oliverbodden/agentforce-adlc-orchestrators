@@ -1,0 +1,158 @@
+{
+  "S1_Submit_then_yes": {
+    "desc": "SELF Figma submit + resolution YES \u2192 expect survey phrase",
+    "sid": "dab142aa-50fa-45c5-96b5-16cc79a3d1a4",
+    "turns": [
+      {
+        "utt": "I need Figma access for design reviews",
+        "reply": "Got it \u2014 you need Figma access for design reviews.\n\nPlease confirm what I\u2019m about to submit:\n\nApplication: Figma\nAccess type: Viewer\nReason: Design reviews\nSubmit this request? (yes / no)\n\nDebug:\n\nContinuity\n\nwhat: CONTINUATION; n/a\nwhy: user request followed the same topic: \"I need Figma access for design reviews\"\n\nVarStatePreTurn\n\nwhat: pending_application_key=\"FIGMA-APP-KEY-12345\"; pending_access_type_key=\"VWR-KEY-34567\"; pending_reason=\"Design reviews\"; confirmation_accepted=False; pending_escalation_app=\"\"; pending_escalation_beneficiary=\"\"; escalation_confirmed=False\nwhy: state shows a SELF Confirm chain in flight (pending_* populated; confirmation_accepted=False)\n\nIntent\n\nwhat: ACTION\nwhy: user said \"I need Figma access\"\n\nMode\n\nwhat: SELF\nwhy: no other-person language; user said \"I need\"\n\nUserFacts\n\nwhat: app: Figma; reason: Design reviews\nwhy: provided in the user message \"I need Figma access for design reviews\"\n\nCatalogState\n\nwhat: reused-from-turn-1\nwhy: catalog was already called with inputChatMessage \"Figma\" and returned multiple access types\n\nCatalogReturnLiteral\n\nwhat: \"Admin, Editor, Viewer\"\nwhy: literal options returned in the application access details\n\nKeyProvenance\n\nwhat: pending_application_key = FIGMA-APP-KEY-12345 :: catalog literal: 'Application Key: FIGMA-APP-KEY-12345'; pending_access_type_key = VWR-KEY-34567 :: catalog literal: 'Viewer: VWR-KEY-34567'; pending_reason = Design reviews :: user said in turn 1: 'design reviews'\nwhy: staged values trace to the earlier catalog result and the user\u2019s stated reason\n\nStageRequestCalled\n\nwhat: true; FIGMA-APP-KEY-12345, VWR-KEY-34567, \"Design reviews\"\nwhy: ready for SELF Confirm with app + access type + reason known\n\nStageEscalationCalled\n\nwhat: false\nwhy: not an escalation path (SELF + catalog hit)\n\nAcceptCalled\n\nwhat: none\nwhy: user has not yet replied \"yes\" to the Confirm prompt in this turn\n\nHandoffToEscalation\n\nwhat: false\nwhy: not in ConfirmEscalation acceptance flow\n\nConfirmChain\n\nwhat: NotStarted\nwhy: this is the Confirm summary turn; acceptance has not occurred yet\n\nServiceStrategy\n\nwhat: Confirm\nwhy: all required SELF facts present and catalog options available; staged for confirmation\n\nToolsCalled\n\nwhat: none\nwhy: staging and catalog lookup were completed earlier; this turn is presenting the confirmation",
+        "planId": "dd53c34e-c760-4d93-baf5-28f7773b0bf6",
+        "deep": {
+          "actions": [
+            "go_to_HelpIqAgentMultiplierSoftwareRequests",
+            "HelpIqAgentApplicationAccessDetails",
+            "stage_request"
+          ]
+        }
+      },
+      {
+        "utt": "1",
+        "reply": "Thanks \u2014 just to make sure I\u2019m taking the right action, what does \u201c1\u201d mean here?\n\nPlease reply with one of these:\n\nYes (submit the request as Figma \u2192 Viewer for design reviews)\nNo (don\u2019t submit)\nOr tell me which access you need: Viewer, Editor, or Admin\n\nWhich option do you want?",
+        "planId": "9e2d35e6-dee9-4e67-afba-4ffdc81a76d9",
+        "deep": {
+          "actions": [
+            "go_to_Ambiguous_Question"
+          ]
+        }
+      },
+      {
+        "utt": "yes",
+        "reply": "All set \u2014 your Figma access request has been submitted.\n\n<https://helpdesk.indeed.com/ticket/REQ-20240612-123456 | Ticket>\n\nDid this get you what you needed? (yes / no)\n\nDebug:\n\nContinuity\n\nwhat: CONTINUATION; acceptance resolved to prior Confirm summary\nwhy: user replied \"yes\" after \"Submit this request? (yes / no)\"\n\nVarStatePreTurn\n\nwhat: pending_application_key=\"FIGMA-APP-KEY-12345\"; pending_access_type_key=\"VWR-KEY-34567\"; pending_reason=\"Design reviews\"; confirmation_accepted=False; pending_escalation_app=\"\"; pending_escalation_beneficiary=\"\"; escalation_confirmed=False\nwhy: Confirm chain for a SELF request was in flight with pending_* already staged\n\nIntent\n\nwhat: ACTION\nwhy: user said \"yes\" to submitting the access request\n\nMode\n\nwhat: SELF\nwhy: no other-person language in the original request (\"I need Figma access\")\n\nUserFacts\n\nwhat: app: Figma; reason: Design reviews; beneficiary: n/a; relationship: n/a\nwhy: user said \"I need Figma access for design reviews\"\n\nCatalogState\n\nwhat: reused-from-turn-1\nwhy: catalog lookup for \"Figma\" already returned multiple access types earlier\n\nCatalogReturnLiteral\n\nwhat: \"Admin, Editor, Viewer\"\nwhy: literal options returned for Figma in the earlier catalog result\n\nKeyProvenance\n\nwhat: n/a\nwhy: no staging happened this turn (used previously staged pending_* values)\n\nStageRequestCalled\n\nwhat: false\nwhy: this turn is Submit, not Confirm\n\nStageEscalationCalled\n\nwhat: false\nwhy: not an escalation path\n\nAcceptCalled\n\nwhat: accept_confirmation\nwhy: prior turn was a Confirm summary and user responded \"yes\"\n\nHandoffToEscalation\n\nwhat: false\nwhy: SELF Submit path used\n\nConfirmChain\n\nwhat: INTACT\nwhy: user accepted the prior \"Submit this request? (yes / no)\" and accept_confirmation was called\n\nServiceStrategy\n\nwhat: Submit\nwhy: Confirm chain was intact and user acceptance unlocked submission\n\nToolsCalled\n\nwhat: functions.accept_confirmation; functions.HelpIqAgentMultiplierSoftwareRequests\nwhy: accepted the confirmation gate, then submitted the staged software access request",
+        "planId": "135230cc-5b0e-4494-9670-3fbc0baa1591",
+        "deep": {
+          "actions": [
+            "go_to_HelpIqAgentMultiplierSoftwareRequests",
+            "accept_confirmation",
+            "HelpIqAgentMultiplierSoftwareRequests"
+          ]
+        }
+      },
+      {
+        "utt": "yes",
+        "reply": "Perfect \u2014 glad that sorted it.\n\nPlease let us know if we can improve anything by giving feedback. If anything else IT-related comes up (apps, access, hardware), just tell me what you need.\n\nIs there anything else you want help with today?\n\nDebug:\n\nContinuity\n\nwhat: CONTINUATION; \u201cyes\u201d = confirmed the request resolved\nwhy: user answered \u201cyes\u201d to \u201cDid this get you what you needed?\u201d\n\nTopicContext\n\nwhat: Figma access request (Viewer) for design reviews is resolved\nwhy: pulled from the immediately prior resolution check\n\nService Strategy\n\nwhat: Answer\nwhy: user confirmed resolution; next step is survey phrase + offer more help\n\nTools called this turn\n\nwhat: HelpIQ_QnA\nwhy: fetched the approved feedback/survey phrasing from KB\n\nSentiment handled\n\nwhat: neutral\nwhy: user replied \u201cyes\u201d with no frustration cues",
+        "planId": "6201d101-4c53-4fb0-b8cc-8ac106af4ee0",
+        "deep": {
+          "actions": [
+            "go_to_GeneralQnA_HelpIQ",
+            "HelpIQ_QnA"
+          ]
+        }
+      }
+    ]
+  },
+  "S2_Submit_then_no": {
+    "desc": "SELF Figma submit + resolution NO \u2192 expect empathetic ack + invite",
+    "sid": "1aad5613-4d6d-486a-87e6-a2ae680de10e",
+    "turns": [
+      {
+        "utt": "I need Figma access for design reviews",
+        "reply": "Got it \u2014 you need Figma access for design reviews.\n\nRequest summary:\n\nApplication: Figma\nAccess type: SSO\nReason: design reviews\n\nSubmit this request? (yes / no)\n\nDebug:\n\nContinuity\n\nwhat: CONTINUATION; n/a\nwhy: user continued same request: \"I need Figma access\"\n\nVarStatePreTurn\n\nwhat: pending_application_key=\"figma-1234\"; pending_access_type_key=\"SSO\"; pending_reason=\"design reviews\"; confirmation_accepted=False; pending_escalation_app=\"{!@variables.pending_escalation_app}\"; pending_escalation_beneficiary=\"{!@variables.pending_escalation_beneficiary}\"; escalation_confirmed=False\nwhy: stage_request already set values in this turn and no acceptance yet\n\nIntent\n\nwhat: ACTION\nwhy: \"I need Figma access\"\n\nMode\n\nwhat: SELF\nwhy: \"I need\" with no other-person language\n\nUserFacts\n\nwhat: app: Figma; reason: design reviews; beneficiary: n/a; relationship: n/a\nwhy: user said this turn: \"I need Figma access for design reviews\"\n\nCatalogState\n\nwhat: hit-multi\nwhy: inputChatMessage \"Figma\" returned access types \"SSO, API Token, User Provisioning\"\n\nCatalogReturnLiteral\n\nwhat: SSO, API Token, User Provisioning\nwhy: literal options from the catalog response for Figma\n\nKeyProvenance\n\nwhat: pending_application_key = figma-1234 :: catalog literal: \"Application Key: figma-1234\"; pending_access_type_key = SSO :: catalog literal: \"Access Types: SSO, API Token, User Provisioning\"; pending_reason = design reviews :: user said in turn 1: \"for design reviews\"\nwhy: staged values came from catalog output and user phrase\n\nStageRequestCalled\n\nwhat: true; figma-1234 / SSO / design reviews\nwhy: ready to confirm a SELF request with known app, access type, and reason\n\nStageEscalationCalled\n\nwhat: false\nwhy: SELF request with catalog hit, no escalation path needed\n\nAcceptCalled\n\nwhat: none\nwhy: user has not yet replied yes to the Confirm prompt\n\nHandoffToEscalation\n\nwhat: false\nwhy: no ConfirmEscalation acceptance\n\nConfirmChain\n\nwhat: NotStarted\nwhy: this turn is the first Confirm summary\n\nServiceStrategy\n\nwhat: Confirm\nwhy: all required SELF slots are filled and ready for user approval\n\nToolsCalled\n\nwhat: HelpIqAgentApplicationAccessDetails, stage_request\nwhy: fetched Figma access options, then staged the request for confirmation",
+        "planId": "fd90b2d6-d7f7-42b7-aa36-f9c2001b8472",
+        "deep": {
+          "actions": [
+            "go_to_HelpIqAgentMultiplierSoftwareRequests",
+            "HelpIqAgentApplicationAccessDetails",
+            "stage_request"
+          ]
+        }
+      },
+      {
+        "utt": "1",
+        "reply": "Got you \u2014 when you replied \u201c1\u201d, did you mean:\n\nYes, submit the Figma SSO access request, or\nAccess type #1 (SSO) but you still want to review details before submitting?\n\nIf you want me to submit it, I just need a clear \u201cyes\u201d.\n\nDo you want me to submit the Figma SSO access request now (yes / no)?",
+        "planId": "6ab9e8d9-05aa-4bbf-894b-c022f0bd6aab",
+        "deep": {
+          "actions": [
+            "go_to_Ambiguous_Question"
+          ]
+        }
+      },
+      {
+        "utt": "yes",
+        "reply": "All set \u2014 your Figma access request has been submitted.\n\n<https://helpiq.indeed.com/ticket/REQ-56789 | Ticket>\n\nDid this get you what you needed?\n\nDebug:\n\nContinuity\n\nwhat: CONTINUATION; acceptance resolved to prior Confirm submission, n/a\nwhy: user replied \"yes\" to the submit prompt context\n\nVarStatePreTurn\n\nwhat: pending_application_key=\"{!@variables.pending_application_key}\"; pending_access_type_key=\"{!@variables.pending_access_type_key}\"; pending_reason=\"{!@variables.pending_reason}\"; confirmation_accepted=False; pending_escalation_app=\"{!@variables.pending_escalation_app}\"; pending_escalation_beneficiary=\"{!@variables.pending_escalation_beneficiary}\"; escalation_confirmed=False\nwhy: a SELF Confirm had been staged earlier; acceptance not yet recorded at start of this turn\n\nIntent\n\nwhat: ACTION\nwhy: user said \"yes\" to proceed with submitting the access request\n\nMode\n\nwhat: SELF\nwhy: original request used \"I need Figma access\"\n\nUserFacts\n\nwhat: app: Figma; reason: design reviews; beneficiary: n/a; relationship: n/a\nwhy: user said earlier \"I need Figma access for design reviews\"\n\nCatalogState\n\nwhat: reused-from-turn-1\nwhy: Figma catalog details already retrieved earlier (options count >1)\n\nCatalogReturnLiteral\n\nwhat: SSO, API Token, User Provisioning\nwhy: literal options previously returned for Figma\n\nKeyProvenance\n\nwhat: n/a\nwhy: no staging happened this turn (staging occurred prior to submission)\n\nStageRequestCalled\n\nwhat: false\nwhy: this is the Submit step, not the Confirm step\n\nStageEscalationCalled\n\nwhat: false\nwhy: not an escalation path\n\nAcceptCalled\n\nwhat: accept_confirmation\nwhy: user acceptance \"yes\" followed the Confirm prompt to submit\n\nHandoffToEscalation\n\nwhat: false\nwhy: Submit path used; no escalation acceptance\n\nConfirmChain\n\nwhat: BROKEN\nwhy: immediately-prior agent turn was Clarify (not a Confirm summary ending in \"Submit this request? (yes / no)\")\n\nServiceStrategy\n\nwhat: Submit\nwhy: user provided a yes-equivalent to proceed and ticket submission executed\n\nToolsCalled\n\nwhat: accept_confirmation, HelpIqAgentMultiplierSoftwareRequests\nwhy: accept_confirmation recorded explicit approval; request tool created the ticket and returned URL",
+        "planId": "dce5c5d8-35c8-4537-b64f-e91206042d12",
+        "deep": {
+          "actions": [
+            "go_to_HelpIqAgentMultiplierSoftwareRequests",
+            "accept_confirmation",
+            "HelpIqAgentMultiplierSoftwareRequests"
+          ]
+        }
+      },
+      {
+        "utt": "no, the link doesn't work",
+        "reply": "That\u2019s frustrating \u2014 if the HelpIQ ticket link won\u2019t open, a few common things usually fix it:\n\nMake sure you\u2019re signed into the correct Indeed account and connected to the company network/VPN (some ticket links only work internally).\n\nCopy/paste the full URL into your browser (to avoid chat-client link formatting issues).\n\nTry another browser or an incognito/private window, or clear cache/cookies.\n\nIf it still fails, it may be a permissions issue for that ticket; share the ticket number REQ-56789 with IT so they can confirm access or resend a working link.\n\nWhich error do you see when you open the link (e.g., 404, access denied, blank page)?\n\nDebug:\n\nContinuity\n\nwhat: CONTINUATION; \u201cthe link\u201d = HelpIQ ticket URL for REQ-56789\nwhy: user referenced the previously provided ticket link\n\nTopicContext\n\nwhat: HelpIQ ticket link for Figma access request REQ-56789 not working\nwhy: pulled from prior ticket creation and user complaint about the link\n\nService Strategy\n\nwhat: Answer\nwhy: KB returned a single coherent troubleshooting procedure\n\nTools called this turn\n\nwhat: HelpIQ_QnA\nwhy: materially new follow-up question about broken ticket link\n\nSentiment handled\n\nwhat: frustrated \u2192 empathy/human-offer first\nwhy: user said \u201cno, the link doesn\u2019t work\u201d indicating frustration",
+        "planId": "7d91340b-4a7e-4e87-a3f5-de6e12818b1d",
+        "deep": {
+          "actions": [
+            "go_to_GeneralQnA_HelpIQ",
+            "HelpIQ_QnA"
+          ]
+        }
+      }
+    ]
+  },
+  "S3_OnBehalf_escalation": {
+    "desc": "ON_BEHALF escalation \u2192 expect NO resolution check anywhere",
+    "sid": "a9b7897b-f24a-4c9a-ba34-5681b5b288c3",
+    "turns": [
+      {
+        "utt": "I need to grant Slack access to my new hire",
+        "reply": "Got it \u2014 you\u2019re looking to get Slack access set up for your new hire.\n\nWhat\u2019s the new hire\u2019s name and email (or Slack handle), and what\u2019s your relationship to them (e.g., manager, recruiter, onboarding buddy)?\n\nDebug:\n\nContinuity\n\nwhat: CONTINUATION; \u201cmy new hire\u201d resolved as on-behalf request for one person\nwhy: user said \u201cgrant Slack access to my new hire\u201d\n\nVarStatePreTurn\n\nwhat: pending_application_key=\"{!@variables.pending_application_key}\"; pending_access_type_key=\"{!@variables.pending_access_type_key}\"; pending_reason=\"{!@variables.pending_reason}\"; confirmation_accepted=False; pending_escalation_app=\"{!@variables.pending_escalation_app}\"; pending_escalation_beneficiary=\"{!@variables.pending_escalation_beneficiary}\"; escalation_confirmed=False\nwhy: no Confirm/ConfirmEscalation summary was in flight at turn start\n\nIntent\n\nwhat: ACTION\nwhy: user said \u201cgrant Slack access\u201d\n\nMode\n\nwhat: ON_BEHALF\nwhy: user said \u201cmy new hire\u201d\n\nUserFacts\n\nwhat: app: Slack; reason: (missing); beneficiary: (missing); relationship: (missing)\nwhy: \u201cSlack\u201d from this turn; other details not provided\n\nCatalogState\n\nwhat: hit-multi (reused-from-earlier-conversation-call)\nwhy: Slack access details previously returned multiple access types\n\nCatalogReturnLiteral\n\nwhat: \"User Token, Bot Token, Admin Token\" AND \"API Token, OAuth, Webhook\"\nwhy: prior Slack catalog calls returned these options in this conversation\n\nKeyProvenance\n\nwhat: n/a\nwhy: no staging happened this turn\n\nStageRequestCalled\n\nwhat: false; n/a\nwhy: ON_BEHALF requests cannot be submitted via automated request flow\n\nStageEscalationCalled\n\nwhat: false; n/a\nwhy: still missing beneficiary + relationship (and reason) required for ConfirmEscalation\n\nAcceptCalled\n\nwhat: none\nwhy: no prior Confirm/ConfirmEscalation summary to accept\n\nHandoffToEscalation\n\nwhat: false\nwhy: not at ConfirmEscalation-accepted step\n\nConfirmChain\n\nwhat: NotStarted\nwhy: no Confirm or ConfirmEscalation summary has been presented\n\nServiceStrategy\n\nwhat: Clarify\nwhy: missing required ON_BEHALF user-facts (beneficiary identifiers + relationship)\n\nToolsCalled\n\nwhat: none\nwhy: app is already known and catalog was already retrieved earlier in the conversation",
+        "planId": "55a0e7df-f187-4686-89cb-54cf9f7c1832",
+        "deep": {
+          "actions": [
+            "go_to_HelpIqAgentMultiplierSoftwareRequests",
+            "HelpIqAgentApplicationAccessDetails",
+            "HelpIqAgentApplicationAccessDetails",
+            "HelpIqAgentApplicationAccessDetails"
+          ]
+        }
+      },
+      {
+        "utt": "Jenks Miller, jenkinsm@indeed.com",
+        "reply": "Perfect \u2014 Jenks Miller (jenkinsm@indeed.com).\n\nWhat\u2019s your relationship to Jenks (e.g., hiring manager, recruiter, onboarding buddy)?\n\nDebug:\n\nContinuity\n\nwhat: CONTINUATION; beneficiary identified as \"Jenks Miller, jenkinsm@indeed.com\"\nwhy: user provided \"Jenks Miller, jenkinsm@indeed.com\"\n\nVarStatePreTurn\n\nwhat: pending_application_key=\"{!@variables.pending_application_key}\"; pending_access_type_key=\"{!@variables.pending_access_type_key}\"; pending_reason=\"{!@variables.pending_reason}\"; confirmation_accepted=False; pending_escalation_app=\"{!@variables.pending_escalation_app}\"; pending_escalation_beneficiary=\"{!@variables.pending_escalation_beneficiary}\"; escalation_confirmed=False\nwhy: no Confirm/ConfirmEscalation summary was in flight at the start of this turn\n\nIntent\n\nwhat: ACTION\nwhy: user said \"grant Slack access\"\n\nMode\n\nwhat: ON_BEHALF\nwhy: user said \"my new hire\"\n\nUserFacts\n\nwhat: app: Slack; beneficiary: Jenks Miller jenkinsm@indeed.com; relationship: (missing); reason: (missing)\nwhy: app from earlier turn \"Slack\"; beneficiary from this turn \"Jenks Miller, jenkinsm@indeed.com\"; relationship/reason not provided\n\nCatalogState\n\nwhat: reused-from-turn-N\nwhy: Slack access details were already retrieved earlier in this conversation\n\nCatalogReturnLiteral\n\nwhat: \"Read, Write, Admin\" AND \"User Token, Bot Token, Admin Token\" AND \"API Token, OAuth, Webhook\"\nwhy: these literal option sets were returned by prior catalog calls for \"Slack\"\n\nKeyProvenance\n\nwhat: n/a\nwhy: no staging happened this turn\n\nStageRequestCalled\n\nwhat: false; n/a\nwhy: ON_BEHALF requests cannot be submitted via automated request flow\n\nStageEscalationCalled\n\nwhat: false\nwhy: escalation requires relationship + reason before ConfirmEscalation\n\nAcceptCalled\n\nwhat: none\nwhy: no prior Confirm/ConfirmEscalation summary to accept\n\nHandoffToEscalation\n\nwhat: false\nwhy: not on an escalation-handoff turn\n\nConfirmChain\n\nwhat: NotStarted\nwhy: no Confirm or ConfirmEscalation summary has been presented\n\nServiceStrategy\n\nwhat: Clarify\nwhy: missing required ON_BEHALF user-fact \"relationship\"\n\nToolsCalled\n\nwhat: none\nwhy: only needed to ask for missing user-fact this turn",
+        "planId": "a7498aa5-42ff-4475-aea8-11ffbee816dc",
+        "deep": {
+          "actions": [
+            "go_to_HelpIqAgentMultiplierSoftwareRequests",
+            "HelpIqAgentApplicationAccessDetails",
+            "HelpIqAgentApplicationAccessDetails",
+            "HelpIqAgentApplicationAccessDetails",
+            "HelpIqAgentApplicationAccessDetails"
+          ]
+        }
+      },
+      {
+        "utt": "to communicate with the team",
+        "reply": "Got it \u2014 reason is \u201cto communicate with the team.\u201d\n\nWhat\u2019s your relationship to Jenks (e.g., hiring manager, recruiter, onboarding buddy)?\n\nDebug:\n\nContinuity\n\nwhat: CONTINUATION; \u201cto communicate with the team\u201d resolved as the business reason for Slack access\nwhy: user provided \u201cto communicate with the team\u201d\n\nVarStatePreTurn\n\nwhat: pending_application_key=\"{!@variables.pending_application_key}\"; pending_access_type_key=\"{!@variables.pending_access_type_key}\"; pending_reason=\"{!@variables.pending_reason}\"; confirmation_accepted=False; pending_escalation_app=\"{!@variables.pending_escalation_app}\"; pending_escalation_beneficiary=\"{!@variables.pending_escalation_beneficiary}\"; escalation_confirmed=False\nwhy: no Confirm/ConfirmEscalation summary was in flight at turn start\n\nIntent\n\nwhat: ACTION\nwhy: user is still describing why access is needed: \u201cto communicate with the team\u201d\n\nMode\n\nwhat: ON_BEHALF\nwhy: user said \u201cmy new hire\u201d earlier\n\nUserFacts\n\nwhat: application: Slack; beneficiary: Jenks Miller jenkinsm@indeed.com; relationship: (missing); reason: \u201cto communicate with the team\u201d\nwhy: app from earlier \u201cSlack\u201d; beneficiary from \u201cJenks Miller, jenkinsm@indeed.com\u201d; reason from this turn; relationship not provided\n\nCatalogState\n\nwhat: reused-from-turn-2\nwhy: Slack catalog was already looked up earlier in the conversation\n\nCatalogReturnLiteral\n\nwhat: \"Read, Write, Admin\" AND \"User Token, Bot Token, Admin Token\" AND \"API Token, OAuth, Webhook\"\nwhy: these were returned by HelpIqAgentApplicationAccessDetails for \u201cSlack\u201d earlier\n\nKeyProvenance\n\nwhat: pending_escalation_app = Slack :: user said in turn 1: \"Slack\"; pending_escalation_access_type = General :: synthesized \u2014 should not have happened; pending_escalation_reason = To communicate with the team :: user said in turn 4: \"to communicate with the team\"; pending_escalation_beneficiary = Jenks Miller jenkinsm@indeed.com:: user said in turn 2: \"Jenks Miller, jenkinsm@indeed.com\"; pending_escalation_relationship = :: n/a (not provided)\nwhy: staging occurred this turn; access type \u201cGeneral\u201d was not literally provided by user or catalog\n\nStageRequestCalled\n\nwhat: false; n/a\nwhy: ON_BEHALF requests are not eligible for the automated submit flow\n\nStageEscalationCalled\n\nwhat: true; values: app=\"Slack\", access_type=\"General\", reason=\"To communicate with the team\", beneficiary=\"Jenks Miller jenkinsm@indeed.com\", relationship=\"\"\nwhy: stage_escalation was invoked after collecting reason and beneficiary\n\nAcceptCalled\n\nwhat: none\nwhy: user did not accept a ConfirmEscalation summary (none was shown)\n\nHandoffToEscalation\n\nwhat: false\nwhy: no ConfirmEscalation acceptance occurred\n\nConfirmChain\n\nwhat: NotStarted\nwhy: no Confirm or ConfirmEscalation summary has been presented yet\n\nServiceStrategy\n\nwhat: Clarify\nwhy: required ON_BEHALF user-fact \u201crelationship\u201d is still missing\n\nToolsCalled\n\nwhat: stage_escalation\nwhy: staged the collected escalation details so they can be confirmed once relationship is provided",
+        "planId": "21e429a2-b155-4f4b-8d55-3717bdc8aaf9",
+        "deep": {
+          "actions": [
+            "go_to_HelpIqAgentMultiplierSoftwareRequests",
+            "stage_escalation"
+          ]
+        }
+      },
+      {
+        "utt": "yes",
+        "reply": "Thanks \u2014 I want to make sure I\u2019m understanding what you\u2019re saying \u201cyes\u201d to.\n\nTo proceed with granting Slack access for Jenks Miller (jenkinsm@indeed.com), I still need one detail:\n\nWhat\u2019s your relationship to Jenks (hiring manager, recruiter, onboarding buddy, teammate, etc.)?",
+        "planId": "a110df2e-1731-45d4-b3a0-63ce036a1efd",
+        "deep": {
+          "actions": [
+            "go_to_Ambiguous_Question"
+          ]
+        }
+      }
+    ]
+  }
+}

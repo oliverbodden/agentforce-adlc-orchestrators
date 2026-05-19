@@ -1,0 +1,51 @@
+# From HelpIQ-GPT5-SingleTurn-581_2026-05-08_2017.csv (50 unique Utterance)
+why do I need this in Slack though?
+Hiroto Yoshioka 16-17 April PTO (email: hyoshioka@indeed.com slack_user_id: WPD8U51P0) would like to request for three users masquerading features in QA Dradis from QA Skytree links. Can you create a ticket
+My computer isn't powering on, I need help
+I want to move and article from my team's space to the ITKB, what do I need to know?
+Client is geeting loading error in the candidates tab, need to send emal with the steps for troubleshoot
+how do I get an image url hosted in salesforce?
+my indeed issued mobile devices (iphone and android device) cannot connect to office wifi 'indeed', I get asked a password. how should I connect?
+Hello. I need a new laptop. Mine is over 3 years old and has begun to seriously slow down, making simple actions like loading a calendar take up to 3 minutes
+Hi - I am hoping to meet with someone via zoom to help troubleshoot an issue with Microsoft TEAMS
+<Assistant#U09MKKH50CR> I’m a contractor and I'm trying to access a Figma but I’m getting this error: “User is not assigned this application.” Could someone please help me with access?
+help me find the user arcgate_mehulpatel@contractor.indeed.com
+Open a ticket to order a macbook
+How do I troubleshoot this error?
+There is not shown 'mail log' button on the chrome extension side panel. What should I do?
+Based on the messages in this conversation, can you answer: <Assistant#U09MKKH50CR> can you help me update my email alias
+A sales rep, Mayu Harada, reported that her calls and meetings have not been recorded in Gong since early April. It appears that recordings for most members of her team (Rina Yamashita’s team) are not reflected in Gong. I've submitted https://indeed.atlassian.net/browse/OPSSUP-6730 to see if any permissions/config are missing in Gong side. But I'm wondering if users are not assigned to in the “Zoom Phone - Recording_No_Disclaimer - Japanese (Japan)” User Group in Zoom. The related ticket is https://indeed.atlassian.net/browse/ITS-230364 Can you please confirm if the following 8 users are assigned to the User Group in Zoom? BusOps (BOSS) Confirmed • Zoom Phone is set to Call Center and Permission • The rep has integrated Zoom into SF Impacted Users • Mayu Harada • Yuki Morohashi • Ayuko Ogura • Yoshimichi Yoshida • Marina Satoyama • Rina Yamashita • Cai Yoshikawa • Tomio Nakajima
+I received a new laptop, set the password but was unable to continue the setup. I have since forgotten the password and need to continue setup. How can I reset the laptop password?
+I’m getting this error message when trying to log to Adyen ```Sorry, we couldn't log you in We had an issue with your SSO authentication. Please share the following error code and details with your admin.```
+I have a contract that is being termed that needs therir access removed immiedately .
+Did something change with the permissions of a service account? mailto:svc_idash_testing@indeed.com can no longer log into Idash QA. We need this account for E2E testing purposes.
+I need help resolving a Zoom Phone integration error in Salesforce Skytree, as the error persists despite clearing cache and restarting.
+I need help resolving an issue where calendar information from a partner's Teams is being incorrectly sent to Google Calendar.
+hoe kan ik deze agent force =uitschakelen
+I need to reset my password for flex growthbook
+when I tried to see JIRA then it gave an error 654fb463-0709-4890-81e5-41dd6ea0f31f
+Access to GitLab access/developers group - https://code.corp.indeed.com/groups/access/developers/-/group_members?sort=last_joined Contributing to https://code.corp.indeed.com/employer-analytics/skywalker (Skywalker) and Analytics Core repos for jp_ancore tasks
+how do I request access to floqast
+can you raise a IT ticket for me as I am unable to link Seismic to salesforce
+how do i pitch fiscal annual year business review
+I need help getting access to https://indeed.sana.ai/course/1ZwPNHUfgHRi. It is a training course for new functionality about to roll out to Sales and CS within Salesforce.
+I am not able to access any indeed internal sites like https://backstage.indeed.tech/ https://airflow.indeed.tech/
+need to recover slack messages that were deleted in outpost-experis-recruiting from the period of Jan. 1, 2024 through April 30, 2024
+Can I please get access to Cursor?
+I need to reset my password, specifically to access: https://translation.sandbox.indeed.net/strings/cb0ee61b-c62c-487c-8cf9-5727fc708639
+Can you find any tickets created for 'Adailson Santos' (email: asantos@contractor.indeed.com slack_user_id: U0ASW9L4G74) in the last 24 hours?
+I don't have access to this url: https://glassdoor.atlassian.net/wiki/spaces/INFOSEC/pages/444923914/Frontend+-+Secure+Coding+Checklist
+I got a new phone and Okta Verify is not sending prompts anymore. What do I need to do to reset MFA?
+What do I do with this error message ?
+need help setting up the Google Service account (GCP) to have it integrate with Glean agent in order to log questions from Slack in Ghseet.
+my workday isnt opening and i keep getting this error message
+I need access to GitLab Prod to build workflows and analyze core queries in specific repositories.
+Hello! I am a contractor and I am having issues accessing GitLab. I am currently getting this error when trying to accept an invitation.
+What can you do with Google Docs, if I give you this link: https://docs.google.com/document/d/1Lgq-uExxQXASeJRHhJnl6CniVxEfgML5X-UAWMT0_4w/edit?usp=drive_link
+is Glean down right now? I keep receiving repeated errors
+How to set up adobe pdf save option on print function
+I need system pin to unlock my macbook.
+I don’t receive Okta prompts and cannot connect to my apps. Can you help me?
+I cannot log into IBIS World - SSO not working, but I am sure I have access to the application (I used it just last month)
+Ican not log this e mail, why?
+Where can I request that software license is renewed?

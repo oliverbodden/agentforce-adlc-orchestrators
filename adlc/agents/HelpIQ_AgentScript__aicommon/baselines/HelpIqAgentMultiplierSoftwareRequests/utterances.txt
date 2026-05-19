@@ -1,0 +1,121 @@
+# Multiplier (HelpIqAgentMultiplierSoftwareRequests) baseline utterances
+# Built 2026-05-13 for HELPEXP-286 from ~/HelpIQ-Evaluation/HelpIQ-Evals-Evals-Master.csv + helpiq-jsm-supplemental-eval-utterances.csv
+# Sources: 27 tagged-multiplier + 58 Software-Access category + 24 JSM supplemental
+# Format: one utterance per line. Lines beginning with # are comments.
+# This is the canonical regression utterance set for the multiplier topic.
+#
+
+# === Source: tagged-multiplier ===
+Requesting to create Google Suite credential for n8n workflow
+I need an access to Waldo and Mechabugs
+Did something change with the permissions of a service account? mailto:svc_idash_testing@indeed.com can no longer log into Idash QA. We need this account for E2E testing purposes.
+I need help accessing Seismic through external credentials.
+Can I please get access to Cursor?
+I need the to the slack access token and secret in order to connect the slack for the workflow in the n8n prd instance. Attached is the screenshot. Can you please create the ticket ?
+A contractor needs access to Glean for a project, but they are not showing up in the normal request flow.
+Hello, My Zoom account is on Basic and my meetings end after 40 minutes. Please submit a software request to upgrade my Zoom licenseso I can host longer meetings. Thank you.
+I have recently joined `Resume Parsing` team and I need access to Figma? Can you please create a IT ticket for the same?
+Hi There , i have recently came back off maternity leave - i cant get access to this link https://data.indeed.tech/crystal/chat/7ee313e6-156e-4d14-814b-aa9a70bad1c7
+<Assistant#U09MKKH50CR> I’m a contractor and I'm trying to access a Figma but I’m getting this error: “User is not assigned this application.” Could someone please help me with access?
+I need to get this service account access to Terraform Enterprise. mailto:svc_pexp_claudeworker@indeed.com
+Hi, I want to connect with seismic, but i do not see the exteral credentials, what can i do?
+please enable “Adds a row to a Google sheet” action in glean
+I want to access idash. It's first time.
+I need access permissions for Asana to manage tasks, track progress, and use Gantt chart functionality for system maintenance.
+get access to claude
+I'm an AE that started Jan 1 and I currently do not have access to tableau - can I please have some assistance gaining access?
+I need access to Huddle
+aura
+I need Tableau API access with Service Account (Viewer) permissions to retrieve campaign data and reflect the campaign budget in the forecast.
+I need grammarly access
+It is a permissions issue with a service account (mailto:svc_idash_testing@indeed.com) that can no longer log into Idash QA, which is needed for E2E testing.
+I need access for connect with Seismic but I do not see the external credentials and need help resolving this.
+I need access to Cursor.
+I need access to the Slack token and secret to create a workflow in the N8N PROD environment.
+I need access for my Zoom license upgraded so I can host longer meetings.
+
+# === Source: software-access-cat ===
+I'd like to request access to Bulk Sending in DocuSign
+I have a contract that is being termed that needs therir access removed immiedately .
+how do I request access to floqast
+I need access to the Google Developers and Google Payments groups to publish an internal extension
+I don't have access to this url: https://glassdoor.atlassian.net/wiki/spaces/INFOSEC/pages/444923914/Frontend+-+Secure+Coding+Checklist
+need help setting up the Google Service account (GCP) to have it integrate with Glean agent in order to log questions from Slack in Ghseet.
+I need help with two issues: resolving an unresolved ticket (ITS-242346) and regaining access to a Google file I accidentally removed access to.
+I cannot log into IBIS World - SSO not working, but I am sure I have access to the application (I used it just last month)
+Where can I request that software license is renewed?
+Access to GitLab access/developers group - https://code.corp.indeed.com/groups/access/developers/-/group_members?sort=last_joined Contributing to https://code.corp.indeed.com/employer-analytics/skywalker (Skywalker) and Analytics Core repos for jp_ancore tasks
+I want to sign in to GitHub with my indeed email, how do I do it
+how can i get a license for Excel for my account
+cannot access https://waldo.indeed.com/ do I need a permission
+I do not have access to the employer glassdoor center, can you help with this?
+A new team member is having issues accessing Floqast. What does he need to do?
+Box links from my team are expiring too quickly. Can the default sharing setting be changed?
+We are currently unable to access Seismic. Previously, we had access; however, the application is no longer visible on the Okta dashboard, and login attempts are resulting in an access error. Could you please grant the required access to Seismic to below agents, so we can process the relevant cases in our queue? arcgate_anshuls arcgate_akteli arcgate_sachinkc arcgate_narmali arcgate_bhumika arcgate_tupadhyay arcgate_wasakram arcgate_rkswarnakar arcgate_rahjain arcgate_abhinav arcgate_kulderashri Your assistance on this would be greatly appreciated.
+Hi Team - it looks like I no longer have an Excel subscription, so I can’t save documents for clients after editing. Can you check into that for me? When attempting the SSO, it isn’t working for me. Thanks!
+I have a rep, Jordan Krause, that has just returned from being on leave and we need to get her access restored
+Stefan Barr (email: sbarr@indeed.com slack_user_id: WPCTR37MM) - we need to give Steve access to http://Outreach.io but it needs to go through hi Okta account. can you set this up for him?
+I am being added to a Google group, but after some time, for some weird reason, I am not being part of the group. Can you help me why this is happening?
+hello, I am unable to access my zendesk ticket. Please assist
+Hey, I have lost access to my GD account. Take a look at this image that was taken while logging in to OKTA.
+How do I gain access to a terminating employee's Google Drive?
+MBP says I can share this file with "Kim Baker" (email: kbaker@indeed.com slack_user_id: WPCTQ0P1D): https://docs.google.com/document/d/1Lgq-uExxQXASeJRHhJnl6CniVxEfgML5X-UAWMT0_4w/edit?tab=t.0#heading=h.uekdleafp2zr
+I want to use Alfred with the powerpack license
+how do I create a ticket to get access to my zendesk ticket?
+How can I get access to idash in Okta?
+my rep Daniel Wahl is unable to access skytree
+Can I please get added to the LDAP group `app-translation-users`
+Can I use Looker Studio, and if so, do I need to apply for access?
+I need help joining a Google Group because the owner has left the company and I cannot get access.
+I need access to Microsoft Teams to collaborate with counterparts from Recruit.
+Hi IT team, I’d like to request access for one of my direct reports, who is currently on maternity leave, to use her work laptop and associated systems. Details: • Employee name: Shelley Stafford - "Shelley Stafford" (email: sstafford@indeed.com slack_user_id: U042J1MB4GH) • Manager: Ciara Morrin (mailto:cimorrin@indeed.com) • Department: Revenue Transformation • Location: Dublin – Capital Dock • Reason for request: Employee needs to raise HR requests with Workday to organise her return to work. She officially finishing maternity leave on 16th April, and from 17th April to the 5th May, Shelley will be on PTO Is this something which can be facilitated via this request? Many thanks, Ciara
+Hi, I’m Kameron Green (Software Engineer, Revenue Transformation). I’m trying to access the internal Jupyter instance at https://use2-seff1.corpit.indeed.net/, but my LDAP credentials are rejected. Can you confirm whether I should have access to this host, and if not, which group/team can provision access?
+I need access to docusign
+I need access to a terminating employee's Google Drive.
+I need access for request access to Bulk Sending in DocuSign.
+I need access for terminate a contract and remove their access immediately.
+I need access for request access to Floqast.
+I need access for understanding why I am being removed from a Google group after being added.
+I need access to the frontend secure coding checklist on Confluence Cloud and want to know about any previous tickets related to this request.
+I need access for setting up a Google service account so Glean can log Slack questions into Google Sheets.
+I need access for an unresolved ticket and regaining access to a Google file I accidentally removed access to.
+I need access for I cannot log into IBIS World because SSO is not working, and I need help resolving this issue.
+I need access for request a software license renewal.
+I need access to the GitLab developers group and specific repositories for contributing to jp_ancore tasks.
+I need access for signing in to GitHub using my Indeed email and EMU account.
+I need access for a license for Excel because I cannot open large Excel files in Google Sheets or other apps.
+I need access to the Waldo application for work.
+I need access for regaining access to the Glassdoor Employer Center.
+I need access for a new team member is having trouble accessing FloQast and needs to know what to do.
+I need access for box links from my team are expiring too quickly. Can the default sharing setting be changed.
+I need access for a contractor needs access to Glean for a project, but they are not showing up in the normal request flow.
+I need access for regular (Business) User access to Seismic for a list of agents to process Salesforce cases and generate reports.
+I need access for restoring my Excel subscription to save and edit client documents, as SSO is not working for me.
+I need access for create a ticket to get access to my Zendesk account.
+I need access for be added to the LDAP group app-translation-users.
+
+# === Source: jsm-supplemental ===
+I just returned from leave and my Indeed account looks disabled. Can you help me get access restored?
+I got a new phone and Okta Verify is not sending prompts anymore. What do I need to do to reset MFA?
+The Zoom Room in our conference room will not connect to the display before a client meeting. Can someone help?
+My Zoom Phone calls keep dropping and clients say my audio cuts in and out. How do I troubleshoot this?
+I cannot access my AWS workspace after the migration. It says my account is not authorized.
+I need help with a GitLab runner failing to reach an internal package registry from my dev environment.
+My new hire starts tomorrow and still has not received laptop setup or account access instructions. What should I do?
+A teammate left the company and I need their Google Drive ownership transferred before access is removed.
+I need a USB-C dock and external keyboard for my home setup. Where do I request peripherals?
+My new Mac setup failed during enrollment and I cannot get past the company management screen.
+Can I borrow a loaner laptop for a week while mine is being repaired?
+Which IT queue should I use for a request that does not fit any of the Help Center forms?
+I need a new Jira project created for my team with a custom workflow. Where do I start?
+I lost access to a Jira board I used last week. Can you help me get permissions back?
+What is the policy for using a personal device to access Indeed systems while traveling?
+How often am I eligible for a laptop refresh, and where can I check my current device age?
+WARP says it is connected, but internal sites still time out. How can I fix VPN routing?
+I need access from the corporate VPN to a new staging service for my contractor account.
+A vendor site I need for work is blocked by security. Can it be reviewed or allowlisted?
+I received a suspicious calendar invite with a link. Should I report it as phishing, and where?
+Our vendor cannot log in to the Indeed workspace in Slack after their contractor account was created.
+We are onboarding a vendor next week and need to know whether they can receive an Indeed laptop.
+I am not sure if this is IT or Facilities, but my desk setup and badge access both seem wrong.
+Something changed after the migration and now a few unrelated tools are acting weird. Can you point me to the right support path?

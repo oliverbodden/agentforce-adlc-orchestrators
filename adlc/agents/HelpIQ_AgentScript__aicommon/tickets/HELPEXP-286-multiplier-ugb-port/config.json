@@ -1,0 +1,145 @@
+{
+  "ticket": "HELPEXP-286",
+  "agent": "HelpIQ_AgentScript",
+  "topic": "HelpIqAgentMultiplierSoftwareRequests",
+  "status": "proposed-phase-3-checkpoint",
+  "_status_note": "All thresholds are PROPOSED. Phase 3 checkpoint must approve before Phase 4/5.",
+
+  "baselines": {
+    "single_turn_999_case_v7_proxy": {
+      "source": "results/baseline-v7proxy-multiplier-from-v4.csv",
+      "rationale": "v7 multiplier reasoning.instructions is byte-identical to v4 per AGENT_VERSION_REGISTRY.md 2026-05-15. v4 999-case run filtered to expected_topic = HelpIqAgentMultiplierSoftwareRequests yields 78 cases. Welcome-only fallback drift (47%→58%) is documented as non-prompt-driven, tracked as a separate guardrail below.",
+      "n_cases": 78,
+      "per_metric_pass_rate": {
+        "topic_assertion": 0.73,
+        "actions_assertion": 0.60,
+        "output_validation": 0.38,
+        "completeness": 0.58,
+        "coherence": 0.98,
+        "conciseness": 0.82
+      },
+      "welcome_only_rate": 0.00,
+      "substantive_response_rate": 0.92
+    }
+  },
+
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "label": "Regression floor (multiplier-correctly-routed subset)",
+      "blocking": true,
+      "metric": "per-metric PASS rate vs v7-proxy baseline on the 999-case Test Center suite, filtered to expected_topic = HelpIqAgentMultiplierSoftwareRequests",
+      "thresholds": {
+        "topic_assertion_min": 0.68,
+        "actions_assertion_min": 0.55,
+        "output_validation_min": 0.33,
+        "completeness_min": 0.53,
+        "coherence_min": 0.93,
+        "conciseness_min": 0.77
+      },
+      "tolerance_band": "±2pp counts as flat (per-metric)",
+      "how_measured": "deploy new BotVersion (cloned from v7), bind HelpIQ_GPT52_v7_baseline_5_14_1.aiEvaluationDefinition spec to it via subjectVersion, run sf agent test run, retrieve results, filter to multiplier-expected rows, compare per-metric PASS rates"
+    },
+    {
+      "id": "AC2",
+      "label": "Confirm-before-Submit (multi-turn scenarios)",
+      "blocking": true,
+      "metric": "for every HelpIqAgentMultiplierSoftwareRequests action invocation, there must be an accepted Confirm in a prior turn of the same conversation",
+      "threshold": 1.00,
+      "deferred_relax": "If Stage 1 iteration cannot reach 100% by iter 7, relax to >= 0.95 with explicit HITL acknowledgment. Per Phase 5 HITL 2026-05-16T19:50Z.",
+      "enforcement_mechanism": "prompt-only (Option B Confirm slot template); no Salesforce-native require_user_confirmation, no available_when gate. Per Stage 0 HITL 2026-05-16T19:50Z.",
+      "how_measured": "inspect session traces at .sfdx/agents/<agent>/sessions/<sid>/traces/<traceId>.json LLMStep raw output for explicit user-yes signal before the Submit tool call; manual rubric grading from trace, NOT user-facing message (per HELPEXP-274 prior HITL on planner-level markdown stripping)"
+    },
+    {
+      "id": "AC3",
+      "label": "Answer-vs-Submit classification",
+      "blocking": true,
+      "metric": "informational utterances reach Answer (not Submit); action utterances reach Confirm-then-Submit",
+      "threshold": 0.80,
+      "how_measured": "hand-authored multi-turn scenarios with paired Answer-intent and Submit-intent variants per app; rubric grading from trace LLM step output; N=3 runs per scenario"
+    },
+    {
+      "id": "AC4",
+      "label": "Behavioral and catalog coverage of multi-turn scenario suite",
+      "blocking": true,
+      "metric": "scenarios collectively cover (a) all 5 Service Strategy buckets and (b) at least one example per behavioral category",
+      "required_buckets": ["Clarify", "Answer", "Confirm", "Submit", "Escalate"],
+      "required_categories": [
+        "multi-license-tier",
+        "qualifier-disambiguation",
+        "multi-option-retrieval",
+        "auto-provisioned-Answer-path",
+        "straightforward-action-Confirm-Submit"
+      ],
+      "min_distinct_catalog_apps": 8,
+      "how_measured": "scenarios/README.md coverage matrix verified at Phase 3 checkpoint"
+    },
+    {
+      "id": "AC5",
+      "label": "GATHER tool-call correctness + no internal leaks",
+      "blocking": true,
+      "metric": "when GATHER fires for a catalog app, applicationKey passed to HelpIqAgentApplicationAccessDetails matches the user's intended app; no internal keys appear in user-facing output",
+      "threshold": 0.90,
+      "scope": "multi-turn scenarios that reach GATHER",
+      "how_measured": "live Glean calls during this AC's evaluation (read-only, safe); inspect trace LLMStep tool inputs"
+    },
+    {
+      "id": "AC6",
+      "label": "GATHER-informed Clarify",
+      "blocking": false,
+      "metric": "when retrieval returns multi-option results, the next Clarify uses those options rather than defaulting to General",
+      "threshold": 0.70,
+      "scope": "hand-authored multi-option scenarios (Tableau, Salesforce, Adobe, Figma)",
+      "how_measured": "live Glean for retrieval; rubric grading from trace; flag failures but don't gate close"
+    },
+    {
+      "id": "AC7",
+      "label": "Determinism / repeatability",
+      "blocking": true,
+      "metric": "same Service Strategy classification and same slot summary on the Confirm turn across N=3 runs",
+      "thresholds": {
+        "same_classification_min": 0.90,
+        "same_slot_summary_min": 0.85
+      },
+      "scope": "subset of 5–7 scenarios from the multi-turn suite",
+      "how_measured": "--simulate-actions to remove Glean variance from the determinism signal; rubric grading from trace LLM step output"
+    }
+  ],
+
+  "guardrails_non_blocking": [
+    {
+      "id": "G1",
+      "label": "Welcome-only fallback rate on multiplier-expected subset",
+      "metric": "fraction of multiplier-expected 999-case rows where outcome is the welcome-message text only (no substantive response after action call)",
+      "threshold_relative_to_baseline": "≤ +3pp vs baseline (currently 0% on multiplier subset → ≤ 3%)",
+      "rationale": "Registry 2026-05-15 documents this as a separate non-prompt-driven failure mode. New prompt should not make it worse."
+    },
+    {
+      "id": "G2",
+      "label": "Adjacent topic routing stability",
+      "metric": "fraction of test rows expected to route to GeneralQnA_HelpIQ that actually route to multiplier",
+      "threshold_relative_to_baseline": "≤ +3pp vs baseline (changing multiplier description: catalog block would shift this; we're preserving verbatim so expect flat)",
+      "rationale": "Multiplier prompt edits should not affect router classification; if they do, we changed something we shouldn't have."
+    }
+  ],
+
+  "test_artifacts": {
+    "single_turn_regression_spec": "force-app/main/default/aiEvaluationDefinitions/HelpIQ_GPT52_v7_baseline_5_14_1.aiEvaluationDefinition-meta.xml",
+    "single_turn_baseline_csv": "results/baseline-v7proxy-multiplier-from-v4.csv",
+    "single_turn_baseline_md": "results/baseline-v7proxy-multiplier-from-v4.md",
+    "multi_turn_scenarios_dir": "scenarios/",
+    "multi_turn_scenarios_index": "scenarios/README.md",
+    "baseline_utterances": "../../baselines/HelpIqAgentMultiplierSoftwareRequests/utterances.txt"
+  },
+
+  "submit_safety": {
+    "default": "sf agent preview --simulate-actions for all iteration runs",
+    "hitl_gate_after_first_test_run": true,
+    "explore_dry_run_flag": "deferred to Phase 5, not blocking discovery"
+  },
+
+  "iteration_budget_open_questions": [
+    "Should we fingerprint-probe v7 with 5–10 multiplier utterances to confirm v4-proxy baseline transfers? (~2-5 min, cheap)",
+    "Should we kick off a fresh 999-case run against v7 for absolute precision? (~30-40 min platform + retrieval; not strictly needed if registry's byte-identical claim holds; could be done as Phase 5 close ops step)"
+  ]
+}

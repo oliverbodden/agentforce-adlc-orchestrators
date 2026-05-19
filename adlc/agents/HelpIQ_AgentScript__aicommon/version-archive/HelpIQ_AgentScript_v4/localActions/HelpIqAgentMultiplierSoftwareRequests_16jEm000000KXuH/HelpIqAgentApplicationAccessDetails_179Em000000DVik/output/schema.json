@@ -1,0 +1,20 @@
+{
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "outputMessages" : {
+      "title" : "outputMessages",
+      "description" : "Error Handling Logic: If the system output matches this exact string:\"ERROR_9999\" Action: Display this exactly as-is \"I wasn't able to complete this request. You can try again, or file a request through the Help Center(https://link.indeed.tech/helpiq-request-help) and the IT Support team will follow up with you.\" Constraint: Do not apply any formatting, bolding, or Markdown. Success Handling Logic: If the output does not match the failure string, process the data according to these rules: Filter Criteria: Select only the messages where messageType == \"CONTENT\" and author == \"GLEAN_AI\". Response Construction: Use the fragments within those filtered messages to build the response for the user's question. Citations: Include the citation urls as citations within the generated answer.",
+      "maxItems" : 2000,
+      "items" : {
+        "lightning:type" : "@apexClassType/ExternalService__c__HelpIqAgentGleanSearch_HelpIqAgentGleanSearch_OUT_2XX_messages"
+      },
+      "lightning:type" : "lightning__listType",
+      "lightning:isPII" : false,
+      "copilotAction:isDisplayable" : false,
+      "copilotAction:isUsedByPlanner" : true,
+      "copilotAction:useHydratedPrompt" : false
+    }
+  },
+  "lightning:type" : "lightning__objectType",
+  "lightning:textIndexed" : true
+}

@@ -1,0 +1,335 @@
+[
+  {
+    "scenario": "SW-CONFIRM-01-figma-happy-path",
+    "turn": 1,
+    "user_msg": "I need figma access so I can edit design mocks for my team's Monday launch",
+    "intent": "HelpIqAgentMultiplierSoftwareRequests",
+    "functions": [
+      {
+        "name": "HelpIqAgentApplicationAccessDetails",
+        "input_keys": [
+          "inputChatMessage",
+          "HelpIqGleanAgentId"
+        ],
+        "output_keys": [
+          "__tool_idx__",
+          "__supports_result_display__",
+          "__action_execution_status__",
+          "outputMessages"
+        ],
+        "latency_ms": 9710
+      }
+    ],
+    "retrieval_field_present": false
+  },
+  {
+    "scenario": "SW-CONFIRM-01-figma-happy-path",
+    "turn": 2,
+    "user_msg": "Editor please",
+    "intent": "HelpIqAgentMultiplierSoftwareRequests",
+    "functions": [
+      {
+        "name": "HelpIqAgentMultiplierSoftwareRequests",
+        "input_keys": [
+          "applicationKey",
+          "accessTypeKey",
+          "reasonForAccess"
+        ],
+        "output_keys": [
+          "__tool_idx__",
+          "__supports_result_display__",
+          "__action_execution_status__",
+          "ticketURL"
+        ],
+        "latency_ms": 4546
+      }
+    ],
+    "retrieval_field_present": false
+  },
+  {
+    "scenario": "SW-CONFIRM-01-figma-happy-path",
+    "turn": 3,
+    "user_msg": "yes go ahead",
+    "intent": "HelpIqAgentMultiplierSoftwareRequests",
+    "functions": [],
+    "retrieval_field_present": false
+  },
+  {
+    "scenario": "SW-CLARIFY-01-zoom-vs-zoom-phone",
+    "turn": 1,
+    "user_msg": "I need Zoom",
+    "intent": "HelpIqAgentMultiplierSoftwareRequests",
+    "functions": [
+      {
+        "name": "HelpIqAgentApplicationAccessDetails",
+        "input_keys": [
+          "inputChatMessage",
+          "HelpIqGleanAgentId"
+        ],
+        "output_keys": [
+          "__tool_idx__",
+          "__supports_result_display__",
+          "__action_execution_status__",
+          "outputMessages"
+        ],
+        "latency_ms": 6076
+      },
+      {
+        "name": "HelpIQ_QnA",
+        "input_keys": [
+          "Input:Query",
+          "citationMode",
+          "Input:RetrieverIdOrName"
+        ],
+        "output_keys": [
+          "__tool_idx__",
+          "__supports_result_display__",
+          "__action_execution_status__",
+          "promptResponse"
+        ],
+        "latency_ms": 7041
+      }
+    ],
+    "retrieval_field_present": false
+  },
+  {
+    "scenario": "SW-CLARIFY-01-zoom-vs-zoom-phone",
+    "turn": 2,
+    "user_msg": "for calling our enterprise customers",
+    "intent": "HelpIqAgentMultiplierSoftwareRequests",
+    "functions": [],
+    "retrieval_field_present": false
+  },
+  {
+    "scenario": "SW-CLARIFY-01-zoom-vs-zoom-phone",
+    "turn": 3,
+    "user_msg": "yes",
+    "intent": "Ambiguous_Question",
+    "functions": [],
+    "retrieval_field_present": false
+  },
+  {
+    "scenario": "SW-CLARIFY-03-tableau-multi-license",
+    "turn": 1,
+    "user_msg": "I need Tableau access for building dashboards",
+    "intent": "HelpIqAgentMultiplierSoftwareRequests",
+    "functions": [
+      {
+        "name": "HelpIqAgentApplicationAccessDetails",
+        "input_keys": [
+          "inputChatMessage",
+          "HelpIqGleanAgentId"
+        ],
+        "output_keys": [
+          "__tool_idx__",
+          "__supports_result_display__",
+          "__action_execution_status__",
+          "outputMessages"
+        ],
+        "latency_ms": 8232
+      }
+    ],
+    "retrieval_field_present": false
+  },
+  {
+    "scenario": "SW-CLARIFY-03-tableau-multi-license",
+    "turn": 2,
+    "user_msg": "Creator",
+    "intent": "HelpIqAgentMultiplierSoftwareRequests",
+    "functions": [],
+    "retrieval_field_present": false
+  },
+  {
+    "scenario": "SW-CLARIFY-03-tableau-multi-license",
+    "turn": 3,
+    "user_msg": "yes",
+    "intent": "HelpIqAgentMultiplierSoftwareRequests",
+    "functions": [
+      {
+        "name": "HelpIqAgentMultiplierSoftwareRequests",
+        "input_keys": [
+          "applicationKey",
+          "accessTypeKey",
+          "reasonForAccess"
+        ],
+        "output_keys": [
+          "__tool_idx__",
+          "__supports_result_display__",
+          "__action_execution_status__",
+          "ticketURL"
+        ],
+        "latency_ms": 6539
+      }
+    ],
+    "retrieval_field_present": false
+  },
+  {
+    "scenario": "SW-ANSWER-01-zoom-info-not-action",
+    "turn": 1,
+    "user_msg": "is Zoom auto-provisioned at the company or do I need to request access?",
+    "intent": "HelpIqAgentMultiplierSoftwareRequests",
+    "functions": [
+      {
+        "name": "HelpIqAgentApplicationAccessDetails",
+        "input_keys": [
+          "inputChatMessage",
+          "HelpIqGleanAgentId"
+        ],
+        "output_keys": [
+          "__tool_idx__",
+          "__supports_result_display__",
+          "__action_execution_status__",
+          "outputMessages"
+        ],
+        "latency_ms": 5405
+      },
+      {
+        "name": "HelpIQ_QnA",
+        "input_keys": [
+          "Input:Query",
+          "Input:RetrieverIdOrName"
+        ],
+        "output_keys": [
+          "__tool_idx__",
+          "__supports_result_display__",
+          "__action_execution_status__",
+          "promptResponse"
+        ],
+        "latency_ms": 7072
+      }
+    ],
+    "retrieval_field_present": false
+  },
+  {
+    "scenario": "SW-CONFIRM-02-cursor-product",
+    "turn": 1,
+    "user_msg": "I need Cursor access to start using AI coding tools",
+    "intent": "HelpIqAgentMultiplierSoftwareRequests",
+    "functions": [
+      {
+        "name": "HelpIqAgentApplicationAccessDetails",
+        "input_keys": [
+          "inputChatMessage",
+          "HelpIqGleanAgentId"
+        ],
+        "output_keys": [
+          "__tool_idx__",
+          "__supports_result_display__",
+          "__action_execution_status__",
+          "outputMessages"
+        ],
+        "latency_ms": 6122
+      },
+      {
+        "name": "HelpIQ_QnA",
+        "input_keys": [
+          "Input:Query",
+          "citationMode",
+          "Input:RetrieverIdOrName"
+        ],
+        "output_keys": [
+          "__tool_idx__",
+          "__supports_result_display__",
+          "__action_execution_status__",
+          "promptResponse"
+        ],
+        "latency_ms": 4467
+      }
+    ],
+    "retrieval_field_present": false
+  },
+  {
+    "scenario": "SW-CONFIRM-02-cursor-product",
+    "turn": 2,
+    "user_msg": "yes please go ahead",
+    "intent": "Escalation",
+    "functions": [
+      {
+        "name": "HelpIqAgentEscalateAction",
+        "input_keys": [
+          "RequestSummary",
+          "RequestDescription"
+        ],
+        "output_keys": [
+          "__tool_idx__",
+          "__supports_result_display__",
+          "__action_execution_status__",
+          "TicketLink"
+        ],
+        "latency_ms": 3359
+      }
+    ],
+    "retrieval_field_present": false
+  },
+  {
+    "scenario": "SW-ESCALATE-01-catalog-miss",
+    "turn": 1,
+    "user_msg": "I need access to a tool called BananaFlow Pro 9000 for analytics",
+    "intent": "HelpIqAgentMultiplierSoftwareRequests",
+    "functions": [
+      {
+        "name": "HelpIqAgentApplicationAccessDetails",
+        "input_keys": [
+          "inputChatMessage",
+          "HelpIqGleanAgentId"
+        ],
+        "output_keys": [
+          "__tool_idx__",
+          "__supports_result_display__",
+          "__action_execution_status__",
+          "outputMessages"
+        ],
+        "latency_ms": 7424
+      }
+    ],
+    "retrieval_field_present": false
+  },
+  {
+    "scenario": "SW-VAGUE-01-no-app-named",
+    "turn": 1,
+    "user_msg": "I need software access",
+    "intent": "HelpIqAgentMultiplierSoftwareRequests",
+    "functions": [
+      {
+        "name": "HelpIqAgentApplicationAccessDetails",
+        "input_keys": [
+          "inputChatMessage",
+          "HelpIqGleanAgentId"
+        ],
+        "output_keys": [
+          "outputMessages"
+        ],
+        "latency_ms": 1796
+      }
+    ],
+    "retrieval_field_present": false
+  },
+  {
+    "scenario": "SW-CONFIRM-BROKEN-01-ok-after-clarify",
+    "turn": 1,
+    "user_msg": "I need access to Glean",
+    "intent": "HelpIqAgentMultiplierSoftwareRequests",
+    "functions": [
+      {
+        "name": "HelpIqAgentApplicationAccessDetails",
+        "input_keys": [
+          "inputChatMessage",
+          "HelpIqGleanAgentId"
+        ],
+        "output_keys": [
+          "outputMessages"
+        ],
+        "latency_ms": 1975
+      }
+    ],
+    "retrieval_field_present": false
+  },
+  {
+    "scenario": "SW-CONFIRM-BROKEN-01-ok-after-clarify",
+    "turn": 2,
+    "user_msg": "ok",
+    "intent": "Ambiguous_Question",
+    "functions": [],
+    "retrieval_field_present": false
+  }
+]

@@ -1,0 +1,17 @@
+{
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "ticketURL" : {
+      "title" : "ticketURL",
+      "description" : "Error Handling Logic Identify Failure: If the API or system output matches the specific string: \"ERROR_9999\" Raw Output: Display that text(\"I wasn't able to complete this request. You can try again, or file a request through the Help Center(https://link.indeed.tech/helpiq-request-help) and the IT Support team will follow up with you.\") to the user. Do not apply any Markdown, bolding, or special formatting. Success Handling Logic Extract Link: If the output is successful (contains a URL), extract only the URL from the response. Format Output: Present the extracted link using the specific format: <link | Ticket>.",
+      "maxLength" : 100000,
+      "lightning:type" : "lightning__richTextType",
+      "lightning:isPII" : false,
+      "copilotAction:isDisplayable" : false,
+      "copilotAction:isUsedByPlanner" : true,
+      "copilotAction:useHydratedPrompt" : false
+    }
+  },
+  "lightning:type" : "lightning__objectType",
+  "lightning:textIndexed" : true
+}

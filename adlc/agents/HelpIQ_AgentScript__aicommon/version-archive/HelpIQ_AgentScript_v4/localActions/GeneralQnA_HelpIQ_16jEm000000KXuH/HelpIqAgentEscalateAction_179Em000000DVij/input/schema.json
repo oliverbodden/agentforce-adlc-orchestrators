@@ -1,0 +1,22 @@
+{
+  "required" : [ "RequestDescription", "RequestSummary" ],
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "RequestDescription" : {
+      "title" : "RequestDescription",
+      "description" : "From the conversation, find original user question or problem. Along with all the associated details provided by user, create description for creating ticket in jira. Provide as much details as possible.",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    },
+    "RequestSummary" : {
+      "title" : "RequestSummary",
+      "description" : "Create one line summary of problem.",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    }
+  },
+  "lightning:type" : "lightning__objectType",
+  "lightning:textIndexed" : true
+}

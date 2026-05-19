@@ -1,0 +1,129 @@
+{
+  "ticket": "HELPEXP-286",
+  "agent_api_name": "HelpIQ_AgentScript",
+  "agent_dev_name": "HelpIQ_AgentScript",
+  "agent_label": "HelpIQ-AgentScript",
+  "bot_definition_id": "0XxEm0000006ufRKAQ",
+  "org_alias": "aicommon",
+  "org_id": "00DEm00000IA4w4MAD",
+  "org_instance_url": "https://indeedinc--aicommon.sandbox.my.salesforce.com",
+  "topic_names": ["HelpIqAgentMultiplierSoftwareRequests"],
+  "plugin_definition_ids": {
+    "v7_active": "179Em000000DqC9IAK",
+    "v8_orphan": "179Em000000DsqeIAC",
+    "_note": "v7 is the canonical production plugin; v8 is an orphan (no backing BotVersion, blocks sf agent publish)"
+  },
+  "planner_definition_ids": {
+    "v1_inactive": "16jEm000000KRNRIA4",
+    "v2_inactive": "16jEm000000KRfBIAW",
+    "v3_inactive": "16jEm000000KXZJIA4",
+    "v4_orphan": "16jEm000000KXuHIAW",
+    "v5_inactive": "16jEm000000KXvtIAG",
+    "v6_orphan": "16jEm000000KXxVIAW",
+    "v7_active": "16jEm000000KavNIAS",
+    "v8_orphan": "16jEm000000Kb0DIAS"
+  },
+  "instruction_def_ids": {
+    "_note": "Topic reasoning.instructions live in the .agent source file for pro-code Agent Script, NOT in GenAiPluginInstructionDef records. The one GenAiPluginInstructionDef wired to v7 multiplier plugin (1C7Em0000008NkFKAU) is the GLOBAL system instruction, not topic-specific reasoning."
+  },
+  "bot_versions": {
+    "v1": {"id": "0X9Em0000003CW5KAM", "status": "Inactive", "created": "2026-05-06T16:48:12Z"},
+    "v2": {"id": "0X9Em0000003CkbKAE", "status": "Inactive", "created": "2026-05-06T19:25:44Z"},
+    "v3": {"id": "0X9Em0000003FLtKAM", "status": "Inactive", "created": "2026-05-09T00:12:32Z"},
+    "v5": {"id": "0X9Em0000003Fc1KAE", "status": "Inactive", "created": "2026-05-09T23:59:12Z"},
+    "v7": {"id": "0X9Em0000003HltKAE", "status": "Active", "created": "2026-05-14T00:51:21Z", "last_modified": "2026-05-15T04:18:39Z"}
+  },
+  "active_bot_version": "v7",
+  "has_authoring_bundle": true,
+  "source_of_truth": "authoring-bundle",
+  "source_of_truth_path": "force-app/main/default/aiAuthoringBundles/HelpIQ_AgentScript/HelpIQ_AgentScript.agent",
+  "agent_script_file_metadata": {
+    "size_bytes": 39183,
+    "sha256": "d8124e0bffd1b85fc65cf1832d3e431861b612928c16229b1b96ef848f0a56d1",
+    "last_modified": "2026-05-13T18:38:00Z",
+    "validates": true,
+    "model": "model://sfdc_ai__DefaultGPT52",
+    "agent_type": "AgentforceEmployeeAgent",
+    "subagents": ["GeneralQnA_HelpIQ", "HelpIqAgentMultiplierSoftwareRequests", "Off_Topic", "Ambiguous_Question", "Escalation"],
+    "router": "agent_router"
+  },
+  "multiplier_topic_location": {
+    "file": "force-app/main/default/aiAuthoringBundles/HelpIQ_AgentScript/HelpIQ_AgentScript.agent",
+    "topic_block_lines": "261-313",
+    "reasoning_instructions_lines": "267-301",
+    "reasoning_actions_lines": "302-313",
+    "block_sha256_full": "dbe8c227297141cc8947649d36721ba78cf2d5e49e0fdfb37ec9eae4c08277ae",
+    "registry_block_sha256_truncated": "25d78a0c22bd632d",
+    "verification_caveat": "Block hashes differ — different boundaries (registry hashed instructions body only, mine includes description + actions wiring). Not a drift indicator. See hitl.jsonl entry 2026-05-16T19:02:00Z."
+  },
+  "multiplier_wired_actions": ["HelpIQ_QnA", "HelpIqAgentApplicationAccessDetails", "HelpIqAgentMultiplierSoftwareRequests"],
+  "action_backing_targets": {
+    "HelpIQ_QnA": "generatePromptResponse://HelpIQ_QnA",
+    "HelpIqAgentApplicationAccessDetails": "flow://HelpIqAgentGleanSearch",
+    "HelpIqAgentMultiplierSoftwareRequests": "flow://HelpIqAgentMultiplierSoftwareRequests"
+  },
+  "publish_blocker": {
+    "present": true,
+    "type": "orphan-genaiplannerdefinition-records",
+    "orphan_versions": ["v4", "v6", "v8"],
+    "v8_specifically_blocks": "sf agent publish authoring-bundle CLI picks 'next version = v8' and conflicts with the orphan",
+    "resolution_paths": [
+      "user clones v7 in Studio (creates v9, bypasses CLI naive next-version logic)",
+      "Salesforce admin clears orphans via Setup UI (different APIs may bypass 'in use' lock)",
+      "Salesforce support case (overkill in sandbox)"
+    ],
+    "selected_path": "user-studio-clone (per Phase 2 user direction; depends on developing-agentforce skill guidance during Phase 4)",
+    "blocking_phase": "Phase 5 closeout (publish/activate). Does NOT block Phase 3-4 iteration via sf agent preview/test/deploy against draft."
+  },
+  "canonical_ticket_folder": "adlc/agents/HelpIQ_AgentScript__aicommon/tickets/HELPEXP-286-multiplier-ugb-port",
+  "baseline_csv": null,
+  "baseline_csv_planned": "Phase 3c: run existing 999-case Test Center suite (HelpIQ_GPT52_v7_baseline_5_14_1 per registry, name to be confirmed) against v7 Active. Save to results/baseline-v7-multiplier-rows.csv.",
+  "testing_center_suite_name": "HelpIQ_GPT52_v7_baseline_5_14_1",
+  "testing_center_suite_name_status": "pending-verification",
+  "config_json": null,
+  "goal_md": "goal.md",
+  "discovery_context_md": null,
+  "dependency_map": null,
+  "prompt_mental_model": null,
+  "multi_turn_scenarios_dir": "scenarios/",
+  "multi_turn_scenarios_planned": {
+    "count_range": "10-15",
+    "min_distinct_catalog_apps": 8,
+    "category_coverage_required": ["multi-license-tier", "qualifier-disambiguation", "multi-option-retrieval", "auto-provisioned-Answer-path", "straightforward-action-Confirm-Submit"],
+    "service_strategy_coverage_required": ["Clarify", "Answer", "Confirm", "Submit", "Escalate"],
+    "determinism_subset": 5,
+    "determinism_repeats": 3,
+    "existing_starting_fixtures": ["SW-ACCESS-01-figma-happy-path.yaml", "SW-ACCESS-02-zoom-multiple-access-types.yaml", "SW-ACCESS-03-vague-start-must-probe.yaml", "SW-ACCESS-04-unsupported-app.yaml"]
+  },
+  "submit_safety": {
+    "default_strategy": "sf agent preview --simulate-actions for all iteration",
+    "phase_3a_probe_for_dry_run_flag": "deferred to Phase 5 — not blocking",
+    "hitl_gate_after_first_test_run": true
+  },
+  "hitl_gates_phase_4_5": [
+    {"id": "stage-0-structural-design", "when": "end of Stage 0", "decides": "Agent Script primitive vs prompt-only per slot"},
+    {"id": "first-sandbox-test-run", "when": "after first test run in sandbox", "decides": "Submit safety strategy adjustment if needed"},
+    {"id": "stage-1-final-eval-acceptance", "when": "end of Stage 1", "decides": "publish + activate new BotVersion"}
+  ],
+  "prior_hitl_relevant_signals": [
+    "slot-template-beats-countable-rule (HELPEXP-274 2026-05-09T19:35Z)",
+    "debug-record-self-report-accuracy-gap (HELPEXP-274 2026-05-09T20:00Z)",
+    "trace-reveals-markdown-stripping-at-planner-step (HELPEXP-274 2026-05-09T20:10Z)",
+    "kb-non-determinism-dominates-small-battery-signal (HELPEXP-274 2026-05-09T19:50Z)",
+    "cli-upgrade-resolves-model-config-divergence (HELPEXP-274 2026-05-09T19:15Z)"
+  ],
+  "phase_3a_status": "complete",
+  "phase_3b_status": "complete",
+  "phase_3c_status": "complete",
+  "phase_3d_status": "complete",
+  "phase_3_checkpoint_status": "approved",
+  "phase_3_checkpoint_approved_ts": "2026-05-16T19:20:00Z",
+  "handoff_to_adlc_execute_ready": true,
+  "known_phase_5_setup_blocker": {
+    "issue": "sf agent preview start fails with 'Invalid user ID' for AgentforceEmployeeAgent type",
+    "root_cause": "Employee agent .agent config does not set default_agent_user; preview requires --user or default_agent_user",
+    "resolution_path": "Phase 5 setup: either add --user <username> on preview commands, or set default_agent_user in a preview-only .agent overlay (not committed)",
+    "blocks": "all preview-based testing (unit tests, smoke tests, multi-turn rubric grading)",
+    "does_not_block": "Test Center bulk eval (uses configured Einstein Agent User from the test definition, not preview-time user)"
+  }
+}

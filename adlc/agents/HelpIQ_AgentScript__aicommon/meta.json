@@ -1,0 +1,10 @@
+{
+  "agent_dev_name": "HelpIQ_AgentScript",
+  "agent_label": "HelpIQ-AgentScript",
+  "bot_definition_id": "0XxEm0000006ufRKAQ",
+  "org_alias": "aicommon",
+  "org_id": "00DEm00000IA4w4MAD",
+  "org_instance_url": "https://indeedinc--aicommon.sandbox.my.salesforce.com",
+  "created": "2026-05-08T00:00:00Z",
+  "session_notes": "HELPEXP-274: aicommon authenticated via sf org login web. BotDefinition HelpIQ_AgentScript 0XxEm0000006ufRKAQ. Next: retrieve AiAuthoringBundle, originals, baseline."
+}

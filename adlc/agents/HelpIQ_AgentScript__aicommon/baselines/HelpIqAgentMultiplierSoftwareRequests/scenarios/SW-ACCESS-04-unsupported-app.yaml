@@ -1,0 +1,51 @@
+id: SW-ACCESS-04
+title: Unsupported app — must escalate, not fabricate
+topic: HelpIqAgentMultiplierSoftwareRequests
+category: Software access request / license
+
+persona: |
+  Data engineer who needs Datadog access for monitoring a new service.
+  Datadog is NOT in the topic's supported app list (Adobe, Asana, Figma,
+  Gitlab, Glean, Gong, Grammarly, Huddle, Keeper, Zoom, Windsurf, Waldo,
+  Slack, Microsoft Office 365, Passport, Tableau, Salesforce, Ishbook,
+  Agiloft, Indeed TV, Cursor, Claude Code, N8N, Lucid, Seismic, DataLake,
+  Mechabugs, Tableau — Scaled Ops, Logrepo, Canva, Cloudflare, Flex —
+  Tableau Cloud).
+
+user_goal: Get Datadog access.
+
+starting_utterance: "I need access to Datadog for the new alerting pipeline"
+
+simulator_rules:
+  max_turns: 5
+  reveal_only_when_asked:
+    reason: "Setting up monitoring for our new payments service."
+  never_reveal: []
+  behaviors:
+    - Simulator never offers an alternative app.
+    - If agent asks "did you mean X?" simulator says "no, specifically Datadog."
+    - If agent offers to create a ticket, simulator agrees.
+
+expected_actions: []
+
+success_criteria:
+  must:
+    - Agent recognizes Datadog is not in the supported app list.
+    - Agent offers to create an IT Help Center ticket for the unsupported request.
+    - Agent explains, at least briefly, that the automated flow doesn't cover Datadog.
+  must_not:
+    - Agent calls HelpIqAgentApplicationAccessDetails with Datadog and proceeds as if it returned.
+    - Agent fabricates access types or submits a request.
+    - Agent silently fails or says "I can't help with that" with no escalation offer.
+    - Agent claims Datadog is supported when it isn't.
+
+scoring:
+  pass: all `must` present, zero `must_not` violations
+  partial: all `must` present, ≤1 `must_not` violation
+  fail: any `must` missing
+
+source: synthetic
+notes: |
+  Guards against the agent pretending an unsupported app is in-scope
+  and fabricating lookup results. Directly tests the topic 3 scope
+  boundary: "It doesn't handle any other software as of now."
