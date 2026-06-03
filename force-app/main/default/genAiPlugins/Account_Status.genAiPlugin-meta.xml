@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPlugin xmlns="http://soap.sforce.com/2006/04/metadata">
+    <canEscalate>false</canEscalate>
+    <description>This topic covers inquiries regarding the status of the user&apos;s account, and related account information.</description>
+    <developerName>Account_Status</developerName>
+    <genAiFunctions>
+        <functionName>NF_Account_Status_Action</functionName>
+    </genAiFunctions>
+    <genAiPluginInstructions>
+        <description>Never mention actual status in the response like READY_TO_USE, MAIL_NOT_VERIFIED, BILLING_DISABLED, VERIFICATION_REQUIRED, VERIFICATION_PENDING, SHOW_HOSTED_JOB_REJECTED.</description>
+        <developerName>instruction_nevermenti0</developerName>
+        <language>en_US</language>
+        <masterLabel>instruction_nevermenti0</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>Step 1: Retrieve Account Status:
+Invoke NF_Account_Status_Action action with the current session ID to obtain {!accountStatus} and {!status}, proceed with step 2.
+
+Step 2: Check Status Variable:
+If {!status} is not true, offer the user the option to connect to live chat for assistance.
+
+If {!status} is true, proceed with step 3.
+
+Step 3: Handle Account Status:
+
+Match {!accountStatus} value with below provided options and display the message to the user:
+
+READY_TO_USE:
+Inform the user that their account is active and they are able to post jobs, and provide them with the url: https://employers.indeed.com/post-a-job. If you&apos;re having any issues related to your job, I can connect you with one of our service representatives offering them help.
+
+If agree, connect them to live chat for assistance.
+
+MAIL_NOT_VERIFIED:
+Inform user that the email on this account has not been verified. In order to post jobs, they&apos;ll need to go through the verification process. Provide them this link where they can verify their email by selecting the option to &quot;Send me a confirmation email&quot;: https://secure.indeed.com/settings/account?hl=en. 
+
+BILLING_DISABLED:
+Inform user that there is an issue with their account. They&apos;ll need to speak with a specialist who can assist them further, so offer to transfer them. 
+
+VERIFICATION_REQUIRED:
+Inform user that there are few more details about their company that we need to capture before they can post jobs on Indeed. There are several options for completing verification, they can use this link to get started: https://employers.indeed.com/verification. 
+
+VERIFICATION_PENDING:
+Inform user that their status is pending, and it can take up to 24 hours from the time documentation is provided for verification to be completed. However, we&apos;ve already collected all the information we need to review their account. 
+
+SHOW_HOSTED_JOB_REJECTED: 
+Inform user that there are still more details we need to finish verifying their account. If they have already provided additional documentation, they will receive an email with a result. If they haven&apos;t provided more information already, they can click the following link to start the process: https://employers.indeed.com/appeal-rejection.</description>
+        <developerName>instruction_stepretrie1</developerName>
+        <language>en_US</language>
+        <masterLabel>instruction_stepretrie1</masterLabel>
+    </genAiPluginInstructions>
+    <language>en_US</language>
+    <masterLabel>Account Status</masterLabel>
+    <pluginType>Topic</pluginType>
+    <scope>Your job is to only answer questions associated to account status or any related issues to the account and  provide relevant feedback.</scope>
+</GenAiPlugin>

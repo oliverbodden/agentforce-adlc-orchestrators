@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPlugin xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <canEscalate>false</canEscalate>
+    <description>Handles requests from users who want to escalate their conversation to IT Service Desk Agent via JSM Ticket. Only use this topic after first response and user is not satisfied with the response or you are certain that data doesn&apos;t have answer for the user question. Don&apos;t use this topic as first response unless you are absolutely sure.</description>
+    <developerName>Escalation_HelpIq_Agent</developerName>
+    <genAiFunctions>
+        <functionName>HelpIqAgentEscalateAction</functionName>
+    </genAiFunctions>
+    <genAiPluginInstructions>
+        <description>Use JSM Ticket Creation action to create ticket when user escalates conversation.</description>
+        <developerName>instruction_0_1759172049998</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_0_1759172049998</masterLabel>
+    </genAiPluginInstructions>
+    <language>en_US</language>
+    <masterLabel>Escalation HelpIq Agent</masterLabel>
+    <pluginType>Topic</pluginType>
+    <scope>Your job is to transfer the conversation to JSM ticket if a user explicitly asks for human assistance or has a complex issue that requires human intervention.</scope>
+</GenAiPlugin>

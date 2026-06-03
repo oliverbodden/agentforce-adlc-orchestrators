@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPlugin xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <canEscalate>false</canEscalate>
+    <description>Find and summarize similar closed Salesforce Cases to the user&apos;s current Case. Match on Record Type, Product, Type/Sub‑Type (with optional relax if missing), and account family, using a strict 30‑day window then widening to 90 days. Prioritize most recent and CSAT=5. Return a one‑line resolution summary followed by a cited table of similar cases with links; if none found, present an empty‑state filter summary and offer refinements.</description>
+    <developerName>IIA_SimilarCaseSearchTopic</developerName>
+    <genAiFunctions>
+        <functionName>IIA_SimilarCase</functionName>
+    </genAiFunctions>
+    <genAiPluginInstructions>
+        <description>Include only closed/completed/resolved statuses; exclude open/in‑progress cases.</description>
+        <developerName>instruction_0_1757358520234</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_0_1757358520234</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>Filter by same Record Type, Product, and Type/Sub‑Type; relax Type/Sub‑Type only if the source is blank.</description>
+        <developerName>instruction_10_1757358520234</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_10_1757358520234</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>Expand acronyms with knowledge before running the search when acronyms are detected.</description>
+        <developerName>instruction_11_1757358520234</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_11_1757358520234</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>Read‑only behavior; never update records within this topic.</description>
+        <developerName>instruction_12_1757358520234</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_12_1757358520234</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>Prefer this topic when the user is on a Case and asks for a &quot;similar case/issue.&quot;</description>
+        <developerName>instruction_13_1757358520234</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_13_1757358520234</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>Align by account record type (Advertiser&apos;s parent Account record type, e.g., Direct Employer vs Agency).</description>
+        <developerName>instruction_1_1757358520234</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_1_1757358520234</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>Prioritize by Closed Date (desc), then CSAT (desc); cap to maxResults (default 10).</description>
+        <developerName>instruction_2_1757358520234</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_2_1757358520234</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>After calling IIA Similar Case, if $Prompt is present, immediately call show with refs:[last_action_ref] and a short caption; preserve markdown and do not paraphrase.</description>
+        <developerName>instruction_3_1757358520234</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_3_1757358520234</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>If $Prompt is empty or indicates no matches, present the evaluated filter summary and offer refinements (e.g., widen window to 60–90 days, increase maxResults, relax Type/Sub‑Type).</description>
+        <developerName>instruction_4_1757358520234</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_4_1757358520234</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>If the Prompt begins with &quot;Summary:&quot;, display that line verbatim above the table as the resolution theme.</description>
+        <developerName>instruction_5_1757358520234</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_5_1757358520234</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>Accept refinements and map them to inputs: &quot;top N&quot; → maxResults=N; &quot;last X days&quot; → strictWindowDays=X; &quot;don&apos;t relax type/sub‑type&quot; → relaxTypeAndSubTypeIfUnset=false.</description>
+        <developerName>instruction_6_1757358520234</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_6_1757358520234</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>Identify the current Case using recordId; if absent, ask for Case Id or Case Number and confirm.</description>
+        <developerName>instruction_7_1757358520234</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_7_1757358520234</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>Run a strict 30‑day search; if zero results, expand to 90 days before responding.</description>
+        <developerName>instruction_8_1757358520234</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_8_1757358520234</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>If the user requests a different record type, ask them to run from a Case of that record type (matching uses the source&apos;s record type).</description>
+        <developerName>instruction_9_1757358520234</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_9_1757358520234</masterLabel>
+    </genAiPluginInstructions>
+    <language>en_US</language>
+    <masterLabel>IIA Similar Case Search Topic</masterLabel>
+    <pluginType>Topic</pluginType>
+    <scope>Identify the current Case using recordId; if absent, ask for Case Id or Case Number.
+
+Search closed/completed/resolved cases with a strict 30‑day window; if none, widen to 90 days.
+
+Match on Record Type, Product, Type/Sub‑Type; relax Type/Sub‑Type if the source is blank.
+
+Align by account family (Advertiser&apos;s parent Account type, e.g., Direct Employer vs Agency).
+
+Prioritize by Closed Date (desc) then CSAT=5; cap results to maxResults (default 10).
+
+Output a one‑line resolution summary followed by a cited table (Case Number link, Advertiser, Account, Record Type, Product, Type, Sub‑Type, CSAT, Age).
+
+If no results, return an evaluated filter summary and offer refinements.
+
+Accept refinements: &quot;top N&quot; (maxResults), &quot;last X days&quot; (strictWindowDays), &quot;don&apos;t relax type/sub‑type&quot; (disable relax).
+
+Read‑only; no record updates.
+
+Expand acronyms with knowledge before search when acronyms are detected.</scope>
+</GenAiPlugin>

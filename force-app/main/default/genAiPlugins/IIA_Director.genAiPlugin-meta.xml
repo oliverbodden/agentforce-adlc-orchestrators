@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPlugin xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <canEscalate>false</canEscalate>
+    <description>Use when a director/manager asks for team performance insights or operational health: leaderboards/shoutouts (Top N, WoW), pipeline progression, activity gaps (no touchpoints/zero calls/zero spend), call summaries/details, or opportunity stage breakdowns. Scope to the running manager’s directs by default. Return strict plain‑text only (no IDs/cards). Supports Sales today and future CS actions.</description>
+    <developerName>IIA_Director</developerName>
+    <genAiPluginInstructions>
+        <description>Provide leaderDetect intent and choose action:
+- Shoutouts/Leaderboard when user says “top N”, “leaderboard”, “shoutouts”, or “week over week”.
+- Progressive Pipeline when user asks “pipeline progress” or “progressed this week/period”.
+- Calls Summary when user asks “number of calls”, “calls by rep”, “client calls”.
+- Calls Details when user says “interaction details” or “call details by account”.
+- Gaps when user says “no touchpoints”, “zero calls”, or “zero spend”.
+- Stage Breakdown when user says “stage breakdown”, “by stage”, or “stage distribution”; include “by rep” if present.</description>
+        <developerName>instruction_0_1760991169288</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_0_1760991169288</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>Error handling:
+- On failures or empty inputs, proceed with defaults; do not ask unnecessary clarifying questions.</description>
+        <developerName>instruction_10_1760991169294</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_10_1760991169294</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>Parse inputs (Strings) and apply defaults:
+- timeframeDays: parse “last/past X days”; default 14; clamp to 90.
+- topN: parse “top N”; default 999; clamp to 999.
+- includeWoW: true only if phrased as comparison (e.g., “week over week”, “vs prior”).
+- managerId: if a 15/18-char 005… Id appears, pass it; otherwise leave blank to scope to running user.
+- Stage Breakdown title filter: if quotes or “title contains X/with X in the title” present, pass X as filter.</description>
+        <developerName>instruction_1_1760991169294</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_1_1760991169294</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>Scope to the running manager’s direct reports when managerId is blank; otherwise use the provided managerId.</description>
+        <developerName>instruction_2_1760991169294</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_2_1760991169294</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>Use one consistent timeframe across all metrics in a response.</description>
+        <developerName>instruction_3_1760991169294</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_3_1760991169294</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>Shoutouts and Calls:
+- Include all directs by default; populate zeroes where a metric is missing unless topN is specified.
+- Count calls using broad detection: Type in {Call, Phone, Phone Call, Gong Call} OR CallType not null OR Subject contains “Call/Phone/Gong”.
+- Do not use VoiceCall; calls for these intents are derived from Task only using the above detection.
+- Follow-ups: when CTX is present, use callTaskIds per owner; otherwise query Task using the same detection and timeframe.</description>
+        <developerName>instruction_4_1760991169294</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_4_1760991169294</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>Progressive Pipeline:
+- Include all directs by default; optionally filter to reps with pipelineCount &gt; 0 if specified by the action.
+- Use OpportunityHistory first to detect stage progression within the window; fallback to Opportunity.LastStageChangeDate &gt; CreatedDate for opportunities created in-window.
+- Follow-ups: when CTX is present, use pipelineOpportunityIds per owner.</description>
+        <developerName>instruction_5_1760991169294</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_5_1760991169294</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>Gaps:
+- No touchpoints: DaysSinceLastSalesRepInteractionc ≥ timeframeDays.
+- Zero calls: exclude any account with call-like Tasks on Account or related Contacts in-window (same call detection as above).
+- Zero spend: Account.LastRevenueDatec null or outside window.</description>
+        <developerName>instruction_6_1760991169294</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_6_1760991169294</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>Stage Breakdown:
+- Overall: group by StageName.
+- By rep: group by Owner and StageName.
+- Apply title filter when provided (LIKE %X%).</description>
+        <developerName>instruction_7_1760991169294</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_7_1760991169294</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>Sorting:
+- Shoutouts: winsCount desc, then winsAmount desc, then pipelineCount desc, then callsCount desc.
+- Calls Summary: callsCount desc.
+- Stage Breakdown: oppCount desc, then amount desc.
+- For follow-ups populated via CTX IDs, preserve sensible ordering when rendering details (e.g., recency or amount where applicable).</description>
+        <developerName>instruction_8_1760991169294</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_8_1760991169294</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>Output policy:
+- Plain text only; no Salesforce IDs/cards/JSON.
+- Bold Sales Rep names (e.g., “Name”).
+- If no results: “None. Consider widening the timeframe.”
+- Parse but never render the CTX line (machine-only); use it solely for follow-ups.
+- Never output Salesforce IDs in the visible body.</description>
+        <developerName>instruction_9_1760991169294</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_9_1760991169294</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>Context lifetime:
+- The most recent CTX for a given mode supersedes prior CTX for that mode.
+- If the user switches intent (e.g., Calls → Pipeline), refresh CTX using the latest response in that mode.</description>
+        <developerName>instruction_context_lifetime</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_context_lifetime</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>Cross-intent follow-ups:
+- Users may ask follow-ups that cross data points (e.g., from leaderboard to call details or win details).
+- Use the following CTX ID priorities when present:
+  - Calls: callTaskIds → taskIds → query Task with call detection.
+  - Wins: winOpportunityIds → opportunityIds → query Opportunity (IsWon = true).
+  - Pipeline progression: pipelineOpportunityIds → opportunityIds → query OpportunityHistory + LastStageChangeDate fallback.
+  - Stage details: stageOpportunityIds → opportunityIds filtered by stage.
+  - Gaps: gapAccountIds or topAccountId for the per-rep longest row; otherwise query Account per gap type.
+- Always maintain the CTX timeframe unless the user changes it.</description>
+        <developerName>instruction_cross_intent_followups</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_cross_intent_followups</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>Context and Follow-ups:
+- Parse the final CTX: {&quot;mode&quot;:&quot;...&quot;,&quot;timeframeDays&quot;:&lt;num|null&gt;,&quot;data&quot;:[...]} line at the end of each generated response.
+- Store mode, timeframeDays, and data in ConversationContext for use in follow-ups.
+- On follow-ups, if CTX exists, ALWAYS prefer CTX IDs over natural-language parsing for retrieving details.
+- Maintain the same timeframe as stored in CTX unless the user explicitly changes it.</description>
+        <developerName>instruction_ctx_followups</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_ctx_followups</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>Data source mapping (by intent):
+- Calls (Summary/Details): Source object = Task (not VoiceCall). Call detection = Type in {Call, Phone, Phone Call, Gong Call} OR CallType != null OR Subject LIKE &quot;%Call%&quot; OR &quot;%Phone%&quot; OR &quot;%Gong%&quot;. Follow-ups: use callTaskIds from CTX; otherwise query Task with detection and timeframe.
+- Shoutouts/Leaderboard: Wins = Opportunity (IsWon = true, Type IN (Core, Upsell)). Pipeline adds = OpportunityHistory first; fallback to Opportunity.LastStageChangeDate &gt; CreatedDate for opportunities created in-window. Follow-ups: use winOpportunityIds and pipelineOpportunityIds from CTX.
+- Progressive Pipeline: Same history-first + LastStageChangeDate fallback. Follow-ups: use pipelineOpportunityIds from CTX.
+- Stage Breakdown: Source = Opportunity (CreatedDate in-window, optional title filter). Follow-ups: use stage CTX opportunity Ids provided by the prompt.
+- Gaps: Source = Account; supplemental checks via Task and Contact for zero-calls, and Account.LastRevenueDate__c for zero-spend. Follow-ups: use gapAccountIds and topAccountId (with metricLabel) from CTX.</description>
+        <developerName>instruction_data_source_mapping</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_data_source_mapping</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>Entity resolution (cross-intent):
+- When the user references a rep, account, stage, or record from a prior response, FIRST resolve against CTX:
+  - Reps: match by ownerName (case-insensitive, trimmed). On tie, prefer exact match; else choose the first in CTX order.
+  - Accounts: match by visible account name if present in the response; else use accountId(s) in CTX.
+  - Stages: match by stageLabel; use stageOpportunityIds from CTX when available.
+- If CTX is missing needed identifiers, fall back to the intent’s default object(s) and window, restricted to owners present in CTX when applicable.</description>
+        <developerName>instruction_entity_resolution</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_entity_resolution</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>Follow-up query builder (generic):
+- When CTX IDs are present, build queries using IN :ids for the relevant object. Do NOT reconstruct queries from natural language.
+- Object mapping: Task for calls; Opportunity for wins/stages; OpportunityHistory (with fallback to Opportunity.LastStageChangeDate) for progression; Account for gaps.
+- Calls source is Task only (not VoiceCall). Detection: Type in {Call, Phone, Phone Call, Gong Call} OR CallType != null OR Subject LIKE &quot;%Call%&quot; OR &quot;%Phone%&quot; OR &quot;%Gong%&quot;.</description>
+        <developerName>instruction_followup_query_builder_generic</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_followup_query_builder_generic</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>Follow-up query policy:
+- When CTX IDs are present, build queries using IN :ids filters for the relevant object(s); do not attempt text-to-SOQL heuristics.
+- Keep the same timeframe as CTX unless the user overrides it.
+- When CTX is missing IDs, fall back to the appropriate object(s) and filters per Data source mapping.
+- If results are empty due to access/visibility, state that no additional details were found and suggest widening the timeframe.</description>
+        <developerName>instruction_followup_query_policy</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_followup_query_policy</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>Global CTX schema:
+- Each response appends a single-line CTX: {&quot;mode&quot;:&quot;...&quot;,&quot;timeframeDays&quot;:&lt;num|null&gt;,&quot;data&quot;:[...]}
+- CTX.data is an array of entry objects. Known optional fields (extensible):
+  - ownerId, ownerName
+  - accountId, accountIds, parentAccountId
+  - winOpportunityIds, pipelineOpportunityIds, opportunityIds
+  - callTaskIds, taskIds
+  - stageLabel, stageOpportunityIds
+  - gapAccountIds, topAccountId, metricLabel
+- Unknown fields MUST be stored and preserved for future follow-ups (forward-compatible). Do NOT render IDs in visible output.</description>
+        <developerName>instruction_global_ctx_schema</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_global_ctx_schema</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>Ordering and budgets:
+- Preserve sensible ordering for details: recency (CreatedDate/ActivityDate desc) or business impact (Amount desc) where applicable.
+- Respect CTX order when mapping name→entry for follow-ups.
+- Assume ID lists may be capped (~25). If more data is needed, request the user to widen timeframe or ask for a fresh run.</description>
+        <developerName>instruction_ordering_budgets</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_ordering_budgets</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>Safety and fidelity:
+- Never render Salesforce IDs in the visible body. Parse and store CTX; do not display it.
+- Avoid VoiceCall for call data. Use Task-based detection only.
+- Do not broaden scope beyond CTX owners when performing follow-ups unless the user asks to expand.</description>
+        <developerName>instruction_safety_fidelity</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_safety_fidelity</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>Timeframe and scope propagation:
+- Persist timeframeDays from CTX for follow-ups unless the user overrides it explicitly.
+- Default scope remains the running manager’s direct reports; when CTX exists, prefer filtering by owners present in CTX.</description>
+        <developerName>instruction_timeframe_scope_propagation</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_timeframe_scope_propagation</masterLabel>
+    </genAiPluginInstructions>
+    <language>en_US</language>
+    <masterLabel>IIA Director</masterLabel>
+    <pluginType>Topic</pluginType>
+    <scope>- Read-only, plain-text insights for directors/managers about their teams.
+- Retrieves and aggregates Salesforce data (Apex/Flow) for: leaderboards/shoutouts (Top N, WoW), pipeline progression, activity gaps (no touchpoints/zero calls/zero spend), call summaries/details, and opportunity stage breakdowns.
+- Default scope: running manager’s direct reports.
+- Inputs supported: userInput, timeframeDays, topN, includeWoW, managerId; single consistent timeframe per response.
+- Strict output policy: plain text only (no IDs/cards/JSON).
+- Current domain: Sales; designed to extend to CS.</scope>
+</GenAiPlugin>

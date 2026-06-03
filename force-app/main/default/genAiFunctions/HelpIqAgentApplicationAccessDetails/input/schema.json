@@ -1,0 +1,21 @@
+{
+  "required" : [ "HelpIqGleanAgentId", "inputChatMessage" ],
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "HelpIqGleanAgentId" : {
+      "title" : "HelpIqGleanAgentId",
+      "description" : "279cc9106b0344558194b183cbc16341",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    },
+    "inputChatMessage" : {
+      "title" : "inputChatMessage",
+      "description" : "Find application name from the conversation and send only application or software name. ",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    }
+  },
+  "lightning:type" : "lightning__objectType"
+}

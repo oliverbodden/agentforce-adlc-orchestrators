@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPlugin xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <canEscalate>false</canEscalate>
+    <description>Analyze uploaded EBA documents (PDFs or image files) for compliance with EBA Standards and perform an initial review of the proposed advertisement.</description>
+    <developerName>IIA_EBAAdCompliance</developerName>
+    <genAiFunctions>
+        <functionName>IIA_EBAAdReview</functionName>
+    </genAiFunctions>
+    <genAiPluginInstructions>
+        <description>Analyze the uploaded document to identify whether it meets EBA Standards.</description>
+        <developerName>instruction_0_1759761972534</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_0_1759761972534</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>Run the proposed advertisement against the EBA Standards for an initial compliance review.</description>
+        <developerName>instruction_1_1759761972540</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_1_1759761972540</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>Provide feedback on areas of the advertisement that may not comply with the standards.</description>
+        <developerName>instruction_2_1759761972540</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_2_1759761972540</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>If the document format is not supported, inform the user and request a valid PDF or image file.</description>
+        <developerName>instruction_3_1759761972540</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_3_1759761972540</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>Ensure that the analysis is based solely on the uploaded document and EBA Standards.</description>
+        <developerName>instruction_4_1759761972540</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_4_1759761972540</masterLabel>
+    </genAiPluginInstructions>
+    <language>en_US</language>
+    <masterLabel>IIA EBA Ad Compliance</masterLabel>
+    <pluginType>Topic</pluginType>
+    <scope>My job is to analyze uploaded EBA documents against the EBA Standards, perform an initial compliance review, and provide insights or feedback based on the analysis. I will not make final compliance decisions or process documents outside the EBA Standards context.</scope>
+</GenAiPlugin>

@@ -43,10 +43,10 @@ model_config:
     model: "model://sfdc_ai__DefaultGPT52"
 
 config:
-    agent_label: "HelpIQ-AgentScript"
-    developer_name: "HelpIQ_AgentScript"
+    agent_label: "HelpIQ-AgentScript-AB1"
+    developer_name: "HelpIQ_AgentScript_AB1"
     agent_type: "AgentforceEmployeeAgent"
-    description: "Indeed's first point of contact when you need help. Guides you conversationally through troubleshooting, resolves issues instantly when self-service resolution is possible, and seamlessly escalates to the appropriate support team members when needed. Provide us feedback about your experience here (https://forms.gle/NpesMSvGfnQwVBai7)! #DisableURLRedaction#"
+    description: "HelpIQ A/B test agent #1 (clone of HelpIQ_AgentScript v7-equivalent with debug exposure removed). Used for 3-arm experiment: voice/tone instructions and new QnA prompt template."
 
 language:
     default_locale: "en_US"

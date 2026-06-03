@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Answers questions about company policies and procedures, troubleshooting steps, access issues etc. For example: “What is your return policy?” “How do I fix an issue?” or “How can I get access to software?”</description>
+    <developerName>HelpIQ_QnA</developerName>
+    <invocationTarget>HelpIQ_QnA</invocationTarget>
+    <invocationTargetType>generatePromptResponse</invocationTargetType>
+    <isConfirmationRequired>false</isConfirmationRequired>
+    <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
+    <localDeveloperName>HelpIQ_QnA</localDeveloperName>
+    <masterLabel>HelpIQ QnA</masterLabel>
+    <progressIndicatorMessage>Getting answers...</progressIndicatorMessage>
+</GenAiFunction>

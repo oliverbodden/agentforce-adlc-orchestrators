@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPlugin xmlns="http://soap.sforce.com/2006/04/metadata">
+    <canEscalate>true</canEscalate>
+    <description>This is to transfer the chat to a live agent based on the instructions.</description>
+    <developerName>Escalation</developerName>
+    <genAiFunctions>
+        <functionName>ESAEscalationOrchestration</functionName>
+    </genAiFunctions>
+    <genAiPluginInstructions>
+        <description>Always follow below steps:
+
+Step: 1: Call the [ESAEscalationOrchestration] action.
+Pass the parameter &quot;Description&quot; with a concise summary of the relevant conversation.
+Store the output for use in subsequent steps.
+
+Check UserType Condition:
+If the variable {!UserType} is exactly &quot;CSMM&quot;, and {!ARName}, {!AREmail} and {!CSEmail} is not blank, present this message:
+&quot;If you want to contact your Account representative, reach out to {!ARName} using {!AREmail}. If you want to contact Client success, reach out to {!CSEmail}.&quot;
+
+If {!UserType} is &quot;CSMM&quot;, end the process and do not transfer to a live agent in any situation.
+
+If {!UserType} is not &quot;CSMM&quot;, proceed with step 2.
+
+Step 2: Check if agent is available:
+
+If {!isAgentAvailable} is true, Initiate a transfer to a live agent.
+
+If {!isAgentAvailable} is false, proceed to Step 3.
+
+Step 3: Display Case Confirmation, only if {!isAgentAvailable} is false:
+Show a confirmation message, such as:
+&quot;Our service representative is not available right now, so I&apos;ve created a case for you. A member of our team will review it and get back to you shortly. Your Case ID is {!caseNumber}. I&apos;m here if you need anything else in the meantime.&quot;
+
+Notes:
+Always follow the steps provided in the list here.
+Ensure all messages maintain a polite, professional, and conversational tone.</description>
+        <developerName>instruction_alwaysfoll0</developerName>
+        <language>en_US</language>
+        <masterLabel>instruction_alwaysfoll0</masterLabel>
+    </genAiPluginInstructions>
+    <language>en_US</language>
+    <masterLabel>Escalation</masterLabel>
+    <pluginType>Topic</pluginType>
+    <scope>Your job is to perform a multiple tasks that are listed in the instructions and then making a decision on transferring the user to an agent by invoking certain specified actions.</scope>
+</GenAiPlugin>

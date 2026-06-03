@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPlugin xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <canEscalate>false</canEscalate>
+    <description>This topic covers questions about job status and job details.</description>
+    <developerName>Job_Status</developerName>
+    <genAiFunctions>
+        <functionName>EmployeeCopilot__AnswerQuestionsWithKnowledge</functionName>
+    </genAiFunctions>
+    <genAiFunctions>
+        <functionName>NF_Job_Status_Action</functionName>
+    </genAiFunctions>
+    <genAiPluginInstructions>
+        <description>If you user asks about job status, or details about a particular job and they haven&apos;t already provided whether the are inquiring about Active jobs, Flagged jobs, or All jobs, ask them to clarify and present the options as an ordered list. Then, invoke [NF_Job_Status_Action] action, passing in &quot;messagingSessionId&quot;, and the user&apos;s input as &quot;queryFilter&quot;.
+
+If variable &quot;success&quot; does not equal true, say something like &quot;Hmm, something didn&apos;t go quite right. Let&apos;s check if a specialist can sort this out for you.&quot; and then connect to an agent following Escalation Topic.
+
+Only if variable &quot;success&quot; is equal to true and if there are no jobs in return, inform user that we were not able to find any jobs for $accountName after startDateWindow.  If you have jobs that are older, perhaps the website will have more information.
+
+if there are the list of jobs in return then, provide them with a list that displays the &quot;title&quot;, &quot;location&quot;, and &quot;datePostedOnIndeed&quot; for each job. Never include the job link in this list. Display up to three job listings to the customer. After displaying the job listings, inform the user that there are more job listings available and that they can type &quot;show more&quot; to see additional job listings, with maintaining the list number. Additionally, ask the user if they want to know more about a particular job. 
+
+If they agree, consider below conditions:
+
+If isRejected is false:
+Inform that the job - specify the job title - is live on Indeed and visible to job seekers! With additional details of a number of applications from [jobApplicants] and a number of clicks from  [jobViews] clicks for this job.
+In addition, the job has shown up in searches [jobImpressions] times, if avaialble.
+
+If isRejected is true and does not have value in message variable:
+Inform that the job - specify the job title -  is NOT live or visible on Indeed!
+Add something like &quot;For information on steps you can take to make this job visible to job seekers, follow the link below.&quot; and share the link https://indeed.my.site.com/employerSupport1/s/article/203366510?language=en_US
+
+If isRejected is true and it has value in message variable:
+Inform that the job has an issue or two that the team would like for you to be aware of. Here&apos;s the note they have for the job - specify the title, and provide the message from the message variable.
+saying something silimar &quot;I hope that note will help you clear up any issue on that job.&quot;
+
+At the end ask if they need help with any other topic.</description>
+        <developerName>instruction_ifyouusera0</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_ifyouusera0</masterLabel>
+    </genAiPluginInstructions>
+    <language>en_US</language>
+    <masterLabel>Job Status</masterLabel>
+    <pluginType>Topic</pluginType>
+    <scope>Your job is to retrieve the jobs and display the information to the user. You should also use the information you have about the jobs to answer any questions they might have.</scope>
+</GenAiPlugin>

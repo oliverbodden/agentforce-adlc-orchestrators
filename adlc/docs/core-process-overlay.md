@@ -28,6 +28,40 @@ Rule: standard Salesforce skill content is not modified or deleted directly. Add
 
 ---
 
+## Salesforce deploy vs Git commit vs publish (global)
+
+This applies to **all** ticket-driven Agent Script / authoring-bundle work in this project—not a single agent or ticket.
+
+**Testing requires Salesforce.** Real validation (preview with live actions, Testing Center, channel behavior, org-backed actions) requires pushing metadata to an org with **`sf project deploy start`** (or the team’s equivalent). Editing files only on disk is not sufficient evidence for sign-off.
+
+**Git commit is after Salesforce proof.** **`git commit`** / merge to the canonical branch happens **only after** the change is **thoroughly tested and confirmed working in Salesforce** under the ticket’s agreed bar (smoke matrix, eval export, or other written criteria). Do not treat “saved locally” as shippable.
+
+**Avoid version inflation during iteration.** Each **`sf agent publish authoring-bundle`** creates a **new permanent published BotVersion** in the org. Iteration loops should default to:
+
+1. **Deploy** the naked `AiAuthoringBundle` to update the **draft** and test (preview, batch tests, etc.).
+2. **`sf agent publish`** only when the ticket explicitly calls for a new published cut (e.g. after sign-off, eval pass, or release checkpoint)—**not** on every edit.
+3. **`sf agent activate`** only when product/process approves making that published version live.
+
+Otherwise the org accumulates many disposable published versions (“56780 versions”) while you are still debugging.
+
+**Working copy metadata:** Do not leave **`<target>…</target>`** on the **editable** `AiAuthoringBundle` `bundle-meta.xml` in the repo—that locks the bundle to a published snapshot and breaks draft deploys. Use version-suffixed retrieved bundles only as read-only audit copies.
+
+---
+
+## Reviewed instruction artifact before deploy (global)
+
+For prompt or instruction work that uses a **local artifact** (Markdown or text) as the source of truth before editing `AiAuthoringBundle` `.agent` files:
+
+1. Use either **one** artifact file (e.g. Markdown-only instructions plus sign-off recorded in PR/Jira) **or** separate draft vs approved files—your ticket should say which. Iteration happens until explicit human sign-off; only then may anyone sync into `.agent` and deploy.
+2. **Human review / explicit approval** must complete on the **approved** snapshot before anyone (human or automation) syncs that text into `.agent` or runs **`sf project deploy start`** / **`sf agent publish`** for that change.
+3. The executor treats **explicit human sign-off** on the instruction artifact (or the team’s documented equivalent, e.g. **`approval_status: APPROVED`** in-file) as the minimum gate—**no sign-off** means **no push**.
+
+Tickets may name a single concrete file (e.g. HELPEXP-274 **`GENERALQNA_REASONING.md`** — possibly **Markdown-only** for human editing; the executor must **flatten** approved text into valid Agent Script **`reasoning.instructions`** in `.agent` before deploy). If a ticket does not define artifacts, default to direct `.agent` edits only with the same **explicit sign-off** before deploy.
+
+This does not remove the requirement to **test in Salesforce** after deploy; it adds a **pre-deploy** gate so unreviewed prompt text never reaches the org.
+
+---
+
 ## UI-Built Agent Exception Path
 
 Salesforce upstream skills treat `.agent` authoring bundles as the preferred source of truth and warn against direct edits to generated/internal agent metadata. That is the default for pro-code agents and any agent with a reliable authoring-bundle path.

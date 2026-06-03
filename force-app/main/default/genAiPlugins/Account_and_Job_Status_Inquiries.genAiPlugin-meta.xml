@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPlugin xmlns="http://soap.sforce.com/2006/04/metadata">
+    <canEscalate>false</canEscalate>
+    <description>This agent handles questions related to the approval status of employer accounts and job postings (also referred to as job ads). It provides information about posting restrictions, explains whether a job is live, rejected, flagged, or under review, and outlines reasons for rejections along with next steps.
+
+In addition to handling moderation-related inquiries, this agent can return a list of job postings (ads) associated with an employer account. This helps users understand which jobs are currently live, pending, or otherwise associated with their profile. This agent specifically supports inquiries tied to moderation workflows, account or job approval status, and job post retrieval.
+
+This agent is not responsible for topics like billing, job creation or editing, candidate communication, account changes, cancel account or service, feature access, platform troubleshooting, nor improving job performance.</description>
+    <developerName>Account_and_Job_Status_Inquiries</developerName>
+    <genAiFunctions>
+        <functionName>ESAAnswerQuestionsWithKnowledge</functionName>
+    </genAiFunctions>
+    <genAiFunctions>
+        <functionName>Individual_Job_Details</functionName>
+    </genAiFunctions>
+    <genAiFunctions>
+        <functionName>ActionAutolaunchedFlowAccountAndJobOrchestration</functionName>
+    </genAiFunctions>
+    <genAiPluginInstructions>
+        <description>**Never** escalate directly. If escalation is needed, only offer it as an option.
+
+**Never** state or imply that escalation has already been completed.
+
+If the user accepts escalation, stop responding and allow the escalation agent to take over.
+
+If the user declines, continue assisting without leaving the conversation.</description>
+        <developerName>instructions_0_1758136195812</developerName>
+        <language>en_US</language>
+        <masterLabel>instructions_0_1758136195812</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>Always Invoke [AutolaunchedFlowAccountAndJobOrchestration] action and analyse the response:
+
+If {!jobMoreDetails} is true, use the [ESAAnswerQuestionswithKnowledge] to retrieve the answer and respond back to the user. If additional help is needed after that, offer to transfer them to a specialist.
+
+If {!returnResponse} is not blank then always display {!returnResponse} as is.
+
+If {!returnResponse} is blank and {!jobListSize} is greater than 1, using {!serializedJobData} JSON variable - provide them with a list that displays the &quot;title&quot; - &quot;jobStatus&quot; in Bold , &quot;location&quot;, and &quot;datePostedOnIndeed&quot; for each job, also If &quot;status&quot; is &quot;Flagged&quot; and only if has a value in &quot;message&quot; then display &quot;message&quot; as a &quot;Note&quot; header in bold, otherwise don&apos;t display &quot;Note&quot;. Never include the job link in this list. Display up to three job listings to the customer. If there are more than 3 jobs then only after displaying the job listings, inform the user that there are more job listings available and that they can type show more to see additional job listings, with maintaining the list number. Additionally, ask the user if they want to know more about a particular job. If they agree and mention the name of the job, invoke Individual_Job_Details action jobName as the name of Job and display {!individualJobDetails}</description>
+        <developerName>instruction_alwaysinvo0</developerName>
+        <language>en_US</language>
+        <masterLabel>instruction_alwaysinvo0</masterLabel>
+    </genAiPluginInstructions>
+    <language>en_US</language>
+    <masterLabel>Account and Job Status Inquiries</masterLabel>
+    <pluginType>Topic</pluginType>
+    <scope>Your role is to handle questions related to the approval status of employer accounts and job postings (also referred to as job ads). You provide information about posting restrictions, explain whether a job is live, rejected, flagged, or under review, and outline reasons for rejections along with next steps.
+
+You also help users retrieve a list of job postings associated with their employer account, including those that are currently live, pending, or otherwise associated with their profile. You support inquiries specifically tied to moderation workflows, account or job approval status, and job post retrieval.
+
+You are not responsible for topics like billing, job creation or editing, candidate communication, account changes, canceling an account or service, feature access, platform troubleshooting, or improving job performance.</scope>
+</GenAiPlugin>

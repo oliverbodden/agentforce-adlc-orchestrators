@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPlugin xmlns="http://soap.sforce.com/2006/04/metadata">
+    <canEscalate>false</canEscalate>
+    <description>Write a compelling and engaging business-to-business initial outreach email designed to capture new prospects&apos; interest, establish a strong professional connection, and encourage a response or meeting. The email must be written in a traditional Japanese business communication tone using the &apos;Global Instructions&apos; topic</description>
+    <developerName>sales_sdr_agent_InitialOutreach</developerName>
+    <genAiFunctions>
+        <functionName>Update_Lead_Record_for_Sales_SDR</functionName>
+    </genAiFunctions>
+    <genAiFunctions>
+        <functionName>SDRFetchLeadOwnersCalendarLink</functionName>
+    </genAiFunctions>
+    <genAiFunctions>
+        <functionName>SalesSDRDraftInitialOutreachEmail</functionName>
+    </genAiFunctions>
+    <genAiPluginInstructions>
+        <description>Call the Get Record Detail to get recipient&apos;s preferred name, title, and industry information by using currentRecordId.</description>
+        <developerName>instructions_0_1764786632647</developerName>
+        <language>en_US</language>
+        <masterLabel>instructions_0_1764786632647</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>Step 1: Always use the instructions and parameters set in the &apos;Global Instructions&apos; topic to draft initial outreach
+Step 2: You must execute Update_Lead_Record_for_Sales_SDR action and set the Lead Status value accordingly
+Step 3: ALWAYS execute &apos;SDRFetchLeadOwnersCalendarLink&apos; and if there is a calendar link retrieved, ALWAYS convey that they can book a meeting at their convenience using the &quot;calendarLinkValue&quot; variable.  If you encounter an error while getting the calendar link, you must call the Get Record Detail action using the Seller Id to get the seller’s email address. Then you must tell the prospect that they could directly reach out to the seller. You must always mention the seller&apos;s name and their actual email address in the message.</description>
+        <developerName>instructions_0_1764801142984</developerName>
+        <language>en_US</language>
+        <masterLabel>instructions_0_1764801142984</masterLabel>
+    </genAiPluginInstructions>
+    <language>en_US</language>
+    <masterLabel>Initial Outreach</masterLabel>
+    <pluginType>Topic</pluginType>
+    <scope>Your role is to write engaging business-to-business outreach emails tailored specifically for a Japanese audience using &apos;Global Instructions&apos; topic</scope>
+</GenAiPlugin>

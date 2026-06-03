@@ -406,6 +406,30 @@ Guardrails:
 **[STRONG] Follow Understand → Gather → Build as the universal instruction pattern.**
 This three-phase flow works across topic types. The AI should adapt it to each topic's needs. If a topic doesn't fit this pattern naturally, HITL — discuss with the user and iterate.
 
+**[STRONG] Service Strategy (Ask / Answer / Hand off) is the universal abstract taxonomy for BUILD outputs.**
+Every user-facing turn for a service agent reduces to one of three abstract buckets: ask the user a question (Ask), produce the resolution (Answer), or hand off (Hand off). The abstract three transfer across sub-agents. The concrete bucket count differs by sub-agent type — and that asymmetry is correct, not a bug:
+
+| Sub-agent type | Concrete buckets | Why |
+|---|---|---|
+| Content (e.g., General QnA) | **Clarify / Answer / Escalate** (3) | No action layer; Answer is single-shot informational resolution |
+| Action with info layer (e.g., Multiplier Software Requests) | **Clarify / Answer / Confirm / Submit / Escalate** (5) | Has both an info layer (Answer when retrieval resolves the question without action) AND an action layer (Confirm + Submit) |
+| Pure-action (no info layer) | **Clarify / Confirm / Submit / Escalate** (4) | Rare; only when the sub-agent never returns informational-only resolutions. Most action sub-agents do, so default to 5 |
+
+For action sub-agents with an info layer, the buckets render as:
+- **Clarify** = info-gathering question (slot-fill, app disambiguation, scope) — single `?`, ≤5 numbered options
+- **Answer** = informational resolution — agent retrieves info that resolves the user's request without queuing an action or escalating (e.g., "Zoom basic is auto-provisioned, you should already have access"). May include a follow-on offer to act, but the turn itself is informational.
+- **Confirm** = all slots filled, surface what's about to happen for go/no-go — closed yes/no with action summary
+- **Submit** = execute the action and report completion to the user (e.g., "Done — ticket #12345 created")
+- **Escalate** = hand off to human with reason and downstream owner
+
+The abstract three map onto the concrete five as: Ask = {Clarify, Confirm}; Answer = {Answer, Submit}; Hand-off = {Escalate}.
+
+**[STRONG] Answer-vs-Submit classification is a load-bearing rubric check for action-with-info sub-agents.** Wrong direction in either way is a production failure: agent files a ticket when it could have just answered (annoys user, wastes IT time) OR agent answers informationally when a ticket was actually needed (user doesn't get access, returns later). Grade this dimension explicitly in the rubric.
+
+**[STRONG] Discipline rule for splitting buckets.** Only split a Service Strategy bucket when the rubric cannot grade the unified bucket accurately. Confirm passes this test (its rubric checks — slot completeness, summary accuracy, closed yes/no — are different from info-gathering Clarify's checks). Answer passes this test for action-with-info sub-agents (informational resolution has no action call to grade; Submit has both a slot-completeness and a completion-message check). Slot-fill vs app-disambiguation does not pass this test (same rubric checks; both are Clarify variants). If a sub-agent appears to need a sixth strategy, first check whether it's a variant of one of the existing five before adding scaffolding.
+
+**[STRONG] Submit must be preceded by Confirm in action sub-agents.** Treat zero-Confirm Submits as a failure mode, not an optimization, unless an explicit per-sub-agent exception is documented (e.g., reversible no-cost actions). The Confirm step is the user trust mechanism; bypassing it is a regression in service quality even if the Submit succeeds. Answer is exempt — Answer turns do not queue an action and therefore do not require Confirm.
+
 **[HARD] Reasoning scaffolding is load-bearing.**
 Store: directives, step checkpoints, and consistency checks force the LLM to reason step-by-step. Removing them causes the LLM to shortcut to default/fallback behaviors. Never remove reasoning scaffolding without testing.
 

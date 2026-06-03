@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AiEvaluationDefinition xmlns="http://soap.sforce.com/2006/04/metadata">
+    <name>HelpIQ v4 Probe</name>
+    <subjectName>HelpIQ_AgentScript</subjectName>
+    <subjectType>AGENT</subjectType>
+    <subjectVersion>v4</subjectVersion>
+    <testCase>
+        <expectation>
+            <expectedValue>GeneralQnA_HelpIQ</expectedValue>
+            <name>topic_sequence_match</name>
+        </expectation>
+        <expectation>
+            <expectedValue>[&apos;HelpIQ_QnA&apos;]</expectedValue>
+            <name>action_sequence_match</name>
+        </expectation>
+        <expectation>
+            <expectedValue>I would need more context for this. Would you want me to generate a request on your behalf so one of our techs can assist you with this?</expectedValue>
+            <name>bot_response_rating</name>
+        </expectation>
+        <inputs>
+            <utterance>why do I need this in Slack though?</utterance>
+        </inputs>
+        <number>1</number>
+    </testCase>
+</AiEvaluationDefinition>
