@@ -55,6 +55,27 @@ adlc/scratch/
 # HelpIQ eval run outputs (raw results, reports) — keep under evals/ in git only
 **/eval-runs/
 
+# Per-ticket ADLC scratch (discovery, HITL, attempts) — not source of truth
+adlc/agents/**/tickets/
+
+# Local agent workspace noise
+adlc/agents/**/baselines/
+adlc/agents/**/version-archive/
+
+# force-app ships empty buckets only; deploy metadata lives in the production agent repo
+force-app/main/default/aiAuthoringBundles/**
+!force-app/main/default/aiAuthoringBundles/.gitkeep
+force-app/main/default/aiEvaluationDefinitions/**
+!force-app/main/default/aiEvaluationDefinitions/.gitkeep
+force-app/main/default/bots/**
+!force-app/main/default/bots/.gitkeep
+force-app/main/default/genAiFunctions/**
+force-app/main/default/genAiPlugins/**
+force-app/main/default/genAiPromptTemplates/**
+!force-app/main/default/genAiPromptTemplates/.gitkeep
+force-app/main/default/genAiPlannerBundles/**
+!force-app/main/default/genAiPlannerBundles/.gitkeep
+
 # Temporary deploy manifests
 manifest-tmp/
 

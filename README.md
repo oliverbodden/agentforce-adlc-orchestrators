@@ -29,7 +29,7 @@ See `adlc/docs/developer-onboarding.md` for the full setup flow.
 - `adlc/docs/drive-architecture.md`
 - `adlc/docs/core-process-overlay.md`
 - `adlc/docs/acceptance-eval-hitl-governance.md`
-- `adlc/playbooks/eval-report-playbook.md`
+- `adlc/playbooks/ticket-prep-playbook.md`
 
 ## Useful Commands
 
