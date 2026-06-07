@@ -112,3 +112,9 @@ adlc/skills/upstream/*/
 adlc/skills/upstream/SOURCE.md
 !adlc/skills/upstream/README.md
 !adlc/skills/upstream/.gitkeep
+
+# HelpIQ eval scratch — one-off run subsets, checkpoints, local docs (not source of truth)
+adlc/agents/HelpIQ_AgentScript__aicommon/evals/HelpIQ/dynamic_tests_*.csv
+adlc/agents/HelpIQ_AgentScript__aicommon/evals/HelpIQ/scripts/_*.py
+checkpoints/
+docs/

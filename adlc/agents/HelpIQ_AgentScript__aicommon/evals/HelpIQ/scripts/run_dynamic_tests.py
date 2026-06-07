@@ -16,6 +16,11 @@ from typing import Any
 
 EVAL_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_AGENT = "HelpIQ_AgentScript_AB2"
+# Action execution mode for preview sessions. Default is simulated (no real
+# Apex/Flow). Switch to "--use-live-actions" via --live-actions for scenarios
+# that depend on real catalog data (e.g. requiresReasonForAccess), which is
+# MOCKED under simulation and therefore cannot be validated faithfully.
+ACTION_MODE = "--simulate-actions"
 DEBUG_FIELDS = [
     "selected_route",
     "policy_triggered",
@@ -27,6 +32,10 @@ DEBUG_FIELDS = [
     "escalation_mode_source",
     "ticket_action_allowed",
     "ticket_action_called",
+    "issue_classification",
+    "issue_source",
+    "issue_clarify_skipped",
+    "escalation_intake_discovery_called",
 ]
 
 
@@ -67,7 +76,11 @@ def parse_debug(message: str) -> dict[str, Any]:
     lower = message.lower()
     for field in DEBUG_FIELDS:
         match = re.search(rf"{field}\s*:\s*([^\n\[]+)", message, re.IGNORECASE)
-        debug[field] = match.group(1).strip() if match else None
+        value = match.group(1).strip() if match else None
+        if value is not None:
+            # Strip the trailing "— why: ..." rationale clause (AB1 debug-exposed format)
+            value = re.split(r"\s*(?:—|--|-)\s*why\s*:", value, maxsplit=1, flags=re.IGNORECASE)[0].strip()
+        debug[field] = value
     debug["has_debug"] = "debug:" in lower
     debug["sfcase_link"] = "sfcase" in lower
     debug["slack_thread"] = "slack thread" in lower or "talk to live agent" in lower
@@ -91,7 +104,7 @@ def start_session(agent: str) -> str:
             "preview",
             "start",
             "--json",
-            "--simulate-actions",
+            ACTION_MODE,
             "--authoring-bundle",
             agent,
         ],
@@ -170,6 +183,21 @@ def followups(strategy: str) -> list[str]:
         "impatient_first": ["yes, submit it"],
         "qna_no_help": ["no, I still need help", "please connect me with someone"],
         "qna_tried_that": ["I tried that and it still does not work", "please connect me with someone"],
+        "password_qna_ticket_conversation": [
+            "Raise a ticket for this conversation",
+            "yes, submit it",
+        ],
+        "password_qna_live_agent": ["No, talk to a live agent", "yes, submit it"],
+        "vague_bare_human_then_issue": [
+            "I want to talk to a human",
+            "my email won't load in Outlook",
+            "yes, submit it",
+        ],
+        "vague_category_then_detail_submit": [
+            "laptop",
+            "it won't turn on",
+            "yes, submit it",
+        ],
         "salesforce_clarify": ["Account record", "I just need the steps"],
         "clarify_missing_context": ["I need editor access", "for my work project"],
         "software_access_self": ["Editor", "design reviews", "yes"],
@@ -180,10 +208,34 @@ def followups(strategy: str) -> list[str]:
         "off_topic_followup": ["why not?", "connect me with someone"],
         "cross_topic_sfcase_to_qna": ["thanks. how do I reset my Okta password?", "I tried that"],
         "cross_topic_qna_to_access": ["thanks. now I need Figma access", "Editor"],
+        # Software-access requiresReasonForAccess gate (LIVE-ACTIONS ONLY — the
+        # field is mocked under --simulate-actions). No "yes" so we never submit
+        # a real request; we only need to reach the reason-ask vs Confirm point.
+        "software_viewer_no_reason": ["Viewer"],
+        "software_editor_requires_reason": ["Editor"],
+        # Description-driven correction (access-type Description__c says Zoom Phone
+        # is a different app). LIVE-ACTIONS ONLY. No followup needed; the
+        # correction appears on the first reply.
+        "zoom_phone_correction": [],
     }.get(strategy, ["yes please"])
 
 
 ESCAPE_HATCH = re.compile(r"reply with the one|describe it in your own words|which of these", re.IGNORECASE)
+ISSUE_CLARIFY_RE = re.compile(
+    r"what(?:['’]s| is)?\s+(?:the\s+)?it\s+issue"        # "what's the IT issue", "what IT issue"
+    r"|what(?:['’]s| is)?\s+the\s+issue"                  # "what's the issue"
+    r"|what\s+issue\b"                                    # "what issue ..."
+    r"|what(?:['’]s| is)?\s+going on with",               # category follow-up phrasing
+    re.IGNORECASE,
+)
+CONFIRM_RE = re.compile(r"want me to submit", re.IGNORECASE)
+# Business-justification prompt (software access requiresReasonForAccess gate).
+BUSINESS_REASON_RE = re.compile(
+    r"business reason|business justification|reason (for|you|why)|why (do|are|would) you"
+    r"|what(?:['’]s| is)? the reason|justification|what.*need.*(it|access|this).*for|purpose of",
+    re.IGNORECASE,
+)
+PASSWORD_CONTEXT_RE = re.compile(r"password|okta|reset", re.IGNORECASE)
 DETAIL_TOKENS = ["device", "error message", "what app", "which app", "urgency", "steps you"]
 # A stacked second ask: a parenthetical/clause followed by ", and <new request>", or
 # any "and (what|which|how|...)" that introduces a distinct second thing to provide.
@@ -232,11 +284,14 @@ def grade(record: dict[str, Any]) -> tuple[bool, list[str]]:
             failures.append("missing_salesforce_case_link")
         if ticket_created_turns:
             failures.append("created_it_ticket_in_sfcase_flow")
-    if category in {"human_handoff", "direct_it_ticket_intake", "software_access"} or policy in {
+    if category in {"human_handoff", "direct_it_ticket_intake", "software_access", "qna_escalation_history"} or policy in {
         "human_handoff_gated",
         "direct_it_ticket_intake_confirm",
         "direct_it_ticket_intake_missing_detail_then_confirm",
         "collect_confirm_then_submit",
+        "post_qna_escalation_uses_history",
+        "vague_handoff_requires_issue_clarify",
+        "vague_category_knowledge_then_one_question",
     }:
         first = turns[0]["debug"]
         if first.get("ticket_created"):
@@ -261,6 +316,103 @@ def grade(record: dict[str, Any]) -> tuple[bool, list[str]]:
     if policy == "clarify_no_overask_persistent":
         for index, turn in enumerate(turns, start=1):
             failures.extend(f"turn{index}_{f}" for f in clarify_structure_failures(turn.get("response", "")))
+    if policy == "post_qna_escalation_uses_history":
+        if len(turns) < 2:
+            failures.append("insufficient_turns")
+        else:
+            handoff = turns[1].get("response", "")
+            handoff_debug = turns[1].get("debug", {})
+            if ISSUE_CLARIFY_RE.search(handoff):
+                failures.append("turn2_reasked_issue_after_qna")
+            if turns[1]["debug"].get("ticket_created"):
+                failures.append("turn2_premature_ticket")
+            confirm_turns = [t.get("response", "") for t in turns[1:]]
+            if not any(CONFIRM_RE.search(text) for text in confirm_turns):
+                failures.append("missing_submit_confirmation")
+            elif not any(PASSWORD_CONTEXT_RE.search(text) for text in confirm_turns):
+                failures.append("confirm_missing_password_context")
+            if handoff_debug.get("has_debug"):
+                if handoff_debug.get("issue_classification") == "ISSUE_NOT_STATED":
+                    failures.append("turn2_debug_issue_not_stated")
+                # "n/a" is correct when the handoff turn goes straight to Confirm
+                # (the issue-clarify is skipped by confirming, per the field's own def).
+                if handoff_debug.get("issue_clarify_skipped") not in (True, "true", "n/a"):
+                    failures.append("turn2_debug_issue_clarify_not_skipped")
+                if handoff_debug.get("issue_source") not in (
+                    "session_history_qna",
+                    "session_history",
+                ):
+                    failures.append("turn2_debug_wrong_issue_source")
+    if policy == "vague_handoff_requires_issue_clarify":
+        human_idx = next(
+            (i for i, t in enumerate(turns) if "human" in t.get("user", "").lower() or "live agent" in t.get("user", "").lower()),
+            None,
+        )
+        if human_idx is None:
+            failures.append("missing_human_handoff_turn")
+        else:
+            agent_reply = turns[human_idx].get("response", "")
+            agent_debug = turns[human_idx].get("debug", {})
+            if not ISSUE_CLARIFY_RE.search(agent_reply):
+                failures.append("human_turn_missing_issue_clarify")
+            if CONFIRM_RE.search(agent_reply):
+                failures.append("human_turn_premature_confirm")
+            if agent_debug.get("has_debug"):
+                if agent_debug.get("issue_classification") != "ISSUE_NOT_STATED":
+                    failures.append("human_turn_debug_should_be_issue_not_stated")
+                if agent_debug.get("issue_clarify_skipped") in (True, "true"):
+                    failures.append("human_turn_debug_should_not_skip_clarify")
+        if len(turns) >= 3 and not any(CONFIRM_RE.search(t.get("response", "")) for t in turns[2:]):
+            failures.append("missing_confirm_after_issue_stated")
+    if policy == "vague_category_knowledge_then_one_question":
+        if len(turns) < 3:
+            failures.append("insufficient_turns")
+        else:
+            t1r = turns[0].get("response", "")
+            t2r = turns[1].get("response", "")
+            t2d = turns[1].get("debug", {})
+            # Turn 1: bare human/ticket request -> issue-category clarify, no premature ticket
+            if not ISSUE_CLARIFY_RE.search(t1r):
+                failures.append("turn1_missing_issue_clarify")
+            if turns[0]["debug"].get("ticket_created"):
+                failures.append("turn1_premature_ticket")
+            # Turn 2: vague category ("laptop") -> MUST pull knowledge, ask exactly ONE question, not Confirm yet
+            if t2d.get("has_debug") and t2d.get("escalation_intake_discovery_called") not in (True, "true"):
+                failures.append("turn2_discovery_not_called")
+            if CONFIRM_RE.search(t2r):
+                failures.append("turn2_premature_confirm")
+            failures.extend(f"turn2_{f}" for f in clarify_structure_failures(t2r))
+            # By turn 3+, a Confirm should appear (post-knowledge cap = one question)
+            if not any(CONFIRM_RE.search(t.get("response", "")) for t in turns[2:]):
+                failures.append("missing_confirm_after_one_question")
+    # Software-access requiresReasonForAccess gate. NOTE: only meaningful under
+    # --live-actions; under --simulate-actions the field is mocked and these
+    # checks are unreliable (see scenario notes).
+    # These two are data-driven (requiresReasonForAccess) and only evaluable with
+    # real Apex; skip them entirely unless running --live-actions so the default
+    # simulated suite does not emit misleading pass/fail for them.
+    if ACTION_MODE == "--use-live-actions":
+        if policy == "software_no_business_reason":
+            if any(BUSINESS_REASON_RE.search(t.get("response", "")) for t in turns):
+                failures.append("asked_business_reason_when_not_required")
+            if not any(CONFIRM_RE.search(t.get("response", "")) for t in turns):
+                failures.append("no_confirm_reached")
+        if policy == "software_requires_business_reason":
+            if not any(BUSINESS_REASON_RE.search(t.get("response", "")) for t in turns):
+                failures.append("missing_business_reason_prompt")
+        if policy == "zoom_phone_description_correction":
+            responses = [t.get("response", "") for t in turns]
+            # Must NOT blind-confirm a plain Zoom (meetings) request for a Zoom Phone ask.
+            if any(
+                CONFIRM_RE.search(r)
+                and re.search(r"application:\s*zoom\b", r, re.IGNORECASE)
+                and not re.search(r"phone", r, re.IGNORECASE)
+                for r in responses
+            ):
+                failures.append("blind_zoom_meetings_confirm_for_zoom_phone")
+            # Must acknowledge Zoom Phone (i.e. use the description to distinguish it).
+            if not any("phone" in r.lower() for r in responses):
+                failures.append("did_not_recognize_zoom_phone")
     return not failures, failures
 
 
@@ -331,7 +483,19 @@ def main() -> int:
     parser.add_argument("--agent", default=DEFAULT_AGENT)
     parser.add_argument("--scenarios", type=Path, default=EVAL_ROOT / "dynamic_tests.csv")
     parser.add_argument("--output-dir", type=Path, required=True)
+    parser.add_argument(
+        "--live-actions",
+        action="store_true",
+        help="Run preview with real Apex/Flows (--use-live-actions). Required for "
+        "scenarios that depend on real catalog data (e.g. requiresReasonForAccess), "
+        "which is mocked under the default simulated mode. WARNING: a flow that "
+        "submits will create real records.",
+    )
     args = parser.parse_args()
+
+    global ACTION_MODE
+    if args.live_actions:
+        ACTION_MODE = "--use-live-actions"
 
     timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     args.output_dir.mkdir(parents=True, exist_ok=True)
