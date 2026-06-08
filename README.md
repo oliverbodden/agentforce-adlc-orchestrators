@@ -18,7 +18,7 @@ Single install command. Bootstrap handles everything additively:
 1. **Salesforce prerequisites** — Salesforce CLI, required `sf` command surfaces, and org auth.
 2. **One bootstrap command** — `python3 tools/bootstrap_it_adlc.py --install-additive`. This:
    - Auto-vendors upstream Salesforce skills into `adlc/skills/upstream/` (clones/pulls a cache at `~/agentforce-adlc-salesforce/` if needed).
-   - Copies all 6 skills (3 custom + 3 upstream) from `adlc/skills/` into `~/.cursor/skills/`.
+   - Copies all 7 skills (4 custom + 3 upstream) from `adlc/skills/` into `~/.cursor/skills/`.
    - Skips skills already installed (additive only — never overwrites or deletes).
 
 See `adlc/docs/developer-onboarding.md` for the full setup flow.

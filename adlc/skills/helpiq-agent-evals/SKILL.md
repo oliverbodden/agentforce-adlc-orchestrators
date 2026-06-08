@@ -17,7 +17,7 @@ Project-specific dynamic eval methodology for the HelpIQ Agentforce agents. Two 
 - **Mode 1 — deterministic runner**: cheap, reproducible, scriptable. Best for bulk regression and stable invariants.
 - **Mode 2 — subagent drive+judge**: a tester subagent drives a live multi-turn conversation and judges it against a rubric. Best for nondeterministic / behavior-rich scenarios where exact-match graders misjudge (routing *variance*, conditional gates like `requiresReasonForAccess`, description-driven corrections, post-QnA anti-repeat, guardrail false-positives). Higher fidelity, but expensive and non-deterministic — use for the *hard* scenarios only.
 
-## Files (all under `adlc/agents/HelpIQ_AgentScript__aicommon/evals/HelpIQ/`)
+## Files (all under `adlc/agents/HelpIQ/evals/HelpIQ/`)
 - `dynamic_tests.csv` — scenario source of truth (both modes read it).
 - `scripts/run_dynamic_tests.py` — Mode 1 runner. `--live-actions` switches preview to real Apex/Flows (default is simulated).
 - `scripts/regrade_allowed_routes.py` — re-grade results against an allowed-route set (Testing Center `topic_assertion` is exact-match; HelpIQ routing is intentionally nondeterministic). See `EVAL_REGRADE_README.md`.
@@ -33,7 +33,7 @@ Mode-2 (drive+judge) columns:
 
 ## Mode 1 — deterministic runner
 ```bash
-cd adlc/agents/HelpIQ_AgentScript__aicommon/evals/HelpIQ
+cd adlc/agents/HelpIQ/evals/HelpIQ
 # simulated (cheap, mocks actions):
 python3 scripts/run_dynamic_tests.py --agent <BUNDLE> --scenarios dynamic_tests.csv --output-dir <dir>
 # live (real Apex; required for catalog/requiresReason/description scenarios):

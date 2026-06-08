@@ -44,6 +44,7 @@ LOCAL_CUSTOM_SKILLS = [
     "adlc-drive",
     "adlc-execute",
     "adlc-ticket",
+    "helpiq-agent-evals",
 ]
 
 LEGACY_STANDARD_SKILLS = [

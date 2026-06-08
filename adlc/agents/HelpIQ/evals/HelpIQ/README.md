@@ -2,7 +2,7 @@
 
 Ticket-agnostic evaluation package for the HelpIQ agent family.
 
-This folder is the source of truth for test cases and reusable evaluation scripts. It should change only when the evaluation suite changes. Run outputs, raw results, debug traces, and ticket-specific reports belong outside this folder under `adlc/agents/HelpIQ_AgentScript__aicommon/eval-runs/`.
+This folder is the source of truth for test cases and reusable evaluation scripts. It should change only when the evaluation suite changes. Run outputs, raw results, debug traces, and ticket-specific reports belong outside this folder under `adlc/agents/HelpIQ/eval-runs/`.
 
 ## Files
 
@@ -18,8 +18,8 @@ This folder is the source of truth for test cases and reusable evaluation script
 Use a ticket or descriptive run folder, for example:
 
 ```bash
-adlc/agents/HelpIQ_AgentScript__aicommon/eval-runs/HELPEXP-274-ab2-repair/
-adlc/agents/HelpIQ_AgentScript__aicommon/eval-runs/2026-05-24-ab2-regression/
+adlc/agents/HelpIQ/eval-runs/HELPEXP-274-ab2-repair/
+adlc/agents/HelpIQ/eval-runs/2026-05-24-ab2-regression/
 ```
 
 Do not put run artifacts under `evals/HelpIQ`.
@@ -27,18 +27,18 @@ Do not put run artifacts under `evals/HelpIQ`.
 ## Rebuild Testing Center Definitions
 
 ```bash
-python3 adlc/agents/HelpIQ_AgentScript__aicommon/evals/HelpIQ/scripts/build_test_definitions.py \
+python3 adlc/agents/HelpIQ/evals/HelpIQ/scripts/build_test_definitions.py \
   --subject-name HelpIQ_AgentScript_AB2 \
   --subject-version v1 \
-  --output-dir adlc/agents/HelpIQ_AgentScript__aicommon/eval-runs/HELPEXP-274-ab2-repair/generated-definitions
+  --output-dir adlc/agents/HelpIQ/eval-runs/HELPEXP-274-ab2-repair/generated-definitions
 ```
 
 ## Run Dynamic Scenarios
 
 ```bash
-python3 adlc/agents/HelpIQ_AgentScript__aicommon/evals/HelpIQ/scripts/run_dynamic_tests.py \
+python3 adlc/agents/HelpIQ/evals/HelpIQ/scripts/run_dynamic_tests.py \
   --agent HelpIQ_AgentScript_AB2 \
-  --output-dir adlc/agents/HelpIQ_AgentScript__aicommon/eval-runs/HELPEXP-274-ab2-repair/dynamic
+  --output-dir adlc/agents/HelpIQ/eval-runs/HELPEXP-274-ab2-repair/dynamic
 ```
 
 ## Build Unified Report
@@ -75,35 +75,35 @@ The **Setup** section is coverage and context only. It lists per-agent test coun
 Generate clean static results first:
 
 ```bash
-python3 adlc/agents/HelpIQ_AgentScript__aicommon/evals/HelpIQ/scripts/clean_results.py \
+python3 adlc/agents/HelpIQ/evals/HelpIQ/scripts/clean_results.py \
   --raw-results path/to/raw-single-results.json \
-  --master-csv adlc/agents/HelpIQ_AgentScript__aicommon/evals/HelpIQ/single_turn_tests.csv \
+  --master-csv adlc/agents/HelpIQ/evals/HelpIQ/single_turn_tests.csv \
   --output path/to/clean-single-results.json
 
-python3 adlc/agents/HelpIQ_AgentScript__aicommon/evals/HelpIQ/scripts/clean_results.py \
+python3 adlc/agents/HelpIQ/evals/HelpIQ/scripts/clean_results.py \
   --raw-results path/to/raw-fixed-multi-results.json \
-  --master-csv adlc/agents/HelpIQ_AgentScript__aicommon/evals/HelpIQ/multi_turn_tests.csv \
+  --master-csv adlc/agents/HelpIQ/evals/HelpIQ/multi_turn_tests.csv \
   --output path/to/clean-fixed-multi-results.json
 ```
 
 ```bash
-python3 adlc/agents/HelpIQ_AgentScript__aicommon/evals/HelpIQ/scripts/build_report.py \
+python3 adlc/agents/HelpIQ/evals/HelpIQ/scripts/build_report.py \
   --single-results path/to/clean-single-results.json \
   --multi-results path/to/clean-fixed-multi-results.json \
   --dynamic-results path/to/dynamic-results.json \
-  --output-dir adlc/agents/HelpIQ_AgentScript__aicommon/eval-runs/HELPEXP-274-ab2-repair/report
+  --output-dir adlc/agents/HelpIQ/eval-runs/HELPEXP-274-ab2-repair/report
 ```
 
 For multi-agent comparison reports, set both roles explicitly. Example:
 
 ```bash
-python3 adlc/agents/HelpIQ_AgentScript__aicommon/evals/HelpIQ/scripts/build_report.py \
+python3 adlc/agents/HelpIQ/evals/HelpIQ/scripts/build_report.py \
   --baseline-agent-label HelpIQ20 \
   --primary-agent-label HelpIQ_AgentScript_AB2 \
   --agent-run "HelpIQ20::path/to/helpiq20-single-clean.json::path/to/helpiq20-multi-clean.json::path/to/helpiq20-dynamic-summary.json" \
   --agent-run "HelpIQ_AgentScript_AB2::path/to/ab2-single-clean.json::path/to/ab2-multi-clean.json::path/to/ab2-dynamic-results.json" \
   --agent-run "HelpIQ_AgentScript_AB1::path/to/ab1-single-clean.json::path/to/ab1-multi-clean.json::path/to/ab1-dynamic-summary.json" \
-  --output-dir adlc/agents/HelpIQ_AgentScript__aicommon/eval-runs/HELPEXP-274-ab2-repair/report
+  --output-dir adlc/agents/HelpIQ/eval-runs/HELPEXP-274-ab2-repair/report
 ```
 
 ## Tool Policy Columns

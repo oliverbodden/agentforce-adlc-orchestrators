@@ -73,7 +73,7 @@ adlc/agents/{agent-dev-name}__{org-alias}/{topic-or-subagent}-current-state.md
 
 Example:
 ```text
-adlc/agents/HelpIQ_AgentScript__aicommon/multiplier-current-state.md
+adlc/agents/HelpIQ/multiplier-current-state.md
 ```
 
 This is **flat by design** — alongside `AGENT_VERSION_REGISTRY.md` and `meta.json`, not inside a sub-folder. Reasons:
@@ -112,7 +112,7 @@ The brief is **input** to `adlc-ticket`'s Mode 1. When `adlc-ticket` runs, it co
 The first brief produced under this playbook:
 
 ```text
-adlc/agents/HelpIQ_AgentScript__aicommon/multiplier-current-state.md
+adlc/agents/HelpIQ/multiplier-current-state.md
 ```
 
 It was authored before the JIRA ticket for the `HelpIqAgentMultiplierSoftwareRequests` sub-agent existed, using eval data from HELPEXP-274's 999-case run filtered to the 32 multiplier-mapped utterances. It demonstrates:

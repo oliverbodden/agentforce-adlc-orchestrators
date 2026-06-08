@@ -20,8 +20,8 @@ A ready workstation has:
   - `sf api`
   - `sf org`
 - Authenticated Salesforce org aliases needed for the work.
-- All 6 skills installed at `~/.cursor/skills/`, sourced from this repo's `adlc/skills/`:
-  - **Custom (committed):** `adlc-drive`, `adlc-execute`, `adlc-ticket`.
+- All 7 skills installed at `~/.cursor/skills/`, sourced from this repo's `adlc/skills/`:
+  - **Custom (committed):** `adlc-drive`, `adlc-execute`, `adlc-ticket`, `helpiq-agent-evals`.
   - **Vendored upstream (gitignored content, fetched by bootstrap):** `developing-agentforce`, `testing-agentforce`, `observing-agentforce`. Live in `adlc/skills/upstream/`.
 - Cursor or Claude skill target directory available (`~/.cursor/skills/`).
 - Local setup/status report captured for troubleshooting (optional, written to `adlc/versioning/`).
@@ -51,7 +51,7 @@ Single source for skills (`adlc/skills/`), single bootstrap command. Bootstrap a
 Required order:
 
 1. **Salesforce prerequisites** — Install Salesforce CLI, verify required command surfaces, and authenticate required org aliases.
-2. **Bootstrap** — Clone this repo and run `tools/bootstrap_it_adlc.py --install-additive`. This auto-vendors upstream Salesforce skills into `adlc/skills/upstream/` (cloning a cache at `~/agentforce-adlc-salesforce/` if needed), then installs all 6 skills (3 custom + 3 upstream) into `~/.cursor/skills/`.
+2. **Bootstrap** — Clone this repo and run `tools/bootstrap_it_adlc.py --install-additive`. This auto-vendors upstream Salesforce skills into `adlc/skills/upstream/` (cloning a cache at `~/agentforce-adlc-salesforce/` if needed), then installs all 7 skills (4 custom + 3 upstream) into `~/.cursor/skills/`.
 
 The default repo contains: custom skill source (committed), upstream skill scaffolding (vendored content gitignored), docs, playbooks, bootstrap/status helpers, ticket guides, artifact conventions, and an empty Agentforce-focused SFDX scaffold (`force-app/`).
 
@@ -82,7 +82,7 @@ cd agentforce-project
 # 3. Dry-run: see what's installed and what's missing
 python3 tools/bootstrap_it_adlc.py --status
 
-# 4. Install: auto-vendors upstream skills + copies all 6 skills into ~/.cursor/skills/
+# 4. Install: auto-vendors upstream skills + copies all 7 skills into ~/.cursor/skills/
 python3 tools/bootstrap_it_adlc.py --install-additive
 
 # 5. (Optional) Configure git remotes interactively
@@ -139,12 +139,13 @@ git remote -v
 git branch --show-current
 ```
 
-Skill checks (3 custom + 3 upstream):
+Skill checks (4 custom + 3 upstream):
 
 ```text
 ~/.cursor/skills/adlc-drive/SKILL.md
 ~/.cursor/skills/adlc-execute/SKILL.md
 ~/.cursor/skills/adlc-ticket/SKILL.md
+~/.cursor/skills/helpiq-agent-evals/SKILL.md
 ~/.cursor/skills/developing-agentforce/SKILL.md
 ~/.cursor/skills/testing-agentforce/SKILL.md
 ~/.cursor/skills/observing-agentforce/SKILL.md
