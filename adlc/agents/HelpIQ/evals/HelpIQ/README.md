@@ -8,7 +8,7 @@ This folder is the source of truth for test cases and reusable evaluation script
 
 - `single_turn_tests.csv` - master single-turn suite. Current coverage: `999` Testing Center cases. Includes corrected runtime `expected_actions`, `original_expected_actions`, allowed/forbidden tool policy, and confirmation-gating fields.
 - `multi_turn_tests.csv` - master fixed multi-turn suite. Current coverage: `99` Testing Center cases with `conversation_history_json` for previous turns. Includes corrected runtime `expected_actions`, `original_expected_actions`, allowed/forbidden tool policy, and confirmation-gating fields.
-- `dynamic_tests.csv` - master dynamic multi-turn scenario suite. Current coverage: `21` scenarios and `69` normalized dynamic runs. Includes tool-policy fields for Salesforce sfcase, software access, human handoff, direct IT ticket intake discovery, safety/privacy, and QnA follow-up behavior.
+- `dynamic_tests.csv` - master dynamic multi-turn scenario suite. Current coverage: `28` scenarios and `90` normalized dynamic runs. Includes tool-policy fields for Salesforce sfcase, software access (including HELPEXP-765 post-lookup routing and catalog-miss escalation), human handoff, direct IT ticket intake discovery, safety/privacy, and QnA follow-up behavior.
 - `scripts/build_test_definitions.py` - rebuilds Salesforce `AiEvaluationDefinition` XML from the static CSV masters.
 - `scripts/run_dynamic_tests.py` - runs dynamic preview scenarios from `dynamic_tests.csv`.
 - `scripts/build_report.py` - builds one report from external single-turn, fixed multi-turn, and dynamic run result JSON files.

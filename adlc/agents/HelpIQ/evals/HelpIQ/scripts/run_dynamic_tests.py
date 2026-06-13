@@ -217,6 +217,24 @@ def followups(strategy: str) -> list[str]:
         # is a different app). LIVE-ACTIONS ONLY. No followup needed; the
         # correction appears on the first reply.
         "zoom_phone_correction": [],
+        # HELPEXP-765 software routing harness (mirrors test_app_routing_v2/submit +
+        # test_catalog_miss_escalation canned replies). LIVE-ACTIONS ONLY.
+        "software_catalog_routing_confirm": [
+            "Just for me",
+            "The standard one",
+            "I need it for my daily work",
+        ],
+        "software_catalog_routing_submit": [
+            "Just for me",
+            "The standard one",
+            "I need it for my daily work",
+            "yes",
+        ],
+        "catalog_miss_self_escalate": [
+            "Just for me",
+            "I need it for my daily work",
+            "yes",
+        ],
     }.get(strategy, ["yes please"])
 
 
@@ -229,6 +247,16 @@ ISSUE_CLARIFY_RE = re.compile(
     re.IGNORECASE,
 )
 CONFIRM_RE = re.compile(r"want me to submit", re.IGNORECASE)
+SOFTWARE_CONFIRM_RE = re.compile(r"want me to submit it", re.IGNORECASE)
+ESCALATION_CONFIRM_RE = re.compile(r"want me to bring in an it specialist", re.IGNORECASE)
+QNA_PIVOT_RE = re.compile(
+    r"did this help|torii|help cent|service portal|request flow",
+    re.IGNORECASE,
+)
+SOFTWARE_SUBMIT_RE = re.compile(
+    r"submitted|ticket|atlassian|jira|indeed-qa-jira",
+    re.IGNORECASE,
+)
 # Business-justification prompt (software access requiresReasonForAccess gate).
 BUSINESS_REASON_RE = re.compile(
     r"business reason|business justification|reason (for|you|why)|why (do|are|would) you"
@@ -413,6 +441,47 @@ def grade(record: dict[str, Any]) -> tuple[bool, list[str]]:
             # Must acknowledge Zoom Phone (i.e. use the description to distinguish it).
             if not any("phone" in r.lower() for r in responses):
                 failures.append("did_not_recognize_zoom_phone")
+    if policy in {"software_confirm_no_qna_pivot", "software_submit_no_qna_pivot"}:
+        confirm_idx = next(
+            (i for i, turn in enumerate(turns) if SOFTWARE_CONFIRM_RE.search(turn.get("response", ""))),
+            None,
+        )
+        if confirm_idx is None:
+            failures.append("missing_software_submit_confirm")
+        else:
+            for index, turn in enumerate(turns[:confirm_idx]):
+                if QNA_PIVOT_RE.search(turn.get("response", "")):
+                    failures.append("qna_pivot_before_confirm")
+                    break
+            if any(ESCALATION_CONFIRM_RE.search(turn.get("response", "")) for turn in turns[:confirm_idx]):
+                failures.append("unexpected_escalation_before_confirm")
+        if policy == "software_submit_no_qna_pivot":
+            if not any(
+                turn.get("debug", {}).get("ticket_created") or SOFTWARE_SUBMIT_RE.search(turn.get("response", ""))
+                for turn in turns
+            ):
+                failures.append("missing_submit_after_confirm")
+    if policy == "catalog_miss_escalation":
+        esc_confirm_idx = next(
+            (i for i, turn in enumerate(turns) if ESCALATION_CONFIRM_RE.search(turn.get("response", ""))),
+            None,
+        )
+        if esc_confirm_idx is None:
+            failures.append("missing_escalation_confirm")
+        else:
+            for index, turn in enumerate(turns[:esc_confirm_idx]):
+                if QNA_PIVOT_RE.search(turn.get("response", "")):
+                    failures.append("qna_pivot_before_escalation")
+                    break
+            if any(SOFTWARE_CONFIRM_RE.search(turn.get("response", "")) for turn in turns):
+                failures.append("wrong_software_submit_confirm")
+        if not any(
+            turn.get("debug", {}).get("ticket_created")
+            or SOFTWARE_SUBMIT_RE.search(turn.get("response", ""))
+            or "specialist" in turn.get("response", "").lower()
+            for turn in turns[esc_confirm_idx or 0 :]
+        ):
+            failures.append("missing_escalation_outcome")
     return not failures, failures
 
 
@@ -491,6 +560,11 @@ def main() -> int:
         "which is mocked under the default simulated mode. WARNING: a flow that "
         "submits will create real records.",
     )
+    parser.add_argument(
+        "--scenario-category",
+        help="Run only scenarios whose scenario_category column matches this value "
+        "(e.g. software_access).",
+    )
     args = parser.parse_args()
 
     global ACTION_MODE
@@ -501,6 +575,14 @@ def main() -> int:
     args.output_dir.mkdir(parents=True, exist_ok=True)
     records = []
     scenarios = load_scenarios(args.scenarios)
+    if args.scenario_category:
+        scenarios = [
+            scenario
+            for scenario in scenarios
+            if (scenario.get("scenario_category") or scenario.get("category")) == args.scenario_category
+        ]
+        if not scenarios:
+            raise SystemExit(f"No scenarios matched scenario_category={args.scenario_category!r}")
     partial_path = args.output_dir / f"{args.agent}_dynamic_multiturn_{timestamp}.partial.json"
     final_path = args.output_dir / f"{args.agent}_dynamic_multiturn_{timestamp}.json"
 
